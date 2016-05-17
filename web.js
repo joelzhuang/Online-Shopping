@@ -11,18 +11,16 @@ client = new pg.Client(connectionString);
 client.connect();
 
 app.get('/', function(req, res) {
-  var date = new Date();
+  // client.query('INSERT INTO visits(date) VALUES($1)', [date]);
 
-  client.query('INSERT INTO visits(date) VALUES($1)', [date]);
-
-  query = client.query('SELECT COUNT(date) AS count FROM visits WHERE date = $1', [date]);
+  query = client.query('SELECT * FROM items');
   query.on('row', function(result) {
     console.log(result);
 
     if (!result) {
       return res.send('No data found');
     } else {
-      res.send('Visits today: ' + result.count);
+      res.send('Visits today: ' + result);
     }
   });
 });
