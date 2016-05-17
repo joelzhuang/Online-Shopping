@@ -10,14 +10,14 @@ $(document).ready(function(e) {
 		var loginName = $('#t1').val();
 		var loginPass = $('#p1').val();
 
+		//$.post('http://localhost:8080/post',jQuery.param({ field1: "hello", field2 : "hello2"}) );
+
+
 		$.ajax({
 			method:'POST',
 			url: 'http://localhost:8080/post',
-			data: JSON.stringify({
-				name : loginName,
-				pass: loginPass
-			}),
-			contentType: "applciation/json",
+			data: JSON.stringify({name : loginName, pass: loginPass}),
+			contentType: "application/json",
 			dataType: "json"
 		}).then(doThis);
 

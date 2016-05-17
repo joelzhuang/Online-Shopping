@@ -10,19 +10,19 @@ var client = new pg.Client("postgres://localhost:5432");
 client.connect();
 
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({
-	extended: true
-}));
+app.use(bodyparser.urlencoded());
 app.use(cors());
 
 app.get('/get', function(req,res,next){
-	console.log(req.name);
+	console.log(req);
 	console.log(req.pass);
 });
 
-app.post('/post', function(req,res,next){
-	console.log(req.name);
-	console.log(req.pass);
+app.post('/post/', function(req,res,next){
+	console.log(req.body.name);
+	console.log(req.body.pass);
+
+	res.sendStatus(200);
 });
 
 app.listen(port, function () {
