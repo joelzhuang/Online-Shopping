@@ -1,0 +1,19 @@
+{
+  "name": "reubenpuketapu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.7.1",
+    "express": "^4.13.4",
+    "mongoskin": "1.4.1",
+    "pg": "4.x",
+    "pg-native": "1.x"
+  },
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+  }
+}
