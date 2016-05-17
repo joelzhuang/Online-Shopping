@@ -1,0 +1,28 @@
+Name, Description, On Success, On Failure
+
+Name: /item
+Description:
+	Gets an item from the server. 
+On success:
+	Returns the JSON object, with its product id (id), an image url (url), name (name), description text (desc). 
+On failure
+	If the requested ID cannot be found, returns a 404. 
+	
+Name: /add
+Description:
+	Adds an item to the cart.
+On success:
+	If this is the first item, creates a table to store the purchased items. 
+	Otherwise, adds this item to the table (or increases the number of that item to be purchased).
+On failure:
+	If the product ID cannot be found, returns 404. 
+	If the client has timed out, returns 400. 
+
+Name: /remove
+	Removes an item from the cart. 
+On success:
+	Removes the item from the user's card and returns 200. 
+On failure: 
+	If the cart does not contain any of that item, or if the number of items removed from the cart is
+	greater than the number of items in the cart (suspicious behaviour, dun dun DUN) return 400. 
+	
