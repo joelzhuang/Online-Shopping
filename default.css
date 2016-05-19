@@ -479,6 +479,10 @@ h1
     font-weight: bold;
 }
 
+.black {
+    background-color: black;
+}
+
 .page_center_text
 {
 	width: 170px;
