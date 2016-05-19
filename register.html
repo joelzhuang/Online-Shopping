@@ -4,6 +4,7 @@
 <html>
 <head>
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<script src="register.js"></script>
 <style type="text/css">
 body {
 margin:;
@@ -119,16 +120,16 @@ font-weight:bold;
 
 <body>
 <center>
-<script type="text/javascript">
+<!--<script type="text/javascript">
     google_ad_client = "ca-pub-6338063578832547";
     google_ad_slot = "5073283314";
     google_ad_width = 728;
     google_ad_height = 90;
 </script>
-<!-- Header Ads -->
+ Header Ads 
 <script type="text/javascript"
 src="//pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
+</script>-->
 </center>
 
 
@@ -227,10 +228,11 @@ onBlur=
 <div id="RightPart">
 <html>
 <head>
-<script>
+<!--<script>
 function fnam()
 {
-  var fnam=/^[a-zA-Z]{4,15}$/;
+	var fname;
+  //var fnam=/^[a-zA-Z]{4,15}$/;
    if(document.f1.t1.value.search(fnam)==-1)
     {
 	 alert("enter correct  first name");
@@ -395,7 +397,7 @@ function vali()
 	 }
 	
 	 
-</script> 
+</script>-->
 </head>
 <body>
 
@@ -427,11 +429,11 @@ function vali()
     <td width="164"><div align="center"><font size="+1" face="Comic Sans MS"><b> First&nbsp;Name:</b></font></div></td>
     <td width="192">
       
-        <input name="t1" type="text" id="t1" onChange="return fnam()">    </td>
+        <input name="t1" type="text" id="t1">    </td>
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>Last name:</strong></font></div></td>
-    <td><input name="t2" type="text" id="t2" onChange="return lnam()" ></td>
+    <td><input name="t2" type="text" id="t2" ></td>
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Gender:</b> </font></div></td>
@@ -442,28 +444,28 @@ function vali()
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Enter Email : </b></font></div></td>
-    <td><input name="t3" type="text" id="t3" onChange="return email()"></td>
+    <td><input name="t3" type="text" id="t3"></td>
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Choose a  Password:</b> </font></div></td>
-    <td><input name="p1" type="text" id="p1" onChange="return pass()"></td>
+    <td><input name="p1" type="text" id="p1"></td>
   </tr>
   <tr> <td><div align="center"><font size="+1" face="Comic Sans MS"><b>Phone no: </b></font></div></td>
-    <td><input name="t5" type="text" id="t5" onChange="return phone()"></td>
+    <td><input name="t5" type="text" id="t5"></td>
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>Address:</strong></font></div></td>
     <td><label>
-      <textarea name="t6" id="t6" value="return add()"></textarea>
+      <textarea name="t6" id="t6"></textarea>
     </label></td>
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>City:</strong></font></div></td>
-    <td><input name="t7" type="text" id="t7" onChange="return city()"></td>
+    <td><input name="t7" type="text" id="t7"></td>
   </tr>
   <tr>
     <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>Country:</strong></font></div></td>
-    <td><input name="t8" type="text" id="t8" onChange="return coun()"></td>
+    <td><input name="t8" type="text" id="t8"></td>
   </tr>
   <tr>
     <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Date of Birth: </font></strong></div></td>
@@ -512,8 +514,8 @@ function vali()
     google_ad_height = 90;
 </script>
 <!-- Header Ads -->
-<script type="text/javascript"
-src="//pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
+<!--<script type="text/javascript"
+// src="//pagead2.googlesyndication.com/pagead/show_ads.js">
+// </script>-->
 </center>
 </html>
