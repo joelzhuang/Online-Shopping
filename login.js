@@ -15,8 +15,9 @@ $(document).ready(function(e) {
 			url: 'http://localhost:8080/post',
 			data: JSON.stringify({name : loginName, pass: loginPass}),
 			contentType: "application/json",
-			dataType: "json"
-		}).then(doThis);
+			dataType: "json",
+			success: function(resultData) { console.log('hey')}
+		});
 
 		console.log(loginName);
 		console.log(loginPass);
