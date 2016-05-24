@@ -22,7 +22,13 @@ $(document).ready(function(e) {
 		var password = $('#p1').val();
 		var phone = $('#t5').val();
 		var address = $('#t6').val();
+		var city = $('#t7').val();
 		var country = $('#t8').val();
+		var gender = $('#gender').val();
+		var day = $('#day').val();
+		var month = $('#month').val();
+		var year = $('#year').val();
+		console.log(title);
 		if (!fname.match(namReg)) { 
 			alert("Please enter your first name" + gender);
 			return false; 
@@ -45,66 +51,23 @@ $(document).ready(function(e) {
 			alert("Please enter your country");
 			return false; 
 		} 
+		
+		var r_data=[title,gender,fname,lname,email,password,phone,address,city,country,day,month,year];
 
+		console.log(r_data);
+		$.ajax({
+			method: 'POST',
+			url: 'http://localhost:8080/register/',
+			data: JSON.stringify({
+				register_data : title
+			}),
+
+			contentType: "application/json",
+			dataType: "json"
+		});
+	
 		alert("well done. Account created");
 	});
-
-	// $("#RightPart").click(function(){
-	// 	var title = $('#sel1').val();
-	// 	var fname = $('#t1').val();
-	// 	var lname = $('#t2').val();
-	// 	var gender = $('#r1').val();
-	// 	var email = $('#t3').val();
-	// 	var password = $('#p1').val();
-	// 	var phone = $('#t5').val();
-	// 	var address = $('#t6').val();
-	// 	var country = $('#t8').val();
-	// 	var birth = $('#t9').val();
-	// 	if (fname === '') { 
-	// 		alert("Please enter your first name");
-	// 		return false; 
-	// 	} else if (lname === '') { 
-	// 		alert("Please enter your last name");
-	// 		return false; 
-	// 	} else if (gender === '') { 
-	// 		alert("Please select gender type");
-	// 		return false; 
-	// 	} else if (email === '') { 
-	// 		alert("Please enter a valid email address");
-	// 		return false; 
-	// 	} else if (password === '') { 
-	// 		alert("Please enter a password");
-	// 		return false; 
-	// 	} else if (phone === '') { 
-	// 		alert("Please enter a valid phone number");
-	// 		return false; 
-	// 	} else if (address === '') { 
-	// 		alert("Please enter your address");
-	// 		return false; 
-	// 	} else if (country === '') { 
-	// 		alert("Please enter your country");
-	// 		return false; 
-	// 	} else if (birth === '') { 
-	// 		alert("Please enter your date of birth");
-	// 		return false; 
-	// 	} 
- //        console.log(title);
- //    }); 
-
-
-			// 	if (taskName === '') { return false; }
-			// 	var taskHTML = '<li><span class="done">%</span>';
-			// 	taskHTML += '<span class="delete">x</span>';
-			// 	taskHTML += '<span class="task"></span></li>';
-			// 	console.log('hello');
-			// 	/**
-			// 	The get request must always have a then call back function. Because this is the only way it can get the data sent from the server.
-			// 	nextfunction(data)
-			// 	*/
-
-			// 	//???
-			// 	var $newTask = $(taskHTML);
-			// 	$newTask.find('.task').text(taskName);
 
  
 			// 	$.ajax({

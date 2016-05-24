@@ -6,7 +6,7 @@ var cors = require('cors');
 var app = express();
 var port = process.env.PORT || 8080;
 
-var client = new pg.Client("postgres://localhost:5432");
+var client = new pg.Client("postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9");
 client.connect();
 
 app.use(bodyparser.json());
@@ -22,6 +22,12 @@ app.post('/post/', function(req,res,next){
 	console.log(req.body.name);
 	console.log(req.body.pass);
 
+	res.sendStatus(200);
+});
+
+app.post('/register', function(req,res,next){
+	console.log("jadfaef");
+	console.log(req.body.register_data);
 	res.sendStatus(200);
 });
 
