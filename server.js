@@ -31,15 +31,16 @@ app.post('/post/', function(req,res,next){
 
 			if(data.pass == password){
 				console.log('correct');
+				res.send(JSON.stringify({outcome : true}));
 			}
 			else{
 				console.log('incorrect');
+				res.send(JSON.stringify({outcome : false}));
+
 			}
-			console.log(data);
 		});
 	})
 
-	res.sendStatus(200);
 
 
 
