@@ -10,25 +10,20 @@ $(document).ready(function(e) {
 		var loginName = $('#t1').val();
 		var loginPass = $('#p1').val();
 
-		//$.post('http://localhost:8080/post',jQuery.param({ field1: "hello", field2 : "hello2"}) );
-
-
-		$.ajax({
+		var request = $.ajax({
 			method:'POST',
 			url: 'http://localhost:8080/post',
 			data: JSON.stringify({name : loginName, pass: loginPass}),
 			contentType: "application/json",
 			dataType: "json"
-		}).then(doThis);
-
-		console.log(loginName);
-		console.log(loginPass);
+		}).then(function(data){
+			if(data.outcome){
+				console.log("success")
+			}
+			else{
+				console.log("failed")
+			}
+		});
 
 	});
-
-	function doThis(){
-		console.log("HERE")
-	}
-	
-
 });
