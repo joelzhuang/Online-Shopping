@@ -27,18 +27,21 @@ app.post('/post/', function(req,res,next){
 	});
 
 	query.on('end', function(){
+		var found = false;
 		results.forEach(function(data){
 
-			if(data.pass == password){
-				console.log('correct');
-				res.send(JSON.stringify({outcome : true}));
+			if(data.name == username && data.pass == password && !found){
+				res.send(JSON.stringify({outcome : 'correct'}));
+				found = true;
 			}
-			else{
-				console.log('incorrect');
-				res.send(JSON.stringify({outcome : false}));
-
+			else if(data.name == username && data.pass != password && !found){
+				res.send(JSON.stringify({outcome : 'badpw'}));
+				found = true;
 			}
 		});
+	if(!found){
+		res.send(JSON.stringify({outcome : 'incorrect'}));
+	}
 	})
 
 
