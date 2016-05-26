@@ -17,11 +17,17 @@ $(document).ready(function(e) {
 			contentType: "application/json",
 			dataType: "json"
 		}).then(function(data){
-			if(data.outcome){
-				console.log("success")
+			if(data.outcome == 'correct'){
+				console.log("success");
+				window.location = 'index.html';
 			}
-			else{
-				console.log("failed")
+			else if(data.outcome == 'badpw'){
+				alert('Incorrect Password');
+
+			}
+			else if(data.outcome == 'incorrect'){
+				console.log("failed");
+				alert('Incorrect Username');
 			}
 		});
 
