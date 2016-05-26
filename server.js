@@ -13,6 +13,17 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
+// app.use(function(req,res,next){
+//   //webiste you wish to allow to connect
+//   res.setHeader('Access-Control-Allow-Origin','*')
+//   //request methods you wish to allows
+//   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
+//   //request headers you wish to allow
+//   res.setHeader('Access-Control-Allow-Headers','Content-Type,Access-Control-Allow-Headers');
+//   //pass next layer of middleware
+//   next();
+// });
+
 app.post('/post/', function(req,res,next){
 
 	var username = req.body.name;
@@ -39,7 +50,7 @@ app.post('/post/', function(req,res,next){
 
 			}
 		});
-	})
+	});
 
 
 
@@ -49,6 +60,14 @@ app.post('/post/', function(req,res,next){
 	//})
 
 });
+
+app.post('/register/', function(req,res,next) {
+	var r_data = req.body.register_data;
+	console.log(r_data);
+	console.log(r_data.title);
+	res.send("done");
+});
+
 
 /*app.post('/post/', function(req,res,next){
 	console.log(req.body.name);
