@@ -63,8 +63,7 @@ app.post('/post/', function(req,res,next){
 
 app.post('/register/', function(req,res,next) {
 	var r_data = req.body.register_data;
-	console.log(r_data);
-	console.log(r_data.title);
+	// client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
 	res.send("done");
 });
 
