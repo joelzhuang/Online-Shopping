@@ -57,6 +57,8 @@ $(document).ready(function(e) {
 		
 		var r_data={title,gender,fname,lname,email,password,phone,address,city,country,day,month,year};
 
+		alert("well done. Account created");
+	
 		console.log(r_data);
 		
 	
