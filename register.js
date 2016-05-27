@@ -76,6 +76,7 @@ $(document).ready(function(e) {
 			);
 
 		function success_func (){
+			window.location = 'index.html';
 			console.log('posted data.');
 		}				
 
