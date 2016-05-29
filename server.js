@@ -13,6 +13,8 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
+app.use(express.static(__dirname));
+
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
 //   res.setHeader('Access-Control-Allow-Origin','*')
