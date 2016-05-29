@@ -13,7 +13,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
-app.use(express.static(__dirname));
+//app.use(express.static(__dirname));
 
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
@@ -25,6 +25,10 @@ app.use(express.static(__dirname));
 //   //pass next layer of middleware
 //   next();
 // });
+
+app.get('/',function(req,res,next){
+	res.send("it works!");
+});
 
 app.post('/post/', function(req,res,next){
 
