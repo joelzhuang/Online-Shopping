@@ -6,25 +6,20 @@ var cors = require('cors');
 var app = express();
 var port = process.env.PORT || 8080;
 
-<<<<<<< HEAD
 var client = new pg.Client('postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9');
-=======
-var client = new pg.Client("postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9");
->>>>>>> 21af2187db1e019a3fac30a85a85673500a92ab7
+
 client.connect();
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
-<<<<<<< HEAD
 app.get('/get', function(req,res,next){
 	console.log(req);
 	console.log(req.pass);
 	
 	client.query('select * from users;');
 });
-=======
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
 //   res.setHeader('Access-Control-Allow-Origin','*')
@@ -35,7 +30,6 @@ app.get('/get', function(req,res,next){
 //   //pass next layer of middleware
 //   next();
 // });
->>>>>>> 21af2187db1e019a3fac30a85a85673500a92ab7
 
 app.post('/post/', function(req,res,next){
 
