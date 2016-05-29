@@ -27,7 +27,7 @@ app.use(cors());
 // });
 
 app.get('/',function(req,res,next){
-	res.sendFile(__dirname + '/index.html');
+	res.send(__dirname);
 });
 
 app.post('/post/', function(req,res,next){
