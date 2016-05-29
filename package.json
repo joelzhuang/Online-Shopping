@@ -10,10 +10,12 @@
     "express": "^4.13.4",
     "mongoskin": "1.4.1",
     "pg": "4.x",
-    "pg-native": "1.x"
-  },
+    "pg-native": "1.x",
+    "body-parser": "1.15.x"
+    },
+  
 
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
