@@ -21,8 +21,8 @@ app.get('/get', function(req,res,next){
 	
 	client.query('select * from users;');
 });
-//app.use(express.static(__dirname + '/public/'));
-app.use(express.static(__dirname+'/'));
+app.use(express.static(__dirname + '/public/'));
+//app.use(express.static(__dirname+'/'));
 
 
 // app.use(function(req,res,next){
