@@ -13,7 +13,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + '/public/'));
 
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
