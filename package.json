@@ -2,7 +2,7 @@
   "name": "reubenpuketapu",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -13,7 +13,8 @@
     "pg-native": "1.x",
     "body-parser": "1.15.x"
     },
-  
+
+  },
 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -57,6 +57,8 @@ $(document).ready(function(e) {
 		
 		var r_data={title,gender,fname,lname,email,password,phone,address,city,country,day,month,year};
 
+		alert("well done. Account created");
+	
 		console.log(r_data);
 		
 	
@@ -76,6 +78,7 @@ $(document).ready(function(e) {
 			);
 
 		function success_func (){
+			window.location = 'index.html';
 			console.log('posted data.');
 		}				
 

@@ -14,12 +14,15 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
+
 app.get('/get', function(req,res,next){
 	console.log(req);
 	console.log(req.pass);
 	
 	client.query('select * from users;');
 });
+app.use(express.static(__dirname + '/public/'));
+
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
 //   res.setHeader('Access-Control-Allow-Origin','*')
@@ -29,6 +32,10 @@ app.get('/get', function(req,res,next){
 //   res.setHeader('Access-Control-Allow-Headers','Content-Type,Access-Control-Allow-Headers');
 //   //pass next layer of middleware
 //   next();
+// });
+
+// app.get('/',function(req,res,next){
+// 	res.send(__dirname);
 // });
 
 app.post('/post/', function(req,res,next){
@@ -73,8 +80,7 @@ app.post('/post/', function(req,res,next){
 
 app.post('/register/', function(req,res,next) {
 	var r_data = req.body.register_data;
-	console.log(r_data);
-	console.log(r_data.title);
+	// client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
 	res.send("done");
 });
 
