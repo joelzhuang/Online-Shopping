@@ -9,9 +9,10 @@
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "mongoskin": "1.4.1",
-    "body-parser": "~1.13.2",
     "pg": "4.x",
-    "pg-native": "1.x"
+    "pg-native": "1.x",
+    "body-parser": "1.15.x"
+    },
 
   },
 
