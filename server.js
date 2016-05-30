@@ -13,7 +13,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
-//app.use(express.static(__dirname));
+app.use(express.static("/"));
 
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
@@ -26,9 +26,9 @@ app.use(cors());
 //   next();
 // });
 
-app.get('/',function(req,res,next){
-	res.send(__dirname);
-});
+// app.get('/',function(req,res,next){
+// 	res.send(__dirname);
+// });
 
 app.post('/post/', function(req,res,next){
 
