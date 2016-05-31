@@ -1,19 +1,29 @@
 {
-  "name": "reubenpuketapu",
-  "version": "1.0.0",
-  "description": "",
+  "name": "online-shopping",
+  "version": "0.0.1",
+  "description": "A shopping database",
   "main": "index.js",
-  "author": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vicki McKay",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.7.1",
+    "body-parser": "^1.15.1",
     "express": "^4.13.4",
+    "pg": "^4.5.5",
+    "pg-native": "1.x",
+    "cors": "^2.7.1",
     "mongoskin": "1.4.1",
-    "pg": "4.x",
     "pg-native": "1.x"
   },
-
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-  }
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qilyn/shopping-database.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qilyn/shopping-database/issues"
+  },
+  "homepage": "https://github.com/qilyn/shopping-database#readme"
 }
