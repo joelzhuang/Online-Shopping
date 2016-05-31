@@ -15,6 +15,7 @@ $(document).ready(function(e) {
 			url: 'http://localhost:8080/post',
 			data: JSON.stringify({name : loginName, pass: loginPass}),
 			contentType: "application/json",
+			cache: true,
 			dataType: "json"
 		}).then(function(data){
 			if(data.outcome == 'correct'){
