@@ -19,8 +19,7 @@
   },
   "devDependencies": {},
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qilyn/shopping-database.git"
+    "url": "git://github.com/joelzhuang/Online-Shopping.git"
   },
   "bugs": {
     "url": "https://github.com/qilyn/shopping-database/issues"
