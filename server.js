@@ -45,7 +45,7 @@ app.post('/post/', function(req,res,next){
 	var username = req.body.name;
 	var password = req.body.pass;
 
-	var query = client.query('select * from usersr where name = \'' +username +'\';');
+	var query = client.query('select * from users where email = \'' +username +'\';');
 
 	var results = [];
 
@@ -57,11 +57,11 @@ app.post('/post/', function(req,res,next){
 		var found = false;
 		results.forEach(function(data){
 
-			if(data.name == username && data.pass == password && !found){
+			if(data.email == username && data.password == password && !found){
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
-			else if(data.name == username && data.pass != password && !found){
+			else if(data.email == username && data.password != password && !found){
 				res.send(JSON.stringify({outcome : 'badpw'}));
 				found = true;
 			}
