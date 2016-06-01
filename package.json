@@ -10,7 +10,7 @@
   "author": "Vicki McKay",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.*",
+    "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "pg": "^4.5.5",
     "pg-native": "1.x",
