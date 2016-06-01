@@ -42,6 +42,9 @@ app.use(express.static(__dirname + '/public/'));
 
 app.post('/post/', function(req,res,next){
 
+	console.log(req);
+	console.log(req.body);
+
 	var username = req.body.name;
 	var password = req.body.pass;
 
