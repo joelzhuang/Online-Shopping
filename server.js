@@ -1,5 +1,5 @@
 var express = require('express');
-//var bodyparser = require('body-parser');
+var bodyparser = require('body-parser');
 var pg = require('pg').native;
 var cors = require('cors');
 
@@ -10,8 +10,8 @@ var client = new pg.Client('postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7
 
 client.connect();
 
-//app.use(bodyparser.json());
-//app.use(bodyparser.urlencoded({extended: true}));
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
 
 
@@ -41,9 +41,6 @@ app.use(express.static(__dirname + '/public/'));
 // });
 
 app.post('/post/', function(req,res,next){
-
-	console.log(req);
-	console.log(req.body);
 
 	var username = req.body.name;
 	var password = req.body.pass;

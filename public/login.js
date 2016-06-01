@@ -9,7 +9,7 @@ $(document).ready(function(e) {
 
 		var request = $.ajax({
 			method:'POST',
-			url: 'https://quiet-bastion-96093.herokuapp.com/post/',
+			url: 'http://localhost:8080/post/',
 			data: JSON.stringify({name : loginName, pass: loginPass}),
 			contentType: "application/json",
 			cache: true,
