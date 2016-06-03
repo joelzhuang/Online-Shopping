@@ -13,6 +13,17 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
 
+// app.use(function(req,res,next){
+//   //webiste you wish to allow to connect
+//   res.setHeader('Access-Control-Allow-Origin','*')
+//   //request methods you wish to allows
+//   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
+//   //request headers you wish to allow
+//   res.setHeader('Access-Control-Allow-Headers','Content-Type,Access-Control-Allow-Headers');
+//   //pass next layer of middleware
+//   next();
+// });
+
 app.post('/post/', function(req,res,next){
 
 	var username = req.body.name;
@@ -27,18 +38,21 @@ app.post('/post/', function(req,res,next){
 	});
 
 	query.on('end', function(){
+		var found = false;
 		results.forEach(function(data){
 
-			if(data.pass == password){
-				console.log('correct');
-				res.send(JSON.stringify({outcome : true}));
+			if(data.name == username && data.pass == password && !found){
+				res.send(JSON.stringify({outcome : 'correct'}));
+				found = true;
 			}
-			else{
-				console.log('incorrect');
-				res.send(JSON.stringify({outcome : false}));
-
+			else if(data.name == username && data.pass != password && !found){
+				res.send(JSON.stringify({outcome : 'badpw'}));
+				found = true;
 			}
 		});
+	if(!found){
+		res.send(JSON.stringify({outcome : 'incorrect'}));
+	}
 	})
 
 
@@ -49,6 +63,13 @@ app.post('/post/', function(req,res,next){
 	//})
 
 });
+
+app.post('/register/', function(req,res,next) {
+	var r_data = req.body.register_data;
+	// client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
+	res.send("done");
+});
+
 
 /*app.post('/post/', function(req,res,next){
 	console.log(req.body.name);
