@@ -6,12 +6,24 @@ var cors = require('cors');
 var app = express();
 var port = process.env.PORT || 8080;
 
-var client = new pg.Client("postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9");
+var client = new pg.Client('postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9');
+
 client.connect();
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
+
+
+app.get('/get', function(req,res,next){
+	console.log(req);
+	console.log(req.pass);
+	
+	client.query('select * from users;');
+});
+app.use(express.static(__dirname + '/public/'));
+//app.use(express.static(__dirname+'/'));
+
 
 // app.use(function(req,res,next){
 //   //webiste you wish to allow to connect
@@ -24,12 +36,16 @@ app.use(cors());
 //   next();
 // });
 
+// app.get('/',function(req,res,next){
+// 	res.send(__dirname);
+// });
+
 app.post('/post/', function(req,res,next){
 
 	var username = req.body.name;
 	var password = req.body.pass;
 
-	var query = client.query('select * from usersr where name = \'' +username +'\';');
+	var query = client.query('select * from users where email = \'' +username +'\';');
 
 	var results = [];
 
@@ -41,11 +57,11 @@ app.post('/post/', function(req,res,next){
 		var found = false;
 		results.forEach(function(data){
 
-			if(data.name == username && data.pass == password && !found){
+			if(data.email == username && data.password == password && !found){
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
-			else if(data.name == username && data.pass != password && !found){
+			else if(data.email == username && data.password != password && !found){
 				res.send(JSON.stringify({outcome : 'badpw'}));
 				found = true;
 			}
@@ -74,6 +90,8 @@ app.post('/register/', function(req,res,next) {
 /*app.post('/post/', function(req,res,next){
 	console.log(req.body.name);
 	console.log(req.body.pass);
+	
+	client.query('select * from users;');
 
 	console.log(client.query('insert into users (name, pass) values (\'reuben\', \'pass\')').text);
 
