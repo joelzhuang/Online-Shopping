@@ -78,7 +78,7 @@ app.get('/all', function (req, res) {
   });
   query.on('end',function() {
     res.json(results);
-  });*/
+  });
 });
  
 
