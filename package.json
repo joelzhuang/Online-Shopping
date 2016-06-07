@@ -15,7 +15,7 @@
     "pg": "^4.5.5",
     "pg-native": "1.x",
     "cors": "^2.7.1",
-    "mongoskin": "1.4.1",
+    "mongoskin": "1.4.1"
     },
   },
 
