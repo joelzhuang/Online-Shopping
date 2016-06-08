@@ -6,7 +6,7 @@
   // but the commented-out sections can be swapped to test locally
   
 var express = require('express'); 
-//var bodyParser = require('body-­parser');
+var bodyParser = require('body-­parser');
 var port = process.env.PORT || 8080; 
 var pg = require('pg').native;
 var testRun = true;

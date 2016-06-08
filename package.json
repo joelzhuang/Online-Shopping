@@ -3,25 +3,17 @@
   "version": "1.0.0",
   "description": "A shopping database",
   "main": "server.js",
-  "author": "",
+  "author": "Joely Huang, Reuben Puketapu, Vicki McKay",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Vicki McKay",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.1",
-    "express": "^4.13.4",
-    "pg": "^4.5.5",
-    "pg-native": "1.x",
     "cors": "^2.7.1",
-    "mongoskin": "1.4.1"
-    },
-  },
-
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }
+    "express": "^4.13.4",
+    "mongoskin": "1.4.1",
+    "pg": "^4.5.5",
     "pg-native": "1.x"
   },
   "devDependencies": {},
