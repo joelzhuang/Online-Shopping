@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyparser = require('body-parser');
+var test = require('/public/index.js');
 var pg = require('pg').native;
 var cors = require('cors');
 
@@ -97,6 +98,10 @@ app.post('/register/', function(req,res,next) {
 
 	res.sendStatus(200);
 });*/
+
+/** 
+
+
 
 app.listen(port, function () {
 	console.log('Example app listening on port ' + port);
