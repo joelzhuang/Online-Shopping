@@ -11,7 +11,7 @@ var client = new pg.Client('postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7
 client.connect();
 
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded());
+app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
 
 
