@@ -13,7 +13,20 @@ client.connect();
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
 app.use(cors());
+app.use(function(req,res,next) {
+  res.setHeader('Access-Control-Allow-Origin','*') // this seems unsafe somehow
+  res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
+  // from the cors website:
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
+var item_table = "items";
+var user_table = "users";
+var cart_table = "cart";
+var connectionString = "postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9";
+var client = new pg.Client(connectionString);
+client.connect(); 
 
 app.get('/get', function(req,res,next){
 	console.log(req);
@@ -98,23 +111,8 @@ app.post('/register/', function(req,res,next) {
 	res.sendStatus(200);
 });*/
 
-/** */
-
-var item_table = "items";
-var user_table = "users";
-var cart_table = "cart";
-var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
-var client = new pg.Client(connectionString);
-client.connect(); 
-
-// getting around the ole cross-site scripting issue
-app.use(function(req,res,next) {
-  res.setHeader('Access-Control-Allow-Origin','*') // this seems unsafe somehow
-  res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
-  // from the cors website:
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+/** =============================================
+    */
 
 /* add a new item to the cart */
 app.post('/add', function (req, res) { 
@@ -140,12 +138,25 @@ app.post('/add', function (req, res) {
     res.json(row);
   });
 });
- 
-//Accessible at localhost:8080/ 
+
 app.get('/all', function (req, res) { 
-  res.json("all request");
   console.log("all request");
   var query = client.query('SELECT * FROM '+item_table+';');
+  var results = [];
+  query.on('row',function(row) {
+    console.log(row);
+    results.push(row);
+  });
+  query.on('end',function() {
+    res.json(results);
+  });
+});
+
+// Returns all items that match this category.
+app.get('/cat', function (req, res) { 
+  // TODO: ensure requested cat is a valid category
+  console.log("category request:"+ req.query.cat);
+  var query = client.query('SELECT * FROM '+item_table+' WHERE category is '+req.body.cat+';');
   var results = [];
   query.on('row',function(row) {
     console.log(row);
