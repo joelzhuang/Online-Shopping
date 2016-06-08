@@ -116,14 +116,6 @@ app.use(function(req,res,next) {
   next();
 });
 
-app.listen(port, function () { 
-  console.log('Example app listening on:',port); 
-}); 
-
-app.get('/', function (req, res) { 
-  res.json("Hello? Yes, this is your server speaking--how may I be of service?");
-});
-
 /* add a new item to the cart */
 app.post('/add', function (req, res) { 
     res.json("Add request");

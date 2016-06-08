@@ -6,7 +6,7 @@
   // but the commented-out sections can be swapped to test locally
   
 var express = require('express'); 
-var bodyParser = require('body-­parser');
+//var bodyParser = require('body-­parser');
 var port = process.env.PORT || 8080; 
 var pg = require('pg').native;
 var testRun = true;
@@ -20,7 +20,7 @@ var app = express();
 var item_table = "items";
 var user_table = "users";
 var cart_table = "cart";
-//var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
+var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
 var client = new pg.Client(connectionString);
 client.connect(); 
 
