@@ -7,6 +7,10 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="register.js"></script>
+<!-- Google Sign in -->
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com">
+
 <style type="text/css">
 body {
 margin:;
@@ -228,184 +232,14 @@ onBlur=
 <img src="usepics/4.jpg" width="228" height="183" /></div>
 
 <div id="RightPart">
+	<div class="g-signin2" data-onsuccess="onSignIn"></div>
 <html>
-<head>
-<!--<script>
-function fnam()
-{
-	var fname;
-  //var fnam=/^[a-zA-Z]{4,15}$/;
-   if(document.f1.t1.value.search(fnam)==-1)
-    {
-	 alert("enter correct  first name");
-	 document.f1.t1.focus();
-	 return false;
-	 }
-	} 
-	 
-	 function lnam()
-{
-  var lnam=/^[a-zA-Z]{4,15}$/;
-   if(document.f1.t2.value.search(lnam)==-1)
-    {
-	 alert("enter correct last name");
-	 document.f1.t2.focus();
-	 return false;
-	 }
-	} 
-	 
-function email()
-{
- var email=/^[a-zA-Z0-9-_\.]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/;
-   if(document.f1.t3.value.search(email)==-1)
-    {
-	 alert("enter correct email");
-	 document.f1.t3.focus();
-	 return false;
-	 }
-	} 
-	
-	function pass()
-	{
-	var pass=/^[a-zA-Z0-9-_]{6,16}$/;
-   if(document.f1.p1.value.search(pass)==-1)
-    {
-	 alert("enter correct pass");
-	 document.f1.p1.focus();
-	 return false;
-	 }
-	 }
-	function phone()
-	{
-	var phn=/^[0-9]{9,14}$/;
-  if(document.f1.t5.value.search(phn)==-1)
-    {
-	 alert("enter correct phone no");
-	 document.f1.t5.focus();
-	 return false;
-	 }
-	 }
-	
-	function add()
-	{
-	var add=/^[a-zA-Z0-9- ]{10,150}$/;
-  if(document.f1.t6.value.search(add)==-1)
-    {
-	 alert("enter correct address");
-	 document.f1.t6.focus();
-	 return false;
-	 }
-	 }
-	 
-	 function city()
-	 {
-	 var city=/^[a-zA-Z]{5,30}$/;
-	 if(document.f1.t7.value.search(city)==-1)
-    {
-	 alert("enter correct city");
-	 document.f1.t7.focus();
-	 return false;
-	 }
-	
-	 }
-	  function coun()
-	 {
-	 var city=/^[a-zA-Z]{5,30}$/;
-	 if(document.f1.t8.value.search(city)==-1)
-    {
-	 alert("enter correct country");
-	 document.f1.t8.focus();
-	 return false;
-	 }
-	
-	 }
-	
-function vali()
-{
-  var nam=/^[a-zA-Z]{4,15}$/;
-   var email=/^[a-zA-Z0-9-_\.]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/;
-    var pass=/^[a-zA-Z0-9-_]{6,16}$/;
-	 	var phn=/^[0-9]{9,14}$/;
-	  var add=/^[a-zA-Z0-9 ]{10,150}$/;
-	  var city=/^[a-zA-Z]{5,30}$/;
-	  
-   if(document.f1.t1.value.search(nam)==-1)
-    {
-	 alert("enter correct  first name");
-	 document.f1.t1.focus();
-	 return false;
-	 }
-	 	 
-  else if(document.f1.t2.value.search(nam)==-1)
-    {
-	 alert("enter correct last name");
-	 document.f1.t2.focus();
-	 return false;
-	 }
- 
-  else if(document.f1.t3.value.search(email)==-1)
-    {
-	 alert("enter correct login name");
-	 document.f1.t3.focus();
-	 return false;
-	 }
-	 
-	
-	
-   else if(document.f1.p1.value.search(pass)==-1)
-    {
-	 alert("enter correct pass");
-	 document.f1.p1.focus();
-	 return false;
-	 }
-	 
-	
-	  else if(document.f1.t5.value.search(phn)==-1)
-    {
-	 alert("enter correct phone no");
-	 document.f1.t5.focus();
-	 return false;
-	 }
-	 
-	
-  else if(document.f1.t6.value.search(add)==-1)
-    {
-	 alert("enter correct address");
-	 document.f1.t6.focus();
-	 return false;
-	 }
-	
-	 
-	 
-	 
-	else if(document.f1.t7.value.search(city)==-1)
-    {
-	 alert("enter correct city");
-	 document.f1.t7.focus();
-	 return false;
-	 }
-	 
-		else if(document.f1.t8.value.search(city)==-1)
-    {
-	 alert("enter correct country");
-	 document.f1.t8.focus();
-	 return false;
-	 }
-	 
-	 else 
-	{
-	 return true;
-	 }
-	 }
-	
-	 
-</script>-->
-</head>
 <body>
 
 
+
 <div><br/><center><h2><font face="Lucida Handwriting" size="+1" color="#00CCFF">Register Yourself</font></h2></center></div>
-<div>
+
 <div style="width:25%;float:right">
 <br><br><br><br><br>
 <img src="usepics/7.jpg">
