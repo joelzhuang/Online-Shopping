@@ -98,6 +98,12 @@ app.post('/register/', function(req,res,next) {
 	res.sendStatus(200);
 });*/
 
+app.post('/register', function(req,res,next){
+	console.log("jadfaef");
+	console.log(req.body.register_data);
+	res.sendStatus(200);
+});
+
 app.listen(port, function () {
 	console.log('Example app listening on port ' + port);
 });
