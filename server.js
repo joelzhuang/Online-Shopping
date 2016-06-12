@@ -17,13 +17,12 @@ client.connect();
 // SESSION/COOKIE STUFF
 app.use(session({
 	secret: 'keyboard cat',
-	resave: true,
-	saveUninitialized: true,
+	resave: false,
+	saveUninitialized: false,
   	cookie: {
   		maxAge: 360000,
   		httpOnly: false,
-  		secure: true ,
-  		user_id: ''
+  		secure: false 
   	}
 }));
 
@@ -31,7 +30,6 @@ app.use(session({
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
-
 
 app.get('/get', function(req,res,next){
 	console.log(req);
@@ -63,13 +61,27 @@ app.get('/checkLogin/', function(req,res,next){
 
 	console.log(req.session)
 
-	if(req.session && req.session.user_id){
+	if(req.session && req.session.loggedIn){
 		console.log('found')
-		res.send(JSON.stringify({loggedIn: true}))
+		res.send('found')
 	}
 	else{
 		console.log('not found')
-		res.send(JSON.stringify({loggedIn: false}))
+		res.send('not found')
+
+}
+
+})
+
+app.get('/logout', function(req, res, next){
+
+	console.log(req.session)
+	if(req.session){
+	req.session.loggedIn = false;
+	req.session.destroy();
+
+	res.send('sweet');
+
 
 }
 
@@ -95,7 +107,9 @@ app.post('/login/', function(req,res,next){
 		results.forEach(function(data){
 
 			if(data.email == username && data.password == password && !found){
-				res.cookie('user_id', data.id, {maxAge: 900000, httpOnly: false})
+				req.session.loggedIn = true;
+				req.session.email = data.email;
+				//res.cookie('user_id', data.id, {maxAge: 900000, httpOnly: false})
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -109,8 +123,8 @@ app.post('/login/', function(req,res,next){
 		res.send(JSON.stringify({outcome : 'incorrect'}));
 	}
 
-	//next();
-
+	console.log(req.session)
+	
 	})
 
 	//query.on('end', function(){
