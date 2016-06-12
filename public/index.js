@@ -2,7 +2,7 @@ $(document).ready(function(e) {
 
   	$.ajax({
     	method: 'GET',
-    	url: "http://localhost:8080/checkLogin"
+    	url: "https://quiet-bastion-96093.herokuapp.com//checkLogin"
  	}).then(function(data){
       console.log(data);
 
@@ -21,11 +21,9 @@ $(document).ready(function(e) {
 
   	$('#Leaf_bottom').on('click', 'a', function(){
 
-  		console.log('what')
-
   		$.ajax({
     		method: 'GET',
-    		url: "http://localhost:8080/logout",
+    		url: "https://quiet-bastion-96093.herokuapp.com/logout",
     		data: 'loggingout',
 			cache: true,
  		}).then(function(){
