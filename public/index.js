@@ -2,7 +2,7 @@ $(document).ready(function(e) {
 
   	$.ajax({
     	method: 'GET',
-    	url: "https://quiet-bastion-96093.herokuapp.com//checkLogin"
+    	url: "https://quiet-bastion-96093.herokuapp.com/checkLogin"
  	}).then(function(data){
       console.log(data);
 
