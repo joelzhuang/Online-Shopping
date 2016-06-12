@@ -7,7 +7,7 @@ $(document).ready(function(e) {
 
   	$.ajax({
     	method: 'GET',
-    	url: "http://localhost:8080/checkLogin"
+    	url: "https://quiet-bastion-96093.herokuapp.com/checkLogin"
  	}).then(function(data){
       console.log(data);
   	})
