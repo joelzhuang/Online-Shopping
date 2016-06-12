@@ -1,4 +1,6 @@
 var express = require('express');
+var session = require('express-session');
+var pgSession = require('connect-pg-simple')(session);
 var bodyparser = require('body-parser');
 var pg = require('pg').native;
 var cors = require('cors');
@@ -6,10 +8,26 @@ var cors = require('cors');
 var app = express();
 var port = process.env.PORT || 8080;
 
-var client = new pg.Client('postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9');
+var connectionString = 'postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9';
+
+var client = new pg.Client(connectionString);
 
 client.connect();
 
+// SESSION/COOKIE STUFF
+app.use(session({
+	secret: 'keyboard cat',
+	resave: true,
+	saveUninitialized: true,
+  	cookie: {
+  		maxAge: 360000,
+  		httpOnly: false,
+  		secure: true ,
+  		user_id: ''
+  	}
+}));
+
+// JSON STUFF
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
@@ -24,7 +42,7 @@ app.get('/get', function(req,res,next){
 app.use(express.static(__dirname + '/public/'));
 //app.use(express.static(__dirname+'/'));
 
-
+/*
  app.use(function(req,res,next){
    //webiste you wish to allow to connect
    res.setHeader('Access-Control-Allow-Origin','*')
@@ -35,10 +53,27 @@ app.use(express.static(__dirname + '/public/'));
    //pass next layer of middleware
    next();
  });
+ */
 
 // app.get('/',function(req,res,next){
 // 	res.send(__dirname);
 // });
+
+app.get('/checkLogin/', function(req,res,next){
+
+	console.log(req.session)
+
+	if(req.session && req.session.user_id){
+		console.log('found')
+		res.send(JSON.stringify({loggedIn: true}))
+	}
+	else{
+		console.log('not found')
+		res.send(JSON.stringify({loggedIn: false}))
+
+}
+
+})
 
 
 
@@ -59,13 +94,9 @@ app.post('/login/', function(req,res,next){
 		var found = false;
 		results.forEach(function(data){
 
-			console.log(data);
-			console.log('hey')
-
 			if(data.email == username && data.password == password && !found){
+				res.cookie('user_id', data.id, {maxAge: 900000, httpOnly: false})
 				res.send(JSON.stringify({outcome : 'correct'}));
-				//req.session.user_id
-				req.session.user_id = username;
 				found = true;
 			}
 			else if(data.email == username && data.password != password && !found){
@@ -73,13 +104,14 @@ app.post('/login/', function(req,res,next){
 				found = true;
 			}
 		});
+
 	if(!found){
 		res.send(JSON.stringify({outcome : 'incorrect'}));
 	}
+
+	//next();
+
 	})
-
-
-
 
 	//query.on('end', function(){
 	//	console.log(res.json(results))
