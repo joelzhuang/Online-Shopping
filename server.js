@@ -40,7 +40,9 @@ app.use(express.static(__dirname + '/public/'));
 // 	res.send(__dirname);
 // });
 
-app.post('/post/', function(req,res,next){
+
+
+app.post('/login/', function(req,res,next){
 
 	var username = req.body.name;
 	var password = req.body.pass;
@@ -57,8 +59,11 @@ app.post('/post/', function(req,res,next){
 		var found = false;
 		results.forEach(function(data){
 
+			console.log(data);
+
 			if(data.email == username && data.password == password && !found){
 				res.send(JSON.stringify({outcome : 'correct'}));
+				//req.session.user_id
 				req.session.user_id = username;
 				found = true;
 			}
@@ -92,6 +97,14 @@ app.post('/register/', function(req,res,next) {
 	res.send("done");
 });
 
+function checkAuth(req, res, next) {
+  if (!req.session.user_id) {
+    res.send('You are not authorized to view this page');
+  } else {
+    next();
+  }
+}
+
 
 /*app.post('/post/', function(req,res,next){
 	console.log(req.body.name);
@@ -109,9 +122,9 @@ app.post('/register/', function(req,res,next) {
 var item_table = "items";
 var user_table = "users";
 var cart_table = "cart";
-var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
-var client = new pg.Client(connectionString);
-client.connect(); 
+//var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
+//var client = new pg.Client(connectionString);
+//client.connect(); 
 
 // getting around the ole cross-site scripting issue
 app.use(function(req,res,next) {
