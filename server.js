@@ -25,16 +25,16 @@ app.use(express.static(__dirname + '/public/'));
 //app.use(express.static(__dirname+'/'));
 
 
-// app.use(function(req,res,next){
-//   //webiste you wish to allow to connect
-//   res.setHeader('Access-Control-Allow-Origin','*')
-//   //request methods you wish to allows
-//   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
-//   //request headers you wish to allow
-//   res.setHeader('Access-Control-Allow-Headers','Content-Type,Access-Control-Allow-Headers');
-//   //pass next layer of middleware
-//   next();
-// });
+ app.use(function(req,res,next){
+   //webiste you wish to allow to connect
+   res.setHeader('Access-Control-Allow-Origin','*')
+   //request methods you wish to allows
+   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
+   //request headers you wish to allow
+   res.setHeader('Access-Control-Allow-Headers','Content-Type,Access-Control-Allow-Headers');
+   //pass next layer of middleware
+   next();
+ });
 
 // app.get('/',function(req,res,next){
 // 	res.send(__dirname);
@@ -60,6 +60,7 @@ app.post('/login/', function(req,res,next){
 		results.forEach(function(data){
 
 			console.log(data);
+			console.log('hey')
 
 			if(data.email == username && data.password == password && !found){
 				res.send(JSON.stringify({outcome : 'correct'}));
