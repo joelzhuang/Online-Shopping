@@ -6,21 +6,21 @@
   // but the commented-out sections can be swapped to test locally
   
 var express = require('express'); 
-var bodyParser = require('body-­parser');
+//var bodyParser = require('body-­parser');
 var port = process.env.PORT || 8080; 
 var pg = require('pg').native;
 var testRun = true;
 //var cors = require('cors');
  
 var app = express(); 
-app.use( bodyParser.json() ); // to support JSON­encoded bodies 
-app.use( bodyParser.urlencoded( { extended: true  } ) );
+//app.use( bodyParser.json() ); // to support JSON­encoded bodies 
+//app.use( bodyParser.urlencoded( { extended: true  } ) );
 //app.use( cors() );
 
 var item_table = "items";
 var user_table = "users";
 var cart_table = "cart";
-//var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
+var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
 var client = new pg.Client(connectionString);
 client.connect(); 
 
@@ -45,7 +45,7 @@ app.get('/', function (req, res) {
 app.post('/add', function (req, res) { 
     res.json("Add request");
     console.log("Add request");
-  /* if (req.body == undefined || req.body.length <= 0) {
+  if (req.body == undefined || req.body.length <= 0) {
      console.log("invalid cart-add request, ignoring @ "+ new Date().getTime());
   }
   console.log('request from '+ ("get client name") +' to server to buy item '+ req.item_id);
@@ -58,19 +58,19 @@ app.post('/add', function (req, res) {
   query.on('row',function(row) {
     console.log(row);
     result = row;
-//    query = client.query('INSERT INTO '+cart_table+' values
+    query = client.query('INSERT INTO '+cart_table+' values');
   });
   
   query.on('end',function() {
     res.json(row);
-  }); */
+  });
 });
  
 //Accessible at localhost:8080/ 
 app.get('/all', function (req, res) { 
   res.json("all request");
   console.log("all request");
-  /*var query = client.query('SELECT * FROM '+item_table+';');
+  var query = client.query('SELECT * FROM '+item_table+';');
   var results = [];
   query.on('row',function(row) {
     console.log(row);
@@ -78,7 +78,7 @@ app.get('/all', function (req, res) {
   });
   query.on('end',function() {
     res.json(results);
-  });*/
+  });
 });
  
 

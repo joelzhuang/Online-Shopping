@@ -4,18 +4,18 @@
   "description": "A shopping database",
   "main": "server.js",
 
+  "author": "Joely Huang, Reuben Puketapu, Vicki McKay",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.1",
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "mongoskin": "1.4.1",
-    "body-parser": "~1.13.2",
-    "pg": "4.x",
+    "pg": "^4.5.5",
     "pg-native": "1.x"
-
-  },
-
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
 
   "repository": {
