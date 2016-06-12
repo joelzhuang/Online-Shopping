@@ -7,7 +7,7 @@ $(document).ready(function(e) {
 		var loginName = $('#t1').val();
 		var loginPass = $('#p1').val();
 
-		var request = $.ajax({
+		$.ajax({
 			method:'POST',
 			url: 'https://quiet-bastion-96093.herokuapp.com/post/',
 			data: JSON.stringify({name : loginName, pass: loginPass}),

@@ -59,6 +59,7 @@ app.post('/post/', function(req,res,next){
 
 			if(data.email == username && data.password == password && !found){
 				res.send(JSON.stringify({outcome : 'correct'}));
+				req.session.user_id = username;
 				found = true;
 			}
 			else if(data.email == username && data.password != password && !found){
@@ -78,6 +79,11 @@ app.post('/post/', function(req,res,next){
 	//	console.log(res.json(results))
 	//})
 
+});
+
+app.get('/user/', function(req,res,next){
+	console.log(req);
+	res.sendStatus(200);
 });
 
 app.post('/register/', function(req,res,next) {
