@@ -9,7 +9,6 @@ var app = express();
 var port = process.env.PORT || 8080;
 
 var connectionString = 'postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9';
-
 var client = new pg.Client(connectionString);
 
 client.connect();
@@ -57,6 +56,7 @@ app.use(express.static(__dirname + '/public/'));
 // 	res.send(__dirname);
 // });
 
+
 app.get('/checkLogin/', function(req,res,next){
 
 	console.log(req.session)
@@ -80,8 +80,7 @@ app.get('/logout', function(req, res, next){
 	req.session.loggedIn = false;
 	req.session.destroy();
 
-	res.send('sweet');
-
+	res.send('200');
 
 }
 
@@ -109,7 +108,6 @@ app.post('/login/', function(req,res,next){
 			if(data.email == username && data.password == password && !found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-				//res.cookie('user_id', data.id, {maxAge: 900000, httpOnly: false})
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
