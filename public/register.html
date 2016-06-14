@@ -12,7 +12,68 @@
 	Google registration
 	handleClientload is the call back function
 -->
-<!-- <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script> -->
+<script type="text/javascript">
+	var clientId = '286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com';
+	var apiKey = 'AIzaSyCe_dgWODPBjeFLLyR_8v9AMv1qBdfQK60';
+	//scopes is adding the apis that we are going to use.
+	//userinfo.email because we need the user email.
+	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email';
+
+	//callback function
+	function handleClientLoad(){
+		gapi.client.setApiKey(apiKey);
+		window.setTimeout(checkAuth,1);	//runs the checkAuth function right after
+	}
+
+	function checkAuth(){
+		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate:true},handleAuthResult);
+	}
+
+	function handleAuthResult(authResult){
+		var authorizeButton = document.getElementById('authorize-button');
+		if(authResult){
+			authorizeButton.style.visibility = 'hidden'; //hide button
+			makeApiCall();
+		} else{
+			//if there isn't an auth result, have not authorized the application
+			//and need to show the button.
+			authorizeButton.style.visibility = '';
+			authorizeButton.onclick = handleAuthClick;
+		}
+	}
+
+	function handleAuthClick(event){
+		//immediate is false as they have not authorized the application yet.
+		gapi.auth.authorize({client_id: clientId, scope:scopes, immediate:false },handleAuthResult);
+		return false;
+	}
+
+	function makeApiCall(){
+		gapi.client.load('oauth2','v2',function(){
+			var req = gapi.client.oauth2.userinfo.get();
+			req.execute(function(logResponse){
+				document.getElementById('t3').value = logResponse.email;
+				console.log("email: " + logResponse.email);
+				//console.log("name: " + logResponse.name);
+			});
+		});
+
+		gapi.client.load('plus','v1',function(){
+			var req = gapi.client.plus.people.get({
+				'userId':'me'
+			});
+
+			req.execute(function(logResponse){
+				document.getElementById('t1').value = logResponse.displayName;
+				console.log("email" + logResponse.email);
+				console.log("displayName" + logResponse.displayName);
+			})
+		})
+	}
+
+</script>
+
+<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 
 <!--REUBEN-->
 <!-- Google Sign in -->
