@@ -7,9 +7,18 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="register.js"></script>
+
+<!--
+	Google registration
+	handleClientload is the call back function
+-->
+<!-- <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script> -->
+
+<!--REUBEN-->
 <!-- Google Sign in -->
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 <meta name="google-signin-client_id" content="286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com">
+<!--REUBEN END-->
 
 <style type="text/css">
 body {
@@ -236,7 +245,17 @@ onBlur=
 <html>
 <body>
 
+<!--REUBEN-->
 <div class="g-signin2" data-onsuccess="onSignIn"></div>
+<script type="text/javascript">
+	// function onSignIn(googleUser){
+	// 	var profile = googleUser.getBasicProfile();
+	// 	console.log("Name: " + profile.getName());
+	// }
+</script>
+<!--REUBEN END-->
+
+<button id="authorize-button"> Get your data from Google </button>
 
 <div><br/><center><h2><font face="Lucida Handwriting" size="+1" color="#00CCFF">Register Yourself</font></h2></center></div>
 
@@ -250,7 +269,7 @@ onBlur=
 <br><br>
 
 <table width="366" border="0" align="center">
-<form method="post"></form>
+<form id="gp-register" method="post"></form>
   <tr>
     <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Title:</font></strong></div></td>
     <td><label>

@@ -84,8 +84,4 @@ $(document).ready(function(e) {
 
 	});
 
-	function onSignIn(googleUser){
-		var profile = googleUser.getBasicProfile();
-		console.log("Name: " + profile.getName());
-	}
 }); // end ready
