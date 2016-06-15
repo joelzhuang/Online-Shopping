@@ -86,6 +86,47 @@ app.get('/logout', function(req, res, next){
 
 })
 
+app.post('/googleLogin/', function(req, res, next){
+
+	var username = req.body.name;
+
+	var query = client.query('select * from users where email = \'' +username +'\';');
+
+	var results = [];
+
+	query.on('row', function(row){
+		results.push(row);
+	});
+
+	query.on('end', function(){
+		var found = false;
+		results.forEach(function(data){
+
+			if(data.email == username &&!found){
+				req.session.loggedIn = true;
+				req.session.email = data.email;
+				res.send(JSON.stringify({outcome : 'correct'}));
+				found = true;
+			}
+
+		});
+
+	if(!found){
+		res.send(JSON.stringify({outcome : 'incorrect'}));
+	}
+
+	console.log(req.session)
+	
+	})
+
+	//query.on('end', function(){
+	//	console.log(res.json(results))
+	//})
+
+
+
+})
+
 
 
 app.post('/login/', function(req,res,next){

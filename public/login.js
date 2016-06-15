@@ -30,4 +30,11 @@ $(document).ready(function(e) {
 		});
 	});
 
+
+	$(('#googlecheck')).on('click', function(){
+		console.log("check")
+   
+   })
+
+
 });
