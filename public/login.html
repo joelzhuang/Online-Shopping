@@ -31,6 +31,13 @@ setInterval("abc()",3000);*/
 </head>
 
 
+
+<!-- Google Sign in -->
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com"> 
+
+
+
 <body>
 <div id="WholePage">
 <div id="Inner">
@@ -146,6 +153,42 @@ ipsum</span></a><br>
 <div style="width:25%;float:right">
 <img src="./login_files/7.jpg">
 </div>
+
+
+<div class="g-signin2" id="googlecheck" data-onsuccess="onSignIn"></div>
+ <script type="text/javascript">
+   function onSignIn(googleUser){
+    var profile = googleUser.getBasicProfile();
+    console.log("Name: " + profile.getEmail());
+
+      var textField = $('#t1');
+      textField.val(profile.getEmail())       
+   
+
+      $.ajax({
+
+        method:'POST',
+        url: 'http://localhost:8080/googleLogin/',
+        data: JSON.stringify({name : profile.getEmail()}),
+        contentType: "application/json",
+        cache: true,
+        dataType: "json"
+
+      }).then(function(data){
+      if(data.outcome == 'correct'){
+        console.log("success");
+        window.location.replace('index.html');
+      }
+      else if(data.outcome == 'incorrect'){
+        console.log("failed");
+        alert('Please register an account');
+      }
+    });
+
+
+   }
+</script> 
+<!--REUBEN END-->
 
 <br><br>
 <div style="width:70%;float:right" align="center">

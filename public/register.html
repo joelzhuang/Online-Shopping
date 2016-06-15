@@ -7,6 +7,74 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="register.js"></script>
+
+<!--
+	Google registration
+	handleClientload is the call back function
+-->
+<script type="text/javascript">
+	var clientId = '286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com';
+	var apiKey = 'AIzaSyCe_dgWODPBjeFLLyR_8v9AMv1qBdfQK60';
+	//scopes is adding the apis that we are going to use.
+	//userinfo.email because we need the user email.
+	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email';
+
+	//callback function
+	function handleClientLoad(){
+		gapi.client.setApiKey(apiKey);
+		window.setTimeout(checkAuth,1);	//runs the checkAuth function right after
+	}
+
+	function checkAuth(){
+		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate:true},handleAuthResult);
+	}
+
+	function handleAuthResult(authResult){
+		var authorizeButton = document.getElementById('authorize-button');
+		if(authResult){
+			authorizeButton.style.visibility = 'hidden'; //hide button
+			makeApiCall();
+		} else{
+			//if there isn't an auth result, have not authorized the application
+			//and need to show the button.
+			authorizeButton.style.visibility = '';
+			authorizeButton.onclick = handleAuthClick;
+		}
+	}
+
+	function handleAuthClick(event){
+		//immediate is false as they have not authorized the application yet.
+		gapi.auth.authorize({client_id: clientId, scope:scopes, immediate:false },handleAuthResult);
+		return false;
+	}
+
+	function makeApiCall(){
+		gapi.client.load('oauth2','v2',function(){
+			var req = gapi.client.oauth2.userinfo.get();
+			req.execute(function(logResponse){
+				document.getElementById('t3').value = logResponse.email;
+				console.log("email: " + logResponse.email);
+				//console.log("name: " + logResponse.name);
+			});
+		});
+
+		gapi.client.load('plus','v1',function(){
+			var req = gapi.client.plus.people.get({
+				'userId':'me'
+			});
+
+			req.execute(function(logResponse){
+				document.getElementById('t1').value = logResponse.displayName;
+				console.log("email" + logResponse.email);
+				console.log("displayName" + logResponse.displayName);
+			})
+		})
+	}
+
+</script>
+
+<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+
 <style type="text/css">
 body {
 margin:;
@@ -62,31 +130,31 @@ font-weight:bold;
 	// $(document).ready(function() {
 	// 	$(".topMenuAction").click( function() {
 	// 		if ($("#openCloseIdentifier").is(":hidden")) {
-	// 			$("#slider").animate({ 
+	// 			$("#slider").animate({
 	// 				marginTop: "-141px"
 	// 				}, 500 );
 	// 			$("#topMenuImage").html('<img src="open.png" alt="open" />');
 	// 			$("#openCloseIdentifier").show();
 	// 		} else {
-	// 			$("#slider").animate({ 
+	// 			$("#slider").animate({
 	// 				marginTop: "0px"
 	// 				}, 500 );
 	// 			$("#topMenuImage").html('<img src="close.png" alt="close" />');
 	// 			$("#openCloseIdentifier").hide();
 	// 		}
-	// 	});  
+	// 	});
 	// });
 	</script>-->
-	
-	
-	
+
+
+
 	<div id="sliderWrap">
 		<div id="openCloseIdentifier"></div>
 		<div id="slider">
 			<div id="sliderContent">
 			<span ><font size="+1.5"><center>Developed By:<br>Priya Gupta <br>
 			    Contact:+91-94143-47699</center><br></font></span>
-				
+
 			</div>
 			<div id="openCloseWrap">
 				<a href="#" class="topMenuAction" id="topMenuImage">
@@ -95,7 +163,7 @@ font-weight:bold;
 			</div>
 		</div>
 	</div>
-	
+
 
 <meta http-equiv="Content-Language" content="en-us">
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
@@ -128,7 +196,7 @@ font-weight:bold;
     google_ad_width = 728;
     google_ad_height = 90;
 </script>
- Header Ads 
+ Header Ads
 <script type="text/javascript"
 src="//pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>-->
@@ -167,7 +235,7 @@ src="//pagead2.googlesyndication.com/pagead/show_ads.js">
 <div class="menu_header_right"> </div>
 <div id="Menu_content"> <!--<a class="menu_item" href="?page=home"><span>--><!-- Start of Page Search -->
 
-		
+
 		    <h5>&nbsp;</h5>
 			<form method="post">
 		    <input type="text" name="t1" value="search" onfocus=
@@ -180,11 +248,11 @@ onBlur=
 "/>
             <input name="sear" type="submit" class="button" id="sub" value="Go" />
 </form>
-		
+
 
 		  <h5>&nbsp;</h5>
 		  <!--</form>-->
-		
+
 
 		<!-- End of Page Search --></span></a><br>
 </div>
@@ -228,184 +296,14 @@ onBlur=
 <img src="usepics/4.jpg" width="228" height="183" /></div>
 
 <div id="RightPart">
+
 <html>
-<head>
-<!--<script>
-function fnam()
-{
-	var fname;
-  //var fnam=/^[a-zA-Z]{4,15}$/;
-   if(document.f1.t1.value.search(fnam)==-1)
-    {
-	 alert("enter correct  first name");
-	 document.f1.t1.focus();
-	 return false;
-	 }
-	} 
-	 
-	 function lnam()
-{
-  var lnam=/^[a-zA-Z]{4,15}$/;
-   if(document.f1.t2.value.search(lnam)==-1)
-    {
-	 alert("enter correct last name");
-	 document.f1.t2.focus();
-	 return false;
-	 }
-	} 
-	 
-function email()
-{
- var email=/^[a-zA-Z0-9-_\.]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/;
-   if(document.f1.t3.value.search(email)==-1)
-    {
-	 alert("enter correct email");
-	 document.f1.t3.focus();
-	 return false;
-	 }
-	} 
-	
-	function pass()
-	{
-	var pass=/^[a-zA-Z0-9-_]{6,16}$/;
-   if(document.f1.p1.value.search(pass)==-1)
-    {
-	 alert("enter correct pass");
-	 document.f1.p1.focus();
-	 return false;
-	 }
-	 }
-	function phone()
-	{
-	var phn=/^[0-9]{9,14}$/;
-  if(document.f1.t5.value.search(phn)==-1)
-    {
-	 alert("enter correct phone no");
-	 document.f1.t5.focus();
-	 return false;
-	 }
-	 }
-	
-	function add()
-	{
-	var add=/^[a-zA-Z0-9- ]{10,150}$/;
-  if(document.f1.t6.value.search(add)==-1)
-    {
-	 alert("enter correct address");
-	 document.f1.t6.focus();
-	 return false;
-	 }
-	 }
-	 
-	 function city()
-	 {
-	 var city=/^[a-zA-Z]{5,30}$/;
-	 if(document.f1.t7.value.search(city)==-1)
-    {
-	 alert("enter correct city");
-	 document.f1.t7.focus();
-	 return false;
-	 }
-	
-	 }
-	  function coun()
-	 {
-	 var city=/^[a-zA-Z]{5,30}$/;
-	 if(document.f1.t8.value.search(city)==-1)
-    {
-	 alert("enter correct country");
-	 document.f1.t8.focus();
-	 return false;
-	 }
-	
-	 }
-	
-function vali()
-{
-  var nam=/^[a-zA-Z]{4,15}$/;
-   var email=/^[a-zA-Z0-9-_\.]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/;
-    var pass=/^[a-zA-Z0-9-_]{6,16}$/;
-	 	var phn=/^[0-9]{9,14}$/;
-	  var add=/^[a-zA-Z0-9 ]{10,150}$/;
-	  var city=/^[a-zA-Z]{5,30}$/;
-	  
-   if(document.f1.t1.value.search(nam)==-1)
-    {
-	 alert("enter correct  first name");
-	 document.f1.t1.focus();
-	 return false;
-	 }
-	 	 
-  else if(document.f1.t2.value.search(nam)==-1)
-    {
-	 alert("enter correct last name");
-	 document.f1.t2.focus();
-	 return false;
-	 }
- 
-  else if(document.f1.t3.value.search(email)==-1)
-    {
-	 alert("enter correct login name");
-	 document.f1.t3.focus();
-	 return false;
-	 }
-	 
-	
-	
-   else if(document.f1.p1.value.search(pass)==-1)
-    {
-	 alert("enter correct pass");
-	 document.f1.p1.focus();
-	 return false;
-	 }
-	 
-	
-	  else if(document.f1.t5.value.search(phn)==-1)
-    {
-	 alert("enter correct phone no");
-	 document.f1.t5.focus();
-	 return false;
-	 }
-	 
-	
-  else if(document.f1.t6.value.search(add)==-1)
-    {
-	 alert("enter correct address");
-	 document.f1.t6.focus();
-	 return false;
-	 }
-	
-	 
-	 
-	 
-	else if(document.f1.t7.value.search(city)==-1)
-    {
-	 alert("enter correct city");
-	 document.f1.t7.focus();
-	 return false;
-	 }
-	 
-		else if(document.f1.t8.value.search(city)==-1)
-    {
-	 alert("enter correct country");
-	 document.f1.t8.focus();
-	 return false;
-	 }
-	 
-	 else 
-	{
-	 return true;
-	 }
-	 }
-	
-	 
-</script>-->
-</head>
 <body>
 
+<button id="authorize-button"> Get your data from Google </button>
 
 <div><br/><center><h2><font face="Lucida Handwriting" size="+1" color="#00CCFF">Register Yourself</font></h2></center></div>
-<div>
+
 <div style="width:25%;float:right">
 <br><br><br><br><br>
 <img src="usepics/7.jpg">
@@ -416,7 +314,7 @@ function vali()
 <br><br>
 
 <table width="366" border="0" align="center">
-<form method="post"></form>
+<form id="gp-register" method="post"></form>
   <tr>
     <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Title:</font></strong></div></td>
     <td><label>
@@ -430,7 +328,7 @@ function vali()
   <tr>
     <td width="164"><div align="center"><font size="+1" face="Comic Sans MS"><b> First&nbsp;Name:</b></font></div></td>
     <td width="192">
-      
+
         <input name="t1" type="text" id="t1">    </td>
   </tr>
   <tr>
@@ -608,7 +506,7 @@ function vali()
     </center>
     </label></td>
     </tr>
- 
+
 </table>
  <!-- </form> -->
 </fieldset>
