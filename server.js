@@ -263,19 +263,21 @@ app.get('/all', function (req, res) {
   });
 });
 
-app.get('/men.html', function (req, res) { 
-  res.json("men request");
-  console.log("men request");
-  var query = client.query("SELECT * FROM '+item_table+' WHERE cat='Men';");
+app.get('/men', function (req, res) { 
+  query.on('end',function() {
+    res.json(getCategory('men'));
+  });
+});
+
+var getCategory = new function(category) {
+  console.log(category +" request");
+  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
   var results = [];
   query.on('row',function(row) {
     console.log(row);
     results.push(row);
   });
-  query.on('end',function() {
-    res.json(results);
-  });
-});
+};
 
 app.listen(port, function () {
 	console.log('Example app listening on port ' + port);
