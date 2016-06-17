@@ -208,6 +208,7 @@ function checkAuth(req, res, next) {
 var item_table = "items";
 var user_table = "users";
 var cart_table = "cart";
+var size_table = "sizes";
 //var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
 //var client = new pg.Client(connectionString);
 //client.connect(); 
@@ -222,29 +223,48 @@ app.use(function(req,res,next) {
 });
 
 
-//men.html
-/* add a new item to the cart */
-app.post('/add', function (req, res) { 
-    res.json("Add request");
-    console.log("Add request");
+/* add a new item to the cart 
+TODO: return correct HTTP code on fail, check is logged in
+*/
+app.post('/add', function (req, res) {
+  // check the response has a body
   if (req.body == undefined || req.body.length <= 0) {
-     console.log("invalid cart-add request, ignoring @ "+ new Date().getTime());
+     console.log("invalid cart-add request: no body");
+     res.status(400).send('Bad Request');
   }
-  console.log('request from '+ ("get client name") +' to server to buy item '+ req.item_id);
   // checks to make sure the post comes from a logged-in user here
-  if (req.body.id == undefined || req.body.uid == undefined) {
-    console.log("invalid cart request "+ req.body);
+  if (req.body.iid == undefined || req.body.uid == undefined
+      // this line is where the logged-in check goes!
+     ) {
+    console.log("invalid cart request: no identifying information\n\t"+ req.body);
+    res.status(400).send('Bad Request'); //res.status(500).json({ error: 'message' })
   }
-  var query = client.query('SELECT * FROM '+items_table+' where id is '+ req.body.id);
-  var result;
-  query.on('row',function(row) {
-    console.log(row);
-    result = row;
-    query = client.query('INSERT INTO '+cart_table+' values');
-  });
+  // check the size request is valid
   
+  
+  // is the id in the item table?
+  var has = client.query('SELECT 1 FROM '+ item_table +' WHERE iid = '+ req.body.iid +';');
+  if (has == 1) {
+    console.log("found iid "+iid);
+    // given all these are valid, checks if the user already has an entry in the checkout table
+//    var size = client.query('SELECT 1 from '+ size_table +' WHERE size='+ req.body.size +';');
+
+    // for now, assume we have the size & the client has no other items in the checkout table
+    client.query("INSERT INTO "+ cart_table +" values("+ req.body.uid +", "+ req.body.iid +", 'Medium', 1");
+  } else {
+    console.log(has);
+  }
+  /*
+  var if_request = "IF EXISTS (SELECT * FROM "+ item_table +" WHERE iid = "+ req.body.iid +")";
+      if_request+= "BEGIN"
+        if_request+= 
+      if_request+= "END"; */
+  
+  // if so, increments the number of items they have ordered of this type and size
+  // if not, adds a new row to the checkout table
+
   query.on('end',function() {
-    res.json(row);
+    res.json(row).send('Bad Request');
   });
 });
  
