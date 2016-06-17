@@ -72,7 +72,7 @@ $(document).ready(function(e) {
     console.log("buy item");
     $.ajax({
       method: 'POST',
-      url: domain+'/add'
+      url: domain+'/add',
       data: {iid: $(this).attr("id"), uid: 10, size: "Medium" }; // TODO actually get an id for user 
     }).then().done(
       console.log(data);
