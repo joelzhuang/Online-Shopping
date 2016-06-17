@@ -1,7 +1,7 @@
 $(document).ready(function(e) {
   var ERROR_LOG = console.error.bind(console);
   //var domain = "https://localhost:8080";
-  var domain = "https://quiet-bastion-96093.herokuapp.com/";
+  var domain = "https://quiet-bastion-96093.herokuapp.com";
   console.log('Page ready.');
   get_items();
   
