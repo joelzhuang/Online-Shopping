@@ -12,11 +12,13 @@ $(document).ready(function(e) {
     $.ajax({
       method: 'GET',
       url: domain+'/all'
-    }).then().done(function() { make_table(data) }
-     ).fail(function( xhr, status, errorThrown ) {
+    }).then(function(data) { 
+      make_table(data)
+    }).done( function(data) {
+    }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
-      alert( "Sorry, there was a problem accessing the database!" );
+      alert( "Sorry, there was a problem accessing the database!");
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
       console.dir( xhr );
