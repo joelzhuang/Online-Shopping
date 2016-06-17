@@ -47,6 +47,7 @@ $(document).ready(function(e) {
   /** Returns an array of <td> objects. Currently, every third cell is 
   the website's default middle column, but we can change/remove this. */
   function html_data(data) {
+  console.log("hello yes I am data "+data);
     var arr = new Array();
     for (var i = 0; i < data.length; i++) {
       var html = "<td width=\"29\" class=\"page_center_button\">";

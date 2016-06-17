@@ -250,7 +250,7 @@ app.post('/add', function (req, res) {
 //    var size = client.query('SELECT 1 from '+ size_table +' WHERE size='+ req.body.size +';');
 
     // for now, assume we have the size & the client has no other items in the checkout table
-    client.query("INSERT INTO "+ cart_table +" values("+ req.body.uid +", "+ req.body.iid +", 'Medium', 1");
+    client.query("INSERT INTO "+ cart_table +" values("+ req.body.uid +", "+ req.body.iid +", 'Medium', 1);");
   } else {
     console.log(has);
   }
@@ -275,7 +275,6 @@ app.get('/all', function (req, res) {
   var query = client.query('SELECT * FROM '+item_table+';');
   var results = [];
   query.on('row',function(row) {
-    console.log(row);
     results.push(row);
   });
   query.on('end',function() {
@@ -294,7 +293,6 @@ var getCategory = new function(category) {
   var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
   var results = [];
   query.on('row',function(row) {
-    console.log(row);
     results.push(row);
   });
 };
