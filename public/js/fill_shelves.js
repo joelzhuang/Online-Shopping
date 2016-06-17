@@ -11,7 +11,7 @@ $(document).ready(function(e) {
     $.ajax({
       method: 'GET',
       url: domain+'/all'
-    }).then().done(make_table(data)
+    }).then().done(function() { make_table(data) }
      ).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
@@ -19,7 +19,6 @@ $(document).ready(function(e) {
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
       console.dir( xhr );
-      get_tasks();
     });
   }
   
@@ -72,18 +71,16 @@ $(document).ready(function(e) {
     console.log("buy item");
     $.ajax({
       method: 'POST',
-      url: domain+'/add'
-      data: {iid: $(this).attr("id"), uid: 10, size: "Medium" }; // TODO actually get an id for user 
-    }).then().done(
+      url: domain+'/add',
+      data: {iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
+    }).then().done(function (){
       console.log(data);
-     ).fail(function( xhr, status, errorThrown ) {
+     }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
       alert( "Sorry, there was a problem accessing the database!" );
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
-      console.dir( xhr );
-      get_tasks();
     });
   });
   
