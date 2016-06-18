@@ -252,8 +252,7 @@ app.post('/add', function (req, res) {
 });
  
 
-app.get('/all', function (req, res) { 
-  res.json("all request");
+app.get('/all', function (req, res) {
   var query = client.query('SELECT * FROM '+item_table+';');
   var results = [];
   query.on('row',function(row) {
