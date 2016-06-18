@@ -8,6 +8,7 @@ var cors = require('cors');
 var app = express();
 var port = process.env.PORT || 8080;
 
+//var connectionString = process.env.DATABASE_URL?ssl=true;
 var connectionString = 'postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9';
 var client = new pg.Client(connectionString);
 
@@ -39,18 +40,12 @@ app.get('/get', function(req,res,next){
 app.use(express.static(__dirname + '/public/'));
 //app.use(express.static(__dirname+'/'));
 
-/*
- app.use(function(req,res,next){
-   //webiste you wish to allow to connect
-   res.setHeader('Access-Control-Allow-Origin','*')
-   //request methods you wish to allows
-   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
-   //request headers you wish to allow
-   res.setHeader('Access-Control-Allow-Headers','Content-Type,Access-Control-Allow-Headers');
-   //pass next layer of middleware
-   next();
- });
- */
+app.use(function(req,res,next) {
+  res.setHeader('Access-Control-Allow-Origin','*') // this seems unsafe somehow
+  res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // app.get('/',function(req,res,next){
 // 	res.send(__dirname);
@@ -209,18 +204,6 @@ var item_table = "items";
 var user_table = "users";
 var cart_table = "cart";
 var size_table = "sizes";
-//var connectionString = "postgres://mckayvick:dragons@depot:5432/mckayvick_nodejs";
-//var client = new pg.Client(connectionString);
-//client.connect(); 
-
-// getting around the ole cross-site scripting issue
-app.use(function(req,res,next) {
-  res.setHeader('Access-Control-Allow-Origin','*') // this seems unsafe somehow
-  res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
-  // from the cors website:
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 
 /* add a new item to the cart 
@@ -271,7 +254,6 @@ app.post('/add', function (req, res) {
 
 app.get('/all', function (req, res) { 
   res.json("all request");
-  console.log("all request");
   var query = client.query('SELECT * FROM '+item_table+';');
   var results = [];
   query.on('row',function(row) {

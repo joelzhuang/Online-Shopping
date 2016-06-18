@@ -12,13 +12,13 @@ $(document).ready(function(e) {
     $.ajax({
       method: 'GET',
       url: domain+'/all'
-    }).then(function(data) { 
+    }).then(function(data) {
       make_table(data)
     }).done( function(data) {
     }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
-      alert( "Sorry, there was a problem accessing the database!");
+      alert("Sorry, there was a problem accessing the database!");
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
       console.dir( xhr );
@@ -26,7 +26,7 @@ $(document).ready(function(e) {
   }
   
   /* uses html_data's <td> objects to create a table, with ross and stuff. */
-  function make_table(data) {
+  var make_table = function (data) {
     var html_data_arr = html_data(data);
     var trs = $("#Page_center").find("tbody");
     var last_idx = trs.length - 1;
@@ -46,7 +46,7 @@ $(document).ready(function(e) {
   
   /** Returns an array of <td> objects. Currently, every third cell is 
   the website's default middle column, but we can change/remove this. */
-  function html_data(data) {
+  var html_data = function (data) {
   console.log("hello yes I am data "+data);
     var arr = new Array();
     for (var i = 0; i < data.length; i++) {
