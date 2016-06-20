@@ -396,12 +396,15 @@ h1
 	display: none;
 }
 
-.page_center_buy
+a.page_center_buy
 {
     background: url("img/buy.gif") top left no-repeat;
     height: 53px;
     width: 31px;
+    margin-top: 0px;
+    margin-bottom: auto;
     float: left;
+    cursor: cell;
 }
 
 .page_center_info

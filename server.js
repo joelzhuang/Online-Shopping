@@ -205,35 +205,59 @@ var user_table = "users";
 var cart_table = "cart";
 var size_table = "sizes";
 
+/*
+app.route('/book')
+  .get(function(req, res) {
+    res.send('Get a random book');
+  })
+  .post(function(req, res) {
+    res.send('Add a book');
+  })
+  .put(function(req, res) {
+    res.send('Update the book');
+  }); */
+
 
 /* add a new item to the cart 
 TODO: return correct HTTP code on fail, check is logged in
 */
-app.post('/add', function (req, res) {
-  // check the response has a body
+app.post('/:iid/:uid/:size', function (req, res) {
+  console.log(req.body);
+// is the response missing a body?
   if (req.body == undefined || req.body.length <= 0) {
      console.log("invalid cart-add request: no body");
      res.status(400).send('Bad Request');
+     return;
   }
-  // checks to make sure the post comes from a logged-in user here
+// is the user making the request not logged in?
   if (req.body.iid == undefined || req.body.uid == undefined
       // this line is where the logged-in check goes!
-     ) {
+      ) {
     console.log("invalid cart request: no identifying information\n\t"+ req.body);
     res.status(400).send('Bad Request'); //res.status(500).json({ error: 'message' })
+    return;
   }
-  // check the size request is valid
-  
-  
-  // is the id in the item table?
-  var has = client.query('SELECT 1 FROM '+ item_table +' WHERE iid = '+ req.body.iid +';');
+// now we are confident this is a valid addition request
+// is the size valid?
+  // var hasSize = client.query('SELECT 1 FROM '+ size_table +' WHERE size = '+ req.body.size+';');
+  // if (hasSize != 1) {}
+// the user id?
+  // check goes here
+// the item id?
+  var has = client.query("SELECT 1 FROM "+ item_table +" WHERE iid="+ req.body.iid +";");
   if (has == 1) {
     console.log("found iid "+iid);
     // given all these are valid, checks if the user already has an entry in the checkout table
 //    var size = client.query('SELECT 1 from '+ size_table +' WHERE size='+ req.body.size +';');
 
     // for now, assume we have the size & the client has no other items in the checkout table
-    client.query("INSERT INTO "+ cart_table +" values("+ req.body.uid +", "+ req.body.iid +", 'Medium', 1);");
+    client.query("INSERT INTO "+ cart_table +" values("+ req.params.uid +", "+ req.params.iid +", 'Medium', 1);");
+    
+    
+    
+    
+    // on successfully inserting a row,
+     next('route');
   } else {
     console.log(has);
   }
@@ -250,6 +274,7 @@ app.post('/add', function (req, res) {
     res.json(row).send('Bad Request');
   });
 });
+
  
 
 app.get('/all', function (req, res) {
@@ -263,9 +288,11 @@ app.get('/all', function (req, res) {
   });
 });
 
-app.get('/men', function (req, res) { 
+/*
+app.get('/men$', function (req, res) { 
   query.on('end',function() {
-    res.json(getCategory('men'));
+    var arr = getCategory('men');
+    res.json(arr);
   });
 });
 
@@ -276,7 +303,7 @@ var getCategory = new function(category) {
   query.on('row',function(row) {
     results.push(row);
   });
-};
+}; */
 
 app.listen(port, function () {
 	console.log('Example app listening on port ' + port);
