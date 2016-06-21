@@ -207,43 +207,29 @@ var size_table = "sizes";
 var cat_table = "categories";
 var subcat_table = "subcategories";
 
-/*
-app.route('/book')
-  .get(function(req, res) {
-    res.send('Get a random book');
-  })
-  .post(function(req, res) {
-    res.send('Add a book');
-  })
-  .put(function(req, res) {
-    res.send('Update the book');
-  }); */
-
-
-/* add a new item to the cart 
-TODO: return correct HTTP code on fail, check is logged in
+/* Add a new item to the cart 
+  TODO: return correct HTTP code on fail, check the sender is logged in
 */
 app.post('/:iid/:uid/:size', function (req, res) {
   console.log(req.body);
   // is the user making the request not logged in?
   if (req.body == undefined || req.body.length == 0
-  // this line is where the logged-in check goes!
+    // this line is where the logged-in check goes!
   ) {
     console.log("invalid cart request: no identifying information\n\t"+ req.body);
-    res.status(400).send('Bad Request'); //res.status(500).json({ error: 'message' })
+    res.status(400).send('Bad Request');
     return;
   }
-  
   // TODO: check validity of size, iid and uid
-  var query = client.query(
-            'INSERT INTO '+cart_table+' values('+ 
-            req.params.uid +', '+ req.params.iid +', '+ req.params.size +', 1)');
+  var query = client.query('INSERT INTO '+cart_table+' values('+ req.params.uid +', '+ req.params.iid +', '+ req.params.size +', 1)');
   // next('route');
   query.on('end',function() {
-      // done
+    // done
+    res.json({ added:true; });
   });
 });
 
+/** Get all the items in the database */
 app.get('/all', function (req, res) {
   var query = client.query('SELECT * FROM '+item_table+';');
   var results = [];
@@ -255,6 +241,7 @@ app.get('/all', function (req, res) {
   });
 });
 
+/** Get all the items in quiet-bastio-96093.herokuapp.com/category/ */
 app.get('/:category', function (req, res) {
   if (req.params.category == undefined) {
     console.log("cannot find an undefined category");
@@ -265,6 +252,23 @@ app.get('/:category', function (req, res) {
   res.json(arr);
 });
 
+/** Get all the items in quiet-bastio-96093.herokuapp.com/category/subcategory */
+app.get('/:category/:subcategory', function (req, res) {
+  if (req.params.category == undefined) {
+    console.log("cannot find an undefined subcategory");
+    next('route');
+  }
+  console.log(req.params.category +", "+req.params.subcategory); 
+  var arr = getCategory(req.params.category,req.params.subcategory); 
+  res.json(arr);
+});
+
+app.listen(port, function () {
+	console.log('Example app listening on port ' + port);
+});
+
+
+/** ======================== helper functions ======================== */
 var getCategory = function(category) {
   console.log("Finding the category "+ category);
   var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
@@ -273,21 +277,23 @@ var getCategory = function(category) {
     results.push(row);
     console.log(row);
   });
-  return results;
+  
+  query.on('end',function() {
+    return results;
+  });
 };
 
-var getSubcategory = function(subcategory) {
+var getSubcategory = function(category,subcategory) {
   console.log("Finding the subcategory "+ subcategory);
-  var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"';");
+  var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"' and category='"+category+"';");
   var results = [];
   query.on('row',function(row) {
     results.push(row);
     console.log(row);
   });
-  return results;
+  
+  query.on('end',function() {
+    return results;
+  });
 };
-
-app.listen(port, function () {
-	console.log('Example app listening on port ' + port);
-});
 
