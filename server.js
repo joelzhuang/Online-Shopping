@@ -225,7 +225,7 @@ TODO: return correct HTTP code on fail, check is logged in
 */
 app.post('/:iid/:uid/:size', function (req, res) {
   console.log(req.body);
-// is the user making the request not logged in?
+  // is the user making the request not logged in?
   if (req.body == undefined || req.body.length == 0
   // this line is where the logged-in check goes!
   ) {
@@ -233,16 +233,16 @@ app.post('/:iid/:uid/:size', function (req, res) {
     res.status(400).send('Bad Request'); //res.status(500).json({ error: 'message' })
     return;
   }
+  
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO '+cart_table+' values('+ 
+  var query = client.query(
+            'INSERT INTO '+cart_table+' values('+ 
             req.params.uid +', '+ req.params.iid +', '+ req.params.size +', 1)');
   // next('route');
   query.on('end',function() {
       // done
   });
 });
-
- 
 
 app.get('/all', function (req, res) {
   var query = client.query('SELECT * FROM '+item_table+';');
@@ -262,12 +262,10 @@ app.get('/:category', function (req, res) {
   }
   console.log(req.params.category); 
   var arr = getCategory(req.params.category); 
-  query.on('end',function() {
-    res.json(arr);
-  });
+  res.json(arr);
 });
 
-var getCategory = new function(category) {
+var getCategory = function(category) {
   console.log("Finding the category "+ category);
   var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
   var results = [];
@@ -278,7 +276,7 @@ var getCategory = new function(category) {
   return results;
 };
 
-var getSubcategory = new function(subcategory) {
+var getSubcategory = function(subcategory) {
   console.log("Finding the subcategory "+ subcategory);
   var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"';");
   var results = [];
