@@ -204,6 +204,8 @@ var item_table = "items";
 var user_table = "users";
 var cart_table = "cart";
 var size_table = "sizes";
+var cat_table = "categories";
+var subcat_table = "subcategories";
 
 /*
 app.route('/book')
@@ -223,55 +225,20 @@ TODO: return correct HTTP code on fail, check is logged in
 */
 app.post('/:iid/:uid/:size', function (req, res) {
   console.log(req.body);
-// is the response missing a body?
-  if (req.body == undefined || req.body.length <= 0) {
-     console.log("invalid cart-add request: no body");
-     res.status(400).send('Bad Request');
-     return;
-  }
 // is the user making the request not logged in?
-  if (req.body.iid == undefined || req.body.uid == undefined
-      // this line is where the logged-in check goes!
-      ) {
+  if (req.body == undefined || req.body.length == 0
+  // this line is where the logged-in check goes!
+  ) {
     console.log("invalid cart request: no identifying information\n\t"+ req.body);
     res.status(400).send('Bad Request'); //res.status(500).json({ error: 'message' })
     return;
   }
-// now we are confident this is a valid addition request
-// is the size valid?
-  // var hasSize = client.query('SELECT 1 FROM '+ size_table +' WHERE size = '+ req.body.size+';');
-  // if (hasSize != 1) {}
-// the user id?
-  // check goes here
-// the item id?
-  var has = client.query("SELECT 1 FROM "+ item_table +" WHERE iid="+ req.body.iid +";");
-  if (has == 1) {
-    console.log("found iid "+iid);
-    // given all these are valid, checks if the user already has an entry in the checkout table
-//    var size = client.query('SELECT 1 from '+ size_table +' WHERE size='+ req.body.size +';');
-
-    // for now, assume we have the size & the client has no other items in the checkout table
-    client.query("INSERT INTO "+ cart_table +" values("+ req.params.uid +", "+ req.params.iid +", 'Medium', 1);");
-    
-    
-    
-    
-    // on successfully inserting a row,
-     next('route');
-  } else {
-    console.log(has);
-  }
-  /*
-  var if_request = "IF EXISTS (SELECT * FROM "+ item_table +" WHERE iid = "+ req.body.iid +")";
-      if_request+= "BEGIN"
-        if_request+= 
-      if_request+= "END"; */
-  
-  // if so, increments the number of items they have ordered of this type and size
-  // if not, adds a new row to the checkout table
-
+  // TODO: check validity of size, iid and uid
+  var query = client.query('INSERT INTO '+cart_table+' values('+ 
+            req.params.uid +', '+ req.params.iid +', '+ req.params.size +', 1)');
+  // next('route');
   query.on('end',function() {
-    res.json(row).send('Bad Request');
+      // done
   });
 });
 
@@ -288,22 +255,39 @@ app.get('/all', function (req, res) {
   });
 });
 
-/*
-app.get('/men$', function (req, res) { 
+app.get('/:category', function (req, res) {
+  if (req.params.category == undefined) {
+    console.log("cannot find an undefined category");
+    next('route');
+  }
+  console.log(req.params.category); 
+  var arr = getCategory(req.params.category); 
   query.on('end',function() {
-    var arr = getCategory('men');
     res.json(arr);
   });
 });
 
 var getCategory = new function(category) {
-  console.log(category +" request");
+  console.log("Finding the category "+ category);
   var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
   var results = [];
   query.on('row',function(row) {
     results.push(row);
+    console.log(row);
   });
-}; */
+  return results;
+};
+
+var getSubcategory = new function(subcategory) {
+  console.log("Finding the subcategory "+ subcategory);
+  var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"';");
+  var results = [];
+  query.on('row',function(row) {
+    results.push(row);
+    console.log(row);
+  });
+  return results;
+};
 
 app.listen(port, function () {
 	console.log('Example app listening on port ' + port);

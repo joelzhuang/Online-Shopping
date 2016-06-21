@@ -15,10 +15,40 @@ $(document).ready(function(e) {
       data: { iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
     }).done(function (msg){
       console.log(data +" leads to "+ msg);
+      alert("purchase made");
      }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
       alert( "Sorry, there was a problem accessing the database!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+    });
+    return false;
+  });
+  
+    /** Changes the category */
+  $("a").click(function(event) {
+  // if this isn't a menu item continue with whatever you were doing
+    if (!($(this).hasClass("menu_item"))) {
+      return;
+    }
+    // otherwise, stop link propagation
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    console.log("change category "+$(this).attr("href"));
+    
+    $.ajax({
+      method: 'GET',
+      url: domain+"/"+($(this).attr("href")),
+      dataType: 'json',
+    }).then(function(data) {
+    }).done(function (data) {
+      console.log(data +" leads to "+ data);
+      $("Page_center")
+      make_table(data);      
+     }).fail(function( xhr, status, errorThrown ) {
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
     });
@@ -47,6 +77,7 @@ $(document).ready(function(e) {
   
   /* uses html_data's <td> objects to create a table, with ross and stuff. */
   var make_table = function (data) {
+    $("#Page_center").find("tbody").html("");
     var html_data_arr = html_data(data);
     var trs = $("#Page_center").find("tbody");
     var last_idx = trs.length - 1;
