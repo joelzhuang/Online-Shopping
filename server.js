@@ -225,7 +225,7 @@ app.post('/:iid/:uid/:size', function (req, res) {
   // next('route');
   query.on('end',function() {
     // done
-    res.json({ added:true; });
+    res.json({ added:true });
   });
 });
 
