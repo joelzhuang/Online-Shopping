@@ -222,7 +222,7 @@ app.post('/:iid/:size', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO '+cart_table+' values('+ req.params.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)', function(err, result) {
+  var query = client.query('INSERT INTO '+cart_table+' values('+ req.body.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)', function(err, result) {
     if(err) {
       console.error('error running query', err);
       res.status(400).send('Bad request: the database does not contain entries for the given values.');
