@@ -211,7 +211,7 @@ var subcat_table = "subcategories";
 /* Add a new item to the cart 
   TODO: return correct HTTP code on fail, check the sender is logged in
 */
-app.post('/:iid/:uid/:size', function (req, res) {
+app.post('/:iid/:size', function (req, res) {
   console.log(req.body);
   /*
   if (req.body == undefined || req.body.length == 0

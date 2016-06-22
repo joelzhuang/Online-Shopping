@@ -10,7 +10,7 @@ $(document).ready(function(e) {
     console.log("buy item "+$(this).attr("id"));
     $.ajax({
       method: 'POST',
-      url: domain +'/'+ $(this).attr("id") +'/'+ 10 +'/Medium',
+      url: domain +'/'+ $(this).attr("id") +'/Medium',
       dataType: 'json',
       data: { iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
     }).done(function (msg){
