@@ -228,7 +228,7 @@ app.post('/:iid/:size', function (req, res) {
   });
   query.on('error', function(err) {
     if(err) {
-      console.error('error running query', err);
+      console.log('ERROR: error running query', err);
       res.status(400).send('Bad request: the database does not contain entries for the given values.');
     }
   });
@@ -249,7 +249,7 @@ app.get('/all', function (req, res) {
   });
   query.on('error', function(err) {
     if(err) {
-      console.error('error running query', err);
+      console.log('ERROR: error running query', err);
       res.status(500).send('Bad request: the database does not contain entries for the given values.');
     }
   });
@@ -273,7 +273,7 @@ app.get('/:category', function (req, res) {
     console.log(row.name);
   });
   query.on('error',function() {
-    console.error('ps encountered an error while parsing this request!');
+    console.log('ERROR: ps encountered an error while parsing this request!');
     res.status(500).send('Internal database error. Panic!');
   });
   query.on('end',function() {
@@ -298,7 +298,7 @@ app.get('/:category/:subcategory', function (req, res) {
     console.log(row.name);
   });
   query.on('error',function() {
-    console.error('ps encountered an error while parsing this request!');
+    console.log('ERROR: ps encountered an error while parsing this request!');
     res.status(500).send('Internal database error. Panic!');
   });
   query.on('end',function() {
