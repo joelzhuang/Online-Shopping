@@ -222,7 +222,7 @@ app.post('/:iid/:size', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO '+cart_table+' values('+ req.body.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)';
+  var query = client.query('INSERT INTO '+cart_table+' values('+ req.body.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)');
   query.on('row', function() {
     console.log("row successfully returned");
   });
@@ -246,6 +246,12 @@ app.get('/all', function (req, res) {
   var results = [];
   query.on('row',function(row) {
     results.push(row);
+  });
+  query.on('error', function(err) {
+    if(err) {
+      console.error('error running query', err);
+      res.status(500).send('Bad request: the database does not contain entries for the given values.');
+    }
   });
   query.on('end',function() {
     res.json(results);

@@ -52,6 +52,7 @@ $(document).ready(function(e) {
       // status codes are passed to the function
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
+      console.log(xhr);
     });
     return false;
   });
