@@ -269,7 +269,7 @@ app.get('/:category/:subcategory', function (req, res) {
     next('route');
   }
   console.log(req.params.category +", "+req.params.subcategory); 
-  var arr = getCategory(req.params.category,req.params.subcategory); 
+  var arr = getSubcategory(req.params.category,req.params.subcategory); 
   res.json(arr);
 });
 
