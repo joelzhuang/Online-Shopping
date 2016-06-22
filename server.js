@@ -121,7 +121,7 @@ app.post('/googleLogin/', function(req, res, next){
 
 
 
-})
+});
 
 
 
@@ -154,13 +154,13 @@ app.post('/login/', function(req,res,next){
 			}
 		});
 
-	if(!found){
-		res.send(JSON.stringify({outcome : 'incorrect'}));
-	}
+	  if(!found){
+		  res.send(JSON.stringify({outcome : 'incorrect'}));
+	  }
 
-	console.log(req.session)
+	  console.log(req.session)
 	
-	})
+	});
 
 	//query.on('end', function(){
 	//	console.log(res.json(results))
@@ -211,7 +211,7 @@ var subcat_table = "subcategories";
 /* Add a new item to the cart 
   TODO: return correct HTTP code on fail, check the sender is logged in
 */
-app.post('/:iid/:size', function (req, res) {
+app.post('/:iid/:size$', function (req, res) {
   console.log(req.body);
   /*
   if (req.body == undefined || req.body.length == 0
@@ -241,7 +241,7 @@ app.post('/:iid/:size', function (req, res) {
 });
 
 /** Get all the items in the database */
-app.get('/all', function (req, res) {
+app.get('/all$', function (req, res) {
   var query = client.query('SELECT * FROM '+item_table+';');
   var results = [];
   query.on('row',function(row) {
@@ -259,7 +259,7 @@ app.get('/all', function (req, res) {
 });
 
 /** Get all the items in quiet-bastio-96093.herokuapp.com/category/ */
-app.get('/:category', function (req, res) {
+app.get('/:category$', function (req, res) {
   var category = req.params.category;
   if (category == undefined) {
     console.log("Cannot find an undefined category");
@@ -270,11 +270,12 @@ app.get('/:category', function (req, res) {
   var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
   query.on('row',function(row) {
     results.push(row);
-    console.log(row.name);
   });
-  query.on('error',function() {
-    console.log('ERROR: ps encountered an error while parsing this request!');
-    res.status(500).send('Internal database error. Panic!');
+  query.on('error',function(err) {
+    if (err) {
+      console.log('ERROR: ps encountered an error while parsing this request!');
+      res.status(500).send('Internal database error. Panic!');
+    }
   });
   query.on('end',function() {
     res.json(results);
@@ -282,7 +283,7 @@ app.get('/:category', function (req, res) {
 });
 
 /** Get all the items in quiet-bastio-96093.herokuapp.com/category/subcategory */
-app.get('/:category/:subcategory', function (req, res) {
+app.get('/:category/:subcategory$', function (req, res) {
   var category = req.params.category;
   var subcategory = req.params.subcategory;
   if (category == undefined || subcategory == undefined) {
@@ -295,14 +296,16 @@ app.get('/:category/:subcategory', function (req, res) {
   var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"' and category='"+category+"';");
   query.on('row',function(row) {
     results.push(row);
-    console.log(row.name);
   });
-  query.on('error',function() {
-    console.log('ERROR: ps encountered an error while parsing this request!');
-    res.status(500).send('Internal database error. Panic!');
+  query.on('error',function(err) {
+    if (err) {
+      console.log('ERROR: ps encountered an error while parsing this request!');
+      res.status(500).send('Internal database error. Panic!');
+    }
   });
   query.on('end',function() {
     res.json(results);
+    console.log(results);
   });
 });
 
