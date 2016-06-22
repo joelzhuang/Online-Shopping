@@ -41,12 +41,13 @@ $(document).ready(function(e) {
       method: 'GET',
       url: domain+"/"+($(this).attr("href")),
       dataType: 'json',
-    }).then(function(data) {
+    }).then(function(data) { 
+      console.log(data);  
     }).done(function (data) {
       console.log(data +" leads to "+ data);
       $("Page_center")
-      make_table(data);      
-     }).fail(function( xhr, status, errorThrown ) {
+      make_table(data);   
+    }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
       console.log( "Error: " + errorThrown );
@@ -85,7 +86,7 @@ $(document).ready(function(e) {
       if (i % 3 == 0) {
         trs.append("<tr>");
       }
-      console.log("\trow! ",i);
+      //console.log("\trow! ",i);
       trs.append(html_data_arr[i]);
       if (i % 3 == 2) {
         trs.append("</tr>");
@@ -109,8 +110,11 @@ $(document).ready(function(e) {
               html += "<p><span class=\"item_name blue2\" id=\""+ data[i].iid +"\">";
                 html += data[i].name;
               html += "</p>";
-              html += "<p><span class=\"item_description gray\">"+ data[i].description +"</span></p>";
-              html += "<span class=\"item_price green\">Price: $"+ data[i].price +"</span><br>";
+              if (typeof(data[i].description) !== 'object') {
+                html += "<p><span class=\"item_description gray\">"+ data[i].description +"</span></p>";
+              }
+              // rounding technique from: http://jsfiddle.net/FQTqk/7/
+              html += "<span class=\"item_price green\">Price: $"+ parseFloat(Math.round(data[i].price * 100) / 100).toFixed(2) +"</span><br>";
             html += "</div>";
           html += "</td>";
       arr.push(html);

@@ -222,14 +222,15 @@ app.post('/:iid/:size', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO '+cart_table+' values('+ req.body.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)', function(err, result) {
+  var query = client.query('INSERT INTO '+cart_table+' values('+ req.body.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)';
+  query.on('row', function() {
+    console.log("row successfully returned");
+  });
+  query.on('error', function(err) {
     if(err) {
       console.error('error running query', err);
       res.status(400).send('Bad request: the database does not contain entries for the given values.');
     }
-  });
-  query.on('row', function() {
-    console.log("row successfully returned");
   });
   // next('route');
   query.on('end',function() {
@@ -253,57 +254,53 @@ app.get('/all', function (req, res) {
 
 /** Get all the items in quiet-bastio-96093.herokuapp.com/category/ */
 app.get('/:category', function (req, res) {
-  if (req.params.category == undefined) {
-    console.log("cannot find an undefined category");
-    next('route');
+  var category = req.params.category;
+  if (category == undefined) {
+    console.log("Cannot find an undefined category");
+    res.status(400).send('Bad request: cannot search for an undefined category.');
   }
-  console.log(req.params.category); 
-  var arr = getCategory(req.params.category); 
-  res.json(arr);
+  console.log("Finding the category "+ category);
+  var results = [];
+  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
+  query.on('row',function(row) {
+    results.push(row);
+    console.log(row.name);
+  });
+  query.on('error',function() {
+    console.error('ps encountered an error while parsing this request!');
+    res.status(500).send('Internal database error. Panic!');
+  });
+  query.on('end',function() {
+    res.json(results);
+  });
 });
 
 /** Get all the items in quiet-bastio-96093.herokuapp.com/category/subcategory */
 app.get('/:category/:subcategory', function (req, res) {
-  if (req.params.category == undefined) {
-    console.log("cannot find an undefined subcategory");
-    next('route');
+  var category = req.params.category;
+  var subcategory = req.params.subcategory;
+  if (category == undefined || subcategory == undefined) {
+    console.log("Cannot find an undefined category or subcategory!");
+    res.status(400).send('Bad request: cannot search for an undefined '+ 
+      (subcategory == undefinied ? 'subcategory' : 'category') +'.');
   }
-  console.log(req.params.category +", "+req.params.subcategory); 
-  var arr = getSubcategory(req.params.category,req.params.subcategory); 
-  res.json(arr);
+  console.log("Finding the subcategory "+ subcategory);
+  var results = [];
+  var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"' and category='"+category+"';");
+  query.on('row',function(row) {
+    results.push(row);
+    console.log(row.name);
+  });
+  query.on('error',function() {
+    console.error('ps encountered an error while parsing this request!');
+    res.status(500).send('Internal database error. Panic!');
+  });
+  query.on('end',function() {
+    res.json(results);
+  });
 });
 
 app.listen(port, function () {
 	console.log('Local app listening on port ' + port);
 });
-
-
-/** ======================== helper functions ======================== */
-var getCategory = function(category) {
-  console.log("Finding the category "+ category);
-  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
-  var results = [];
-  query.on('row',function(row) {
-    results.push(row);
-    console.log(row);
-  });
-  
-  query.on('end',function() {
-    return results;
-  });
-};
-
-var getSubcategory = function(category,subcategory) {
-  console.log("Finding the subcategory "+ subcategory);
-  var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"' and category='"+category+"';");
-  var results = [];
-  query.on('row',function(row) {
-    results.push(row);
-    console.log(row);
-  });
-  
-  query.on('end',function() {
-    return results;
-  });
-};
 
