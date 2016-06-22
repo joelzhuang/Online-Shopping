@@ -6,7 +6,7 @@ var pg = require('pg').native;
 var cors = require('cors');
 
 var app = express();
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 3000;
 
 //var connectionString = process.env.DATABASE_URL?ssl=true;
 var connectionString = 'postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9';
@@ -198,7 +198,7 @@ function checkAuth(req, res, next) {
 	res.sendStatus(200);
 });*/
 
-/** */
+/** ======================== database ======================== */
 
 var item_table = "items";
 var user_table = "users";
@@ -212,21 +212,30 @@ var subcat_table = "subcategories";
 */
 app.post('/:iid/:uid/:size', function (req, res) {
   console.log(req.body);
-  // is the user making the request not logged in?
+  /*
   if (req.body == undefined || req.body.length == 0
     // this line is where the logged-in check goes!
   ) {
     console.log("invalid cart request: no identifying information\n\t"+ req.body);
-    res.status(400).send('Bad Request');
+    res.status(400).send('Bad request: ');
     return;
-  }
+  } */
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO '+cart_table+' values('+ req.params.uid +', '+ req.params.iid +', '+ req.params.size +', 1)');
+  var query = client.query('INSERT INTO '+cart_table+' values('+ req.params.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)', function(err, result) {
+    if(err) {
+      console.error('error running query', err);
+      res.status(400).send('Bad request: the database does not contain entries for the given values.');
+    }
+  });
+  query.on('row', function() {
+    console.log("row successfully returned");
+  });
   // next('route');
   query.on('end',function() {
     // done
     res.json({ added:true });
   });
+  client.end();
 });
 
 /** Get all the items in the database */
@@ -264,7 +273,7 @@ app.get('/:category/:subcategory', function (req, res) {
 });
 
 app.listen(port, function () {
-	console.log('Example app listening on port ' + port);
+	console.log('Local app listening on port ' + port);
 });
 
 
