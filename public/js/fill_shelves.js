@@ -16,7 +16,7 @@ $(document).ready(function(e) {
     }).done(function (msg){
       console.log(data +" leads to "+ msg);
       alert("purchase made");
-     }).fail(function( xhr, status, errorThrown ) {
+    }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
       alert( "Sorry, there was a problem accessing the database!" );
@@ -34,19 +34,14 @@ $(document).ready(function(e) {
     }
     // otherwise, stop link propagation
     event.preventDefault();
-    event.stopImmediatePropagation();
     console.log("change category "+$(this).attr("href"));
     
     $.ajax({
       method: 'GET',
-      url: domain+"/"+($(this).attr("href")),
-      dataType: 'json',
+      url: domain+"/"+($(this).attr("href"))
     }).then(function(data) { 
-      console.log(data);  
+      make_table(data);
     }).done(function (data) {
-      console.log(data +" leads to "+ data);
-      $("Page_center")
-      make_table(data);   
     }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
       // status codes are passed to the function
