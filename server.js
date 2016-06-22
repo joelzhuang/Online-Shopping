@@ -6,13 +6,14 @@ var pg = require('pg').native;
 var cors = require('cors');
 
 var app = express();
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8080;
 
 //var connectionString = process.env.DATABASE_URL?ssl=true;
 var connectionString = 'postgres://cfrdcdkekkltda:t5I8lgC9oRPRLMOCozVughDWR7@ec2-54-243-55-26.compute-1.amazonaws.com:5432/d8gouv7ilgaoe9';
 var client = new pg.Client(connectionString);
 
 client.connect();
+
 
 // SESSION/COOKIE STUFF
 app.use(session({

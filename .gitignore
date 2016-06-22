@@ -2,6 +2,11 @@
 logs
 *.log
 
+# Unnecessary files
+client_index.js
+id
+tutorial/
+
 # Runtime data
 pids
 *.pid
