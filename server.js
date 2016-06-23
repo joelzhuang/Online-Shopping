@@ -260,7 +260,7 @@ app.get('/all$', function (req, res) {
 
 
 
-/** Get all the items in quiet-bastio-96093.herokuapp.com/category/ */
+/** Get all the items in quiet-bastion-96093.herokuapp.com/category/ */
 app.get('/:category$', function (req, res) {
   var category = req.params.category;
   if (category == undefined) {
@@ -268,14 +268,16 @@ app.get('/:category$', function (req, res) {
     res.status(400).send("Bad request: cannot search for an undefined category.");
   }
   
+  var wasSent = false;
+  
   var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
   });
   hasCategory.on('end',function(result) {
-    if (result.rows.length == 0) {
+    if (result.rows.length == 0 && !wasSent) {
+      wasSent = true;
       res.status(404).send("The requested category could not be found.");
-      return;
     }
   });
   
@@ -286,13 +288,17 @@ app.get('/:category$', function (req, res) {
     results.push(row);
   });
   query.on('error',function(err) {
-    if (err) {
+    if (err && !wasSent) {
+      wasSent = true;
       console.log("ERROR: pg encountered an error while parsing this request!");
       res.status(500).send("Could not load the requested category. Please try again.");
     }
   });
   query.on('end',function() {
-    res.json(results);
+    if (!wasSent) {
+      wasSent = true;
+      res.json(results);
+    }
   });
 });
 
@@ -309,15 +315,16 @@ app.get('/:category/:subcategory$', function (req, res) {
   }
   console.log("Finding the subcategory "+ subcategory);
   
+  var wasSent = false;
   
   var hasCategory = client.query("SELECT true FROM "+subcat_table+" WHERE cat='"+req.params.category+"' and subcat='"+req.params.subcategory+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
   });
   hasCategory.on('end',function(result) {
-    if (result.rows.length == 0) {
+    if (result.rows.length == 0 && !wasSent) {
+      wasSent = true;
       res.status(404).send("The requested subcategory could not be found.");
-      return;
     }
   });
     
@@ -328,14 +335,18 @@ app.get('/:category/:subcategory$', function (req, res) {
     results.push(row);
   });
   query.on('error',function(err) {
-    if (err) {
+    if (err && !wasSent) {
+      wasSent = true;
       console.log("ERROR: ps encountered an error while parsing this request!" +err);
       res.status(500).send("Could not load the requested subcategory. Please try again.");
     }
   });
   query.on('end',function() {
-    res.json(results);
-    console.log(results);
+    if (!wasSent) {
+      wasSent = true;
+      res.json(results);
+      console.log(results);
+    }
   });
 });
 
