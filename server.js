@@ -222,22 +222,22 @@ app.post('/:iid/:size$', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO '+cart_table+' values('+ req.body.uid +', '+ req.params.iid +', \''+ req.params.size +'\', 1)');
+  var query = client.query('INSERT INTO $1 values($2, $3, \'$4\', 1)',
+                 cart_table, req.body.uid, req.params.iid, req.params.size);
   query.on('row', function() {
     console.log("row successfully returned");
   });
   query.on('error', function(err) {
     if(err) {
-      console.log('ERROR: error running query', err);
-      res.status(500).send('Bad request: the database does not contain entries for the given values.');
+      console.log('Encountered an error while querying the database: '+ err);
+      console.log(Object.getOwnPropertyNames(err));
+      res.status(500).send('Database error');
     }
   });
-  // next('route');
   query.on('end',function() {
     // done
     res.json({ added:true });
   });
-  client.end();
 });
 
 /** Get all the items in the database */
@@ -267,7 +267,7 @@ app.get('/:category$', function (req, res) {
   }
   console.log("Finding the category "+ category);
   var results = [];
-  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
+  var query = client.query("SELECT * FROM $1 WHERE category='$2';",item_table,category);
   query.on('row',function(row) {
     results.push(row);
   });
@@ -293,7 +293,7 @@ app.get('/:category/:subcategory$', function (req, res) {
   }
   console.log("Finding the subcategory "+ subcategory);
   var results = [];
-  var query = client.query("SELECT * FROM "+item_table+" WHERE subcategory='"+subcategory+"' and category='"+category+"';");
+  var query = client.query("SELECT * FROM $1 WHERE category='$2' and subcategory='$3';", item_table,category,subcategory);
   query.on('row',function(row) {
     results.push(row);
   });
