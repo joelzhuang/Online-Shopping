@@ -222,7 +222,8 @@ app.post('/:iid/:size$', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  var query = client.query("INSERT INTO $1 values($2, $3, '$4', 1)",
+  	var query = client.query('INSERT INTO '+table_name+' values(default,\''+req.body.text +'\',false);');
+  var query = client.query("INSERT INTO $1 values($2, $3, '$4', 1);",
                  [cart_table, req.body.uid, req.params.iid, req.params.size]);
   query.on('row', function() {
     console.log("row successfully returned");
@@ -299,7 +300,7 @@ app.get('/:category/:subcategory$', function (req, res) {
   });
   query.on('error',function(err) {
     if (err) {
-      console.log("ERROR: ps encountered an error while parsing this request!" +error);
+      console.log("ERROR: ps encountered an error while parsing this request!" +err);
       res.status(500).send("Could not load the requested subcategory. Please try again.");
     }
   });
