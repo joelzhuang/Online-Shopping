@@ -223,7 +223,7 @@ app.post('/:iid/:size$', function (req, res) {
   } */
   // TODO: check validity of size, iid and uid
   var query = client.query('INSERT INTO $1 values($2, $3, \'$4\', 1)',
-                 cart_table, req.body.uid, req.params.iid, req.params.size);
+                 [cart_table, req.body.uid, req.params.iid, req.params.size]);
   query.on('row', function() {
     console.log("row successfully returned");
   });
@@ -267,13 +267,13 @@ app.get('/:category$', function (req, res) {
   }
   console.log("Finding the category "+ category);
   var results = [];
-  var query = client.query("SELECT * FROM $1 WHERE category='$2';",item_table,category);
+  var query = client.query("SELECT * FROM $1 WHERE category='$2';",[item_table,category]);
   query.on('row',function(row) {
     results.push(row);
   });
   query.on('error',function(err) {
     if (err) {
-      console.log('ERROR: ps encountered an error while parsing this request!');
+      console.log('ERROR: pg encountered an error while parsing this request!');
       res.status(500).send('Internal database error. Panic!');
     }
   });
@@ -293,7 +293,7 @@ app.get('/:category/:subcategory$', function (req, res) {
   }
   console.log("Finding the subcategory "+ subcategory);
   var results = [];
-  var query = client.query("SELECT * FROM $1 WHERE category='$2' and subcategory='$3';", item_table,category,subcategory);
+  var query = client.query("SELECT * FROM $1 WHERE category='$2' and subcategory='$3';", [item_table,category,subcategory]);
   query.on('row',function(row) {
     results.push(row);
   });
