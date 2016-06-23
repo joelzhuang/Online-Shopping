@@ -222,16 +222,16 @@ app.post('/:iid/:size$', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  var query = client.query('INSERT INTO $1 values($2, $3, \'$4\', 1)',
+  var query = client.query("INSERT INTO $1 values($2, $3, '$4', 1)",
                  [cart_table, req.body.uid, req.params.iid, req.params.size]);
   query.on('row', function() {
     console.log("row successfully returned");
   });
   query.on('error', function(err) {
     if(err) {
-      console.log('Encountered an error while querying the database: '+ err);
+      console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
-      res.status(500).send('Database error');
+      res.status(500).send("Database error");
     }
   });
   query.on('end',function() {
@@ -242,15 +242,15 @@ app.post('/:iid/:size$', function (req, res) {
 
 /** Get all the items in the database */
 app.get('/all$', function (req, res) {
-  var query = client.query('SELECT * FROM '+item_table+';');
+  var query = client.query("SELECT * FROM "+item_table+";");
   var results = [];
   query.on('row',function(row) {
     results.push(row);
   });
   query.on('error', function(err) {
     if(err) {
-      console.log('ERROR: error running query', err);
-      res.status(500).send('Bad request: the database does not contain entries for the given values.');
+      console.log("ERROR: error running query", err);
+      res.status(500).send("Bad request: the database does not contain entries for the given values.");
     }
   });
   query.on('end',function() {
@@ -263,7 +263,7 @@ app.get('/:category$', function (req, res) {
   var category = req.params.category;
   if (category == undefined) {
     console.log("Cannot find an undefined category");
-    res.status(400).send('Bad request: cannot search for an undefined category.');
+    res.status(400).send("Bad request: cannot search for an undefined category.");
   }
   console.log("Finding the category "+ category);
   var results = [];
@@ -273,8 +273,8 @@ app.get('/:category$', function (req, res) {
   });
   query.on('error',function(err) {
     if (err) {
-      console.log('ERROR: pg encountered an error while parsing this request!');
-      res.status(500).send('Internal database error. Panic!');
+      console.log("ERROR: pg encountered an error while parsing this request!");
+      res.status(500).send("Could not load the requested category. Please try again.");
     }
   });
   query.on('end',function() {
@@ -288,8 +288,8 @@ app.get('/:category/:subcategory$', function (req, res) {
   var subcategory = req.params.subcategory;
   if (category == undefined || subcategory == undefined) {
     console.log("Cannot find an undefined category or subcategory!");
-    res.status(400).send('Bad request: cannot search for an undefined '+ 
-      (subcategory == undefinied ? 'subcategory' : 'category') +'.');
+    res.status(400).send("Bad request: cannot search for an undefined "+ 
+      (subcategory == undefinied ? "subcategory" : "category") +".");
   }
   console.log("Finding the subcategory "+ subcategory);
   var results = [];
@@ -299,8 +299,8 @@ app.get('/:category/:subcategory$', function (req, res) {
   });
   query.on('error',function(err) {
     if (err) {
-      console.log('ERROR: ps encountered an error while parsing this request!');
-      res.status(500).send('Internal database error. Panic!');
+      console.log("ERROR: ps encountered an error while parsing this request!" +error);
+      res.status(500).send("Could not load the requested subcategory. Please try again.");
     }
   });
   query.on('end',function() {
