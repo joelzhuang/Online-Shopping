@@ -1,0 +1,7 @@
+ENDPOINTS
+
+URL		HTTP Verb					Action
+/all					GET			return a JSON object containing all items in the database
+/:iid/:size				POST			add the item id in the given size to the cart (user id and credentials are sent in the body of the request)
+/:category				GET			return a JSON object containing all the items belonging to that category
+/:category/:subcategory		GET			return a JSON object containing all items belonging to that combination of category and subcategory
