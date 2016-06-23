@@ -229,7 +229,7 @@ app.post('/:iid/:size$', function (req, res) {
   query.on('error', function(err) {
     if(err) {
       console.log('ERROR: error running query', err);
-      res.status(400).send('Bad request: the database does not contain entries for the given values.');
+      res.status(500).send('Bad request: the database does not contain entries for the given values.');
     }
   });
   // next('route');
@@ -282,7 +282,7 @@ app.get('/:category$', function (req, res) {
   });
 });
 
-/** Get all the items in quiet-bastio-96093.herokuapp.com/category/subcategory */
+/** Get all the items in quiet-bastion-96093.herokuapp.com/category/subcategory */
 app.get('/:category/:subcategory$', function (req, res) {
   var category = req.params.category;
   var subcategory = req.params.subcategory;

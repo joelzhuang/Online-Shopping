@@ -381,6 +381,27 @@ h1
     color: #074d64;
 }
 
+.error {
+  height: 10px;
+  width: auto;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#page_top_server {
+  background-color: Coral;
+  display:hidden;
+  opacity: 0;
+}
+
+#page_top_client {
+  background-color: Khaki;
+  display:hidden;
+  opacity: 0;
+}
+
 #Page_center
 {
     width: 669px;

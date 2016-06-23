@@ -5,28 +5,27 @@ $(document).ready(function(e) {
   console.log('Page ready!');
     get_items();
   
-    /** Creates a buy request with the server */
+  /** Creates a buy request with the server */
   $("#Page_center").on('click',".page_center_buy",function() {
     console.log("buy item "+$(this).attr("id"));
     $.ajax({
       method: 'POST',
       url: domain +'/'+ $(this).attr("id") +'/Medium',
       dataType: 'json',
+      //                               v gotta get this from cookies
       data: { iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
-    }).done(function (msg){
+     }).then(function(data) { 
+        console.log("then "+ data);
+     }).done(function (msg){
       console.log(data +" leads to "+ msg);
       alert("purchase made");
     }).fail(function( xhr, status, errorThrown ) {
-      // Code to run if the request fails; the raw request and
-      // status codes are passed to the function
-      alert( "Sorry, there was a problem accessing the database!" );
-      console.log( "Error: " + errorThrown );
-      console.log( "Status: " + status );
+      errorLog(xhr,status,errorThrown);
     });
     return false;
   });
   
-    /** Changes the category */
+  /** Changes the category based on clicks in the sidebar */
   $("a").click(function(event) {
   // if this isn't a menu item continue with whatever you were doing
     if (!($(this).hasClass("menu_item"))) {
@@ -35,7 +34,6 @@ $(document).ready(function(e) {
     // otherwise, stop link propagation
     event.preventDefault();
     console.log("change category "+$(this).attr("href"));
-    
     $.ajax({
       method: 'GET',
       url: domain+"/"+($(this).attr("href"))
@@ -43,11 +41,7 @@ $(document).ready(function(e) {
       make_table(data);
     }).done(function (data) {
     }).fail(function( xhr, status, errorThrown ) {
-      // Code to run if the request fails; the raw request and
-      // status codes are passed to the function
-      console.log( "Error: " + errorThrown );
-      console.log( "Status: " + status );
-      console.log(xhr);
+      errorLog(xhr,status,errorThrown);
     });
     return false;
   });
@@ -68,7 +62,51 @@ $(document).ready(function(e) {
       alert("Sorry, there was a problem accessing the database!");
       console.log( "Error: " + errorThrown );
       console.log( "Status: " + status );
-      console.dir( xhr );
+      onServerError(xhr.responseText);
+    });
+  }
+  
+  var errorLog = function(xhr, status, errorThrown) {
+    console.log( "Error: "+ errorThrown);
+    console.log( "Status: "+ status);
+    if (status < 500) {
+      onClientError(xhr.responseText);
+    } else {
+      onServerError(xhr.responseText);
+    }
+  }
+  
+  /** Just a prettiness thing--shows a client error*/
+  var onClientError = function(text) {
+    $("#page_top_server").animate({ 
+      opacity: 0
+    }, 200 );
+    $("#page_top_content").animate({ 
+      opacity: 0
+    }, 200 );
+    $("#page_top_client").html(text);
+    $("#page_top_client").css("display","block");
+    $("#page_top_client").animate({
+      opacity: 1
+    }, 200, function() {
+      // on complete
+    });
+  }
+  
+  /** Just a prettiness thing--shows a server error*/
+  var onServerError = function(text) {
+    $("#page_top_content").animate({ 
+      opacity: 0
+    }, 200 );
+    $("#page_top_client").animate({ 
+      opacity: 0
+    }, 200 );
+    $("#page_top_server").html(text);
+    $("#page_top_server").css("display","block");
+    $("#page_top_server").animate({
+      opacity: 1
+    }, 200, function() {
+      // on complete
     });
   }
   
@@ -90,8 +128,7 @@ $(document).ready(function(e) {
     }
   }
   
-  /** Returns an array of <td> objects. Currently, every third cell is 
-  the website's default middle column, but we can change/remove this. */
+  /** Returns an array of <td> objects. */
   var html_data = function (data) {
   console.log("hello yes I am data "+data);
     var arr = new Array();
