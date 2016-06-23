@@ -227,7 +227,7 @@ app.post('/:iid/:size$', function (req, res) {
     if(err) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
-      res.status(500).send("Database error");
+      res.status(500).send("Database error: "+err);
     }
   });
   query.on('end',function(result) {

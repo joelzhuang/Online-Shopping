@@ -3,7 +3,7 @@ $(document).ready(function(e) {
   //var domain = "https://localhost:6400";
   var domain = "https://quiet-bastion-96093.herokuapp.com";
   console.log('Page ready!');
-    get_items();
+  get_items();
   
   /** Creates a buy request with the server */
   $("#Page_center").on('click',".page_center_buy",function() {
@@ -15,12 +15,13 @@ $(document).ready(function(e) {
       //                               v gotta get this from cookies
       data: { iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
      }).then(function(data) { 
-        console.log("then "+ data);
+        console.log("then "+ Object.getOwnPropertyNames(data));
      }).done(function (msg){
-      console.log(data +" leads to "+ msg);
+      console.log($(this).attr("id") +" leads to "+ msg);
       alert("purchase made");
     }).fail(function( xhr, status, errorThrown ) {
       errorLog(xhr,status,errorThrown);
+      onServerError("Could not purchase this item! "+xhr.responseText);
     });
     return false;
   });
@@ -46,8 +47,7 @@ $(document).ready(function(e) {
     return false;
   });
   
-  /** Gets all the items from the server, turns them into HTML
-  and inserts them into the document. */
+  /** Gets all the items from the server, turns them into HTML and inserts them into the document. */
   function get_items() {
     console.log("Get all ");
     $.ajax({
