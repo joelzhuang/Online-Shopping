@@ -222,12 +222,7 @@ app.post('/:iid/:size$', function (req, res) {
     return;
   } */
   // TODO: check validity of size, iid and uid
-  	var query = client.query('INSERT INTO '+table_name+' values(default,\''+req.body.text +'\',false);');
-  var query = client.query("INSERT INTO $1 values($2, $3, '$4', 1);",
-                 [cart_table, req.body.uid, req.params.iid, req.params.size]);
-  query.on('row', function() {
-    console.log("row successfully returned");
-  });
+  var query = client.query("INSERT INTO "+cart_table+" values("+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1);");
   query.on('error', function(err) {
     if(err) {
       console.log("Encountered an error while querying the database: "+ err);
@@ -235,11 +230,14 @@ app.post('/:iid/:size$', function (req, res) {
       res.status(500).send("Database error");
     }
   });
-  query.on('end',function() {
+  query.on('end',function(result) {
     // done
     res.json({ added:true });
   });
 });
+
+
+
 
 /** Get all the items in the database */
 app.get('/all$', function (req, res) {
@@ -259,6 +257,9 @@ app.get('/all$', function (req, res) {
   });
 });
 
+
+
+
 /** Get all the items in quiet-bastio-96093.herokuapp.com/category/ */
 app.get('/:category$', function (req, res) {
   var category = req.params.category;
@@ -266,9 +267,21 @@ app.get('/:category$', function (req, res) {
     console.log("Cannot find an undefined category");
     res.status(400).send("Bad request: cannot search for an undefined category.");
   }
+  
+  var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
+  hasCategory.on('row',function(row,result) {
+    result.addRow(row);
+  });
+  hasCategory.on('end',function(result) {
+    if (result.rows.length == 0) {
+      res.status(404).send("The requested category could not be found.");
+      return;
+    }
+  });
+  
   console.log("Finding the category "+ category);
   var results = [];
-  var query = client.query("SELECT * FROM $1 WHERE category='$2';",[item_table,category]);
+  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
   query.on('row',function(row) {
     results.push(row);
   });
@@ -283,18 +296,34 @@ app.get('/:category$', function (req, res) {
   });
 });
 
+
+
+
 /** Get all the items in quiet-bastion-96093.herokuapp.com/category/subcategory */
 app.get('/:category/:subcategory$', function (req, res) {
   var category = req.params.category;
   var subcategory = req.params.subcategory;
   if (category == undefined || subcategory == undefined) {
     console.log("Cannot find an undefined category or subcategory!");
-    res.status(400).send("Bad request: cannot search for an undefined "+ 
-      (subcategory == undefinied ? "subcategory" : "category") +".");
+    res.status(400).send("Bad request: cannot search for an undefined "+ (subcategory == undefinied ? "subcategory" : "category") +".");
   }
   console.log("Finding the subcategory "+ subcategory);
+  
+  
+  var hasCategory = client.query("SELECT true FROM "+subcat_table+" WHERE cat='"+req.params.category+"' and subcat='"+req.params.subcategory+"';");
+  hasCategory.on('row',function(row,result) {
+    result.addRow(row);
+  });
+  hasCategory.on('end',function(result) {
+    if (result.rows.length == 0) {
+      res.status(404).send("The requested subcategory could not be found.");
+      return;
+    }
+  });
+    
+  
   var results = [];
-  var query = client.query("SELECT * FROM $1 WHERE category='$2' and subcategory='$3';", [item_table,category,subcategory]);
+  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"' and subcategory='"+subcategory+"';");
   query.on('row',function(row) {
     results.push(row);
   });
