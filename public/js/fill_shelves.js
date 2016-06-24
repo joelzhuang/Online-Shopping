@@ -9,7 +9,7 @@ $(document).ready(function(e) {
     console.log("buy item "+$(this).attr("id"));
     $.ajax({
       method: 'POST',
-      url: domain +'/'+ $(this).attr("id") +'/Medium',
+      url: domain +'/shop/'+ $(this).attr("id") +'/Medium',
       dataType: 'json',
       //                               v gotta get this from cookies
       data: { iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
@@ -36,7 +36,7 @@ $(document).ready(function(e) {
     console.log("change category "+$(this).attr("href"));
     $.ajax({
       method: 'GET',
-      url: domain+"/"+($(this).attr("href"))
+      url: domain+"/shop/"+($(this).attr("href"))
     }).then(function(data) { 
       make_table(data);
     }).done(function (data) {
@@ -71,9 +71,28 @@ item cell format:
     console.log("Get all ");
     $.ajax({
       method: 'GET',
-      url: domain+'/all'
+      url: domain+'/shop/all'
     }).then(function(data) {
       make_table(data)
+    }).done( function(data) {
+    }).fail(function( xhr, status, errorThrown ) {
+      // Code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      alert("Sorry, there was a problem accessing the database!");
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      onServerError(xhr.responseText);
+    });
+  }
+  
+  /** Gets all the items from the cart, turns them into HTML and inserts them into the document. */
+  var load_cart  = function() {
+    console.log("Get cart ");
+    $.ajax({
+      method: 'GET',
+      url: domain+'/cart/all'
+    }).then(function(data) {
+      show_cart(data)
     }).done( function(data) {
     }).fail(function( xhr, status, errorThrown ) {
       // Code to run if the request fails; the raw request and
@@ -129,7 +148,7 @@ item cell format:
     });
   }
   
-  /* uses html_data's <td> objects to create a table, with ross and stuff. */
+  /* uses html_data's <td> objects to create a table, with rows and stuff. */
   var make_table = function (data) {
     $("#Page_center").find("tbody").html("");
     var html_data_arr = html_data(data);
@@ -148,29 +167,38 @@ item cell format:
   }
   
   /** Returns an array of <td> objects. */
-  var html_data = function (data) {
-  console.log("hello yes I am data "+data);
+  var html_cart_data = function (data) {
     var arr = new Array();
     for (var i = 0; i < data.length; i++) {
-      var html = "<td width=\"29\" class=\"page_center_button\">";
-          html+= "<a class=\"page_center_buy\" id=\""+ data[i].iid +"\" title=\"Buy "+data[i].name +"\"></a>";
-          html+= "<a class=\"page_center_info\" href=\"?page=home\" title=\"more info\"><span>more-info</span></a>";
+      var html = "<td>";
+          html+= data[i].name;
           html+= "</td>";
-          html+= "<td width=\"180\" class=\"page_center_content\" valign=\"top\">";
-            html += "<img width=\"180\" src=\"images/"+ (data[i].image) +".jpg\" />";
-            html += "<div class=\"page_center_text\">";
-              html += "<p><span class=\"item_name blue2\" id=\""+ data[i].iid +"\">";
-                html += data[i].name;
-              html += "</p>";
-              if (typeof(data[i].description) !== 'object') {
-                html += "<p><span class=\"item_description gray\">"+ data[i].description +"</span></p>";
-              }
-              // rounding technique from: http://jsfiddle.net/FQTqk/7/
-              html += "<span class=\"item_price green\">Price: $"+ parseFloat(Math.round(data[i].price * 100) / 100).toFixed(2) +"</span><br>";
-            html += "</div>";
+          html+= "<td>";
+            html += data[i].size;
+          html += "</td>";
+          html += "<td>";
+            html += data[i].quantity;
+          html += "</td>";
+          html += "<td>";
+          html += "<span class=\"item_description gray\">"+
+                    "<a href=\"cart.html/remove/"+data[i].iid+"\"> X </a></span>";
           html += "</td>";
       arr.push(html);
     }
     return arr;
+  }
+  
+  /* uses html_data's <td> objects to create a table showing the user's cart. */
+  var show_cart = function (data) {
+    $("#Page_center").find("tbody").html(""); // clear the page body
+    var html_data_arr = html_cart_data(data);
+    var trs = $("#Page_center").find("tbody");
+    var last_idx = trs.length - 1;
+    trs.append("<tr class=\"cart-header\"><td width=\"50%\">Name</td><td width=\"15%\">Size</td><td width=\"10%\">Quantity</td><td width=\"5%\">Remove</td></tr>");
+    for (var i = 0; i < html_data_arr.length; i++) {
+      trs.append("<tr>");
+      trs.append(html_data_arr[i]);
+      trs.append("</tr>");
+    }
   }
   
