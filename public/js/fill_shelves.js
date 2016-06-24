@@ -1,9 +1,8 @@
+var domain = "https://quiet-bastion-96093.herokuapp.com";
+
 $(document).ready(function(e) {
   var ERROR_LOG = console.error.bind(console);
   //var domain = "https://localhost:6400";
-  var domain = "https://quiet-bastion-96093.herokuapp.com";
-  console.log('Page ready!');
-  get_items();
   
   /** Creates a buy request with the server */
   $("#Page_center").on('click',".page_center_buy",function() {
@@ -46,9 +45,29 @@ $(document).ready(function(e) {
     });
     return false;
   });
+ 
+});
+
+/*
+
+item cell format: 
+<td width="29" class="page_center_button">
+  <a class="page_center_buy" href="?page=home" title="buy"><span>buy</span></a>
+  <a class="page_center_info" href="?page=home" title="more info"><span>more-info</span></a>
+</td>
+<td width="178" class="page_center_content">
+  <div class="page_center_text">
+    <p><span class="item_name blue2" id="<item id>">Lorem ipsum dolor</span></p>
+    <p><span class="item_description gray">Donec at: justo ac</span></p>
+    <span class="item_price green">Price: $156</span><br>
+  </div>
+</td>
+
+*/
+
   
   /** Gets all the items from the server, turns them into HTML and inserts them into the document. */
-  function get_items() {
+  var load_all  = function() {
     console.log("Get all ");
     $.ajax({
       method: 'GET',
@@ -155,22 +174,3 @@ $(document).ready(function(e) {
     return arr;
   }
   
-  
-});
-
-/*
-
-item cell format: 
-<td width="29" class="page_center_button">
-  <a class="page_center_buy" href="?page=home" title="buy"><span>buy</span></a>
-  <a class="page_center_info" href="?page=home" title="more info"><span>more-info</span></a>
-</td>
-<td width="178" class="page_center_content">
-  <div class="page_center_text">
-    <p><span class="item_name blue2" id="<item id>">Lorem ipsum dolor</span></p>
-    <p><span class="item_description gray">Donec at: justo ac</span></p>
-    <span class="item_price green">Price: $156</span><br>
-  </div>
-</td>
-
-*/

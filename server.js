@@ -213,6 +213,16 @@ var subcat_table = "subcategories";
 */
 app.post('/:iid/:size$', function (req, res) {
   console.log(req.body);
+  
+  var logged_in = is_logged_in(req.session);
+  var wasSent   = false;
+  
+  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
+  
+  if (logged_in) {
+    res.status(403).send("Please log in to add this item to your cart.");
+    wasSent = true;
+  }
   /*
   if (req.body == undefined || req.body.length == 0
     // this line is where the logged-in check goes!
@@ -224,7 +234,7 @@ app.post('/:iid/:size$', function (req, res) {
   // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+cart_table+" values("+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1);");
   query.on('error', function(err) {
-    if(err) {
+    if(err && !wasSent) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
       res.status(500).send("Database error: "+err);
@@ -232,7 +242,9 @@ app.post('/:iid/:size$', function (req, res) {
   });
   query.on('end',function(result) {
     // done
-    res.json({ added:true });
+    if (!wasSent) {
+      res.json({ added:true });
+    }
   });
 });
 
@@ -349,6 +361,17 @@ app.get('/:category/:subcategory$', function (req, res) {
     }
   });
 });
+
+
+var is_logged_in = function(session){
+	if(session && session.loggedIn) {
+    return true;
+	}
+	else {
+	  return false;
+  }
+}
+
 
 app.listen(port, function () {
 	console.log('Local app listening on port ' + port);
