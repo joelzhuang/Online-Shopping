@@ -262,7 +262,7 @@ app.get('/shop/.*', function (req,res,next) {
 });
 
 /* Add a new item to the cart. */
-app.post('shop/:iid/:size$', function (req, res) {
+app.post('/shop/:iid/:size$', function (req, res) {
   console.log(req.body);
   
   var logged_in = is_logged_in(req.session);
@@ -299,7 +299,7 @@ app.post('shop/:iid/:size$', function (req, res) {
 });
 
 /* Remove an item from the cart */
-app.post('cart/delete/:iid/:size$', function (req, res) {
+app.post('/cart/delete/:iid/:size$', function (req, res) {
   console.log(req.body);
   
   var logged_in = is_logged_in(req.session);
@@ -338,7 +338,7 @@ app.post('cart/delete/:iid/:size$', function (req, res) {
 });
 
 /** Get all the items in the database */
-app.get('shop/all$', function (req, res) {
+app.get('/shop/all$', function (req, res) {
   var query = client.query("SELECT * FROM "+item_table+";");
   var results = [];
   query.on('row',function(row) {
@@ -356,7 +356,7 @@ app.get('shop/all$', function (req, res) {
 });
 
 /** Load all the items in a user's cart */
-app.get('cart/all$', function (req, res) {
+app.get('/cart/all$', function (req, res) {
   var logged_in = is_logged_in(req.session);
   var wasSent = false;
   
