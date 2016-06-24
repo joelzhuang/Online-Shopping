@@ -261,6 +261,53 @@ app.get('/shop/.*', function (req,res,next) {
   next();
 });
 
+/** Get all the items in the database */
+app.get('/shop/all$', function (req, res) {
+  var query = client.query("SELECT * FROM "+item_table+";");
+  var results = [];
+  query.on('row',function(row) {
+    results.push(row);
+  });
+  query.on('error', function(err) {
+    if(err) {
+      console.log("ERROR: error running query", err);
+      res.status(500).send("Bad request: the database does not contain entries for the given values.");
+    }
+  });
+  query.on('end',function() {
+    res.json(results);
+  });
+});
+
+/** Load all the items in a user's cart */
+app.get('/cart/all$', function (req, res) {
+  var logged_in = is_logged_in(req.session);
+  var wasSent = false;
+  
+  if (logged_in) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+    wasSent = true;
+    return;
+  }
+
+  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table
+    +"FROM "+ cart_table+", "+item_table
+    +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
+  var results = [];
+  query.on('row',function(row) {
+    results.push(row);
+  });
+  query.on('error', function(err) {
+    if(err && !wasSent) {
+      console.log("ERROR: error running query", err);
+      res.status(500).send("Bad request: the database does not contain entries for the given values.");
+    }
+  });
+  query.on('end',function() {
+    res.json(results);
+  });
+});
+
 /* Add a new item to the cart. */
 app.post('/shop/:iid/:size$', function (req, res) {
   console.log(req.body);
@@ -336,55 +383,6 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
     }
   });
 });
-
-/** Get all the items in the database */
-app.get('/shop/all$', function (req, res) {
-  var query = client.query("SELECT * FROM "+item_table+";");
-  var results = [];
-  query.on('row',function(row) {
-    results.push(row);
-  });
-  query.on('error', function(err) {
-    if(err) {
-      console.log("ERROR: error running query", err);
-      res.status(500).send("Bad request: the database does not contain entries for the given values.");
-    }
-  });
-  query.on('end',function() {
-    res.json(results);
-  });
-});
-
-/** Load all the items in a user's cart */
-app.get('/cart/all$', function (req, res) {
-  var logged_in = is_logged_in(req.session);
-  var wasSent = false;
-  
-  if (logged_in) {
-    res.status(403).send("Please log in to view the contents of your cart.");
-    wasSent = true;
-    return;
-  }
-
-  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table
-    +"FROM "+ cart_table+", "+item_table
-    +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
-  var results = [];
-  query.on('row',function(row) {
-    results.push(row);
-  });
-  query.on('error', function(err) {
-    if(err && !wasSent) {
-      console.log("ERROR: error running query", err);
-      res.status(500).send("Bad request: the database does not contain entries for the given values.");
-    }
-  });
-  query.on('end',function() {
-    res.json(results);
-  });
-});
-
-
 
 /** Get all the items in quiet-bastion-96093.herokuapp.com/category/ */
 app.get('/shop/:category$', function (req, res) {
