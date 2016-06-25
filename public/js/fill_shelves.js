@@ -10,7 +10,7 @@ $(document).ready(function(e) {
     console.log("buy item "+ my_id);
     $.ajax({
       method: 'POST',
-      url: domain +'/shop/'+ my_id +'/'+ $(this).html(),
+      url: domain +'/cart/'+ my_id +'/'+ $(this).html(),
       dataType: 'json',
       //                               v gotta get this from cookies
       data: { iid: my_id, uid: 10, size: "Medium" } // TODO actually get an id for user 
@@ -21,6 +21,25 @@ $(document).ready(function(e) {
     }).fail(function( xhr, status, errorThrown ) {
       errorLog(xhr,status,errorThrown);
       onServerError("Could not purchase this item! "+xhr.responseText);
+    });
+    return false;
+  });
+  
+  
+  $("#Page_center").on('click',"#checkout",function() {
+    event.preventDefault();
+    console.log("checkout");
+    $.ajax({
+      method: 'POST',
+      url: domain +'/cart/checkout/'+ my_id,
+      dataType: 'json'
+     }).then(function(data) { 
+     }).done(function (msg){
+      console.log(my_id +" leads to "+ msg);
+      alert("Thank-you for your purchase!");
+    }).fail(function( xhr, status, errorThrown ) {
+      errorLog(xhr,status,errorThrown);
+      onServerError("Could not check out! "+xhr.responseText);
     });
     return false;
   });
@@ -159,7 +178,7 @@ var html_data = function (data) {
     var html = "<td width=\"35\" class=\"page_center_button\" style=\"border-left: 1px lightgrey dotted;\">";
         html+= "<div class=\"dropdown\">"
           html+= "<a class=\"page_center_buy\" id=\""+ data[i].iid +"\" title=\"Buy "+data[i].name +"\"></a>";
-        if (!(data[i].category == "Jewellery" || data[i].category == "Watches")) {
+        if (!(data[i].subcategory === "Jewellery" || data[i].subcategory === "Watches")) {
           html+= "<div class=\"dropdown-content\">"
                       +"<a href=\"\">Small</a>"
                       +"<a href=\"\">Medium</a>"
@@ -211,7 +230,7 @@ var html_cart_data = function (data) {
         html += "</td>";
     arr.push(html);
   }
-  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"></td> <td id=\"total_\">$"+ money(total) +"</td> <td id=\"removeall_\"><a class=\"remove-all\" href=\"\">Remove all</td>");
+  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"><a href=\"\" id=\"checkout\">Checkout</a></td> <td id=\"total_\">$"+ money(total) +"</td> <td id=\"removeall_\"><a class=\"remove-all\" href=\"\">Remove all</td>");
   return arr;
 }
 

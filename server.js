@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyparser = require('body-parser');
 var pg = require('pg').native;
 var cors = require('cors');
+var url = require('url');
 var router = express.Router(); // routing! life is so much easier.
 var app = express();
 
@@ -50,6 +51,19 @@ app.use(function(req,res,next) {
   next();
 });
 
+/** Refresh the cookie's expiration time, if the user is logged in. */
+app.all(function (req,res,next) {
+	if (is_logged_in(req.session)) {
+		console.log("user "+ req.session.email +" is logged in, resetting cookie");
+		/* var query = url.parse(req.url, true, true).query;
+		res.setHeader('Set-Cookie', cookie.serialize('email', String(query.email), {
+			httpOnly: true,
+			maxAge: 3600000 // 1 week 
+		})); */
+    } else {
+      console.log("user is NOT logged in");
+    }
+});
 
 app.get('/get', function(req,res,next){
 	console.log(req);
@@ -93,7 +107,6 @@ app.get('/login$', function(req,res) {
 app.get('/checkLogin/', function(req,res,next){
 
 	console.log(req.session)
-
 	if(req.session && req.session.loggedIn){
 		console.log('found')
 		res.send('found')
@@ -101,26 +114,20 @@ app.get('/checkLogin/', function(req,res,next){
 	else{
 		console.log('not found')
 		res.send('not found')
-
-}
-
-})
+	}
+});
 
 app.get('/logout', function(req, res, next){
 
 	console.log(req.session)
 	if(req.session){
-	req.session.loggedIn = false;
-	req.session.destroy();
-
-	res.send('200');
-
-}
-
-})
+		req.session.loggedIn = false;
+		req.session.destroy();
+		res.send('200');
+	}
+});
 
 app.post('/googleLogin/', function(req, res, next){
-  cookieParser ('secretest of secret strings', { maxAge: 360000, path:"/"});
 
 	var username = req.body.name;
 
@@ -145,13 +152,13 @@ app.post('/googleLogin/', function(req, res, next){
 
 		});
 
-	if(!found){
-		res.send(JSON.stringify({outcome : 'incorrect'}));
-	}
+		if(!found){
+			res.send(JSON.stringify({outcome : 'incorrect'}));
+		}
 
-	console.log(req.session)
+		console.log(req.session)
 	
-	})
+	});
 
 	//query.on('end', function(){
 	//	console.log(res.json(results))
@@ -193,7 +200,7 @@ app.post('/login/', function(req,res,next){
 		});
 
 	  if(!found){
-		  res.send(JSON.stringify({outcome : 'incorrect'}));
+		res.send(JSON.stringify({outcome : 'incorrect'}));
 	  }
 
 	  console.log(req.session)
@@ -251,11 +258,19 @@ var subcat_table = "orders";
 
 
 
-app.get('/shop/.*', function (req,res,next) {
+app.get('/shop/*', function (req,res,next) {
   console.log("got a shop request");
   next();
 });
 
+// makes sure the user is logged in before making changes to the cart
+app.get('/cart/*', function (req, res, next) {
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in || req.body == undefined) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  next();
+});
 
 
 /** Get all the items in the database */
@@ -280,17 +295,10 @@ app.get('/shop/all$', function (req, res) {
 
 /** Load all the items in a user's cart */
 app.get('/cart/all/:uid', function (req, res) {
-  var logged_in = is_logged_in(req.session);
-  var id = get_id (req.cookies['email']);
-  var wasSent = false;
-  if (logged_in || req.body == undefined || 
-      (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
-    res.status(403).send("Please log in to view the contents of your cart.");
-    wasSent = true;
-    return;
-  }
   
-  var id = (req.params.uid == undefined? req.body.id : req.params.uid);
+  var id = get_id (req.session.email);
+  console.log(req.session.email +": "+id);
+  
   console.log("SELECT "+item_table+".iid, "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity, "+item_table+".price"
     +" FROM "+ cart_table+", "+item_table
     +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
@@ -322,22 +330,12 @@ app.get('/cart/all/:uid', function (req, res) {
   TODO: make the quantities update correctly
 */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
-  console.log(req.body);
-  
-  var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
-  
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
-  
-  if (logged_in || req.body == undefined || 
-      (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
-    res.status(403).send("Please log in to change the contents of the cart.");
-    wasSent = true;
-    return;
-  }
+	
+  var id = get_id (req.session.email);
+  console.log(req.session.email +": "+id);
   
   var query = client.query("DELETE FROM "+ cart_table +" only"
-    +" WHERE uid = "+req.body.uid+" and iid = "+req.params.iid
+    +" WHERE uid = "+id+" and iid = "+req.params.iid
     +" and size = \'"+req.params.size+"\';");
   query.on('error', function(err) {
     if(err && !wasSent) {
@@ -357,24 +355,11 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 
 
 /* Add a new item to the cart. */
-app.post('/shop/:iid/:size$', function (req, res) {
-  console.log(req.body);
+app.post('/cart/:iid/:size$', function (req, res) {
+
+  var id = get_id (req.session.email);
+  console.log(req.session.email +": "+id);
   
-  var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
-  
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
-  
-  if (logged_in) {
-    res.status(403).send("Please log in to add this item to your cart.");
-    wasSent = true;
-    return;
-  }
-  if (req.body == undefined || req.body.length == 0) {
-    res.status(400).send("Invalid request format.");
-    wasSent = true;
-    return;
-  }
     // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
       +" SELECT "+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1, price"
@@ -487,30 +472,16 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
 
 /* CHECK OUT ITEMS. */
 app.post('/cart/checkout/:uid$', function (req, res) {
-  console.log(req.body);
   
-  var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
+  var id = get_id (req.session.email);
+  console.log(req.session.email +": "+id);
   
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
-  
-  if (logged_in) {
-    res.status(403).send("Please log in to checkout.");
-    wasSent = true;
-    return;
-  }
-  if (req.body == undefined || req.body.length == 0) {
-    res.status(400).send("Invalid request format.");
-    wasSent = true;
-    return;
-  }
-  var date = new Date();
   // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
       +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', iid, quantity, price, oid"
       +" FROM items, cart"
       +" WHERE iid="+cart_table+".iid"
-      +" and uid="+cart_table+".uid and uid="+req.params.uid
+      +" and uid="+cart_table+".uid and uid="+id
       +" and quantity="+cart_table+"+req.params.iid"
       +" and oid = (select max(oid) from tbl)+1 ;");
   query.on('error', function(err) {
@@ -523,9 +494,9 @@ app.post('/cart/checkout/:uid$', function (req, res) {
   query.on('end',function(result) {
     // done
     if (!wasSent) {
-      var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+req.params.uid+";");
+      var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+id+";");
       removeNext.on('error', function(err) {
-        console.log("Something has gone seriously wrong and the database is unsafe! (uid="+req.params.uid+")");
+        console.log("Something has gone seriously wrong and the database is unsafe! (uid="+id+")");
         res.status(500).send("The database encountered an awful, awful error while processing your request.");
         wasSent = true;
       });
