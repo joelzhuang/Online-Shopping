@@ -278,13 +278,7 @@ var cat_table = "categories";
 var subcat_table = "subcategories";
 
 app.get('/shop/.*', function (req,res,next) {
-  // first, handle routing:
-  var idx = req.params.subcategory.indexOf('.html');
-  if (idx == req.params.subcategory.length - 5) {
-    console.log("got an HTML request");
-    next();
-    return;
-  }
+  console.log("got a shop request");
   next();
 });
 
@@ -306,20 +300,24 @@ app.get('/shop/all$', function (req, res) {
   });
 });
 
+
+
 /** Load all the items in a user's cart */
 app.get('/cart/all$', function (req, res) {
   var logged_in = is_logged_in(req.session);
   var wasSent = false;
   
-  if (logged_in) {
+  if (logged_in || req.body == undefined || req.body.uid == undefined || req.body.uid < 0) {
     res.status(403).send("Please log in to view the contents of your cart.");
     wasSent = true;
     return;
   }
-
-  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity\n"
-    +"FROM "+ cart_table+", "+item_table+"\n"
-    +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
+  
+  console.log("Cart request from "+ req.body.uid);
+  
+  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
+    +" FROM "+ cart_table+", "+item_table
+    +" WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
   var results = [];
   query.on('row',function(row) {
     results.push(row);
@@ -331,11 +329,17 @@ app.get('/cart/all$', function (req, res) {
     }
   });
   query.on('end',function() {
-    res.json(results);
+    if (!wasSent) {
+      res.json(results);
+    }
   });
 });
 
-/* Remove an item from the cart */
+
+
+/* Remove an item from the cart 
+  TODO: make sure the request is actually coming from the right user
+*/
 app.post('/cart/delete/:iid/:size$', function (req, res) {
   console.log(req.body);
   
@@ -356,9 +360,9 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
     return;
   }
   
-  // TODO: check validity of size, iid and uid
   var query = client.query("DELETE FROM "+ cart_table+
-    +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+cart_table+".iid = "+req.params.iid+" and "+cart_table+".size = \'"+req.params.size+"\';");
+    +" WHERE "+cart_table+".uid = "+req.body.uid+" and "+cart_table+".iid = "+req.params.iid+" and "
+    +cart_table+".size = \'"+req.params.size+"\';");
   query.on('error', function(err) {
     if(err && !wasSent) {
       console.log("Encountered an error while querying the database: "+ err);

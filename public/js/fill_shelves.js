@@ -90,7 +90,8 @@ item cell format:
     console.log("Get cart ");
     $.ajax({
       method: 'GET',
-      url: domain+'/cart/all'
+      url: domain+'/cart/all',
+      data: { uid:10 } // TODO get logged in info from cookies
     }).then(function(data) {
       show_cart(data)
     }).done( function(data) {
