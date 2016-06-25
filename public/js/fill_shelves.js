@@ -192,7 +192,7 @@ var html_cart_data = function (data) {
   var arr = new Array();
   var total = 0;
   for (var i = 0; i < data.length; i++) {
-    total += data[i].quantity * data[i].price;
+    total += (Number(data[i].quantity) * Number(data[i].price));
     var html = "<td>";
         html+= data[i].name;
         html+= "</td>";
@@ -203,7 +203,7 @@ var html_cart_data = function (data) {
           html += data[i].quantity;
         html += "</td>";
         html += "<td>";
-          //html += data[i].price;
+          html += data[i].price;
         html += "</td>";
         html += "<td>";
         html += "<span class=\"item_description gray\"><a href=\"/cart/delete/"+

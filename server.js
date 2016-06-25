@@ -3,7 +3,8 @@
 
 var express = require('express');
 var session = require('express-session');
-var pgSession = require('connect-pg-simple')(session);
+var pgSession = require('connect-pg-simple')// (session);
+var cookieParser = require('cookie-parser');
 var bodyparser = require('body-parser');
 var pg = require('pg').native;
 var cors = require('cors');
@@ -28,7 +29,7 @@ app.use(session({
   	cookie: {
   		maxAge: 360000,
   		httpOnly: false,
-  		secure: false 
+  		secure: false
   	}
 }));
 
@@ -39,6 +40,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
+app.use(cookieParser());
 //app.use(express.static(__dirname+'/'));
 
 app.use(function(req,res,next) {
@@ -47,38 +49,6 @@ app.use(function(req,res,next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
-
-// ! testing MIDDLEWARE (must stay above route information)
-// =======================================================
-/* router.use(function(req, res, next) {
-
-    // log each request to the console
-    console.log(req.method, req.url);
-
-    // continue doing what we were doing and go to the route
-    next(); 
-}); */
-
-// ! test code, remove later
-// route middleware to validate :name
-/*router.param('name', function(req, res, next, session) {
-    
-//    var is_logged_in = function(session){
-//	    if(session && session.loggedIn) {
-//        return true;
-//	    }
-//	    else {
-//	      return false;
-//      }
-//    }
-    console.log('doing name validations on ' + name);
-
-    // once validation is done save the new item in the req
-    req.name = name;
-    // go to the next thing
-    next(); 
-}); */
 
 
 app.get('/get', function(req,res,next){
@@ -150,6 +120,7 @@ app.get('/logout', function(req, res, next){
 })
 
 app.post('/googleLogin/', function(req, res, next){
+  cookieParser ('secretest of secret strings', { maxAge: 360000, path:"/"});
 
 	var username = req.body.name;
 
@@ -276,11 +247,16 @@ var cart_table = "cart";
 var size_table = "sizes";
 var cat_table = "categories";
 var subcat_table = "subcategories";
+var subcat_table = "orders";
+
+
 
 app.get('/shop/.*', function (req,res,next) {
   console.log("got a shop request");
   next();
 });
+
+
 
 /** Get all the items in the database */
 app.get('/shop/all$', function (req, res) {
@@ -305,6 +281,7 @@ app.get('/shop/all$', function (req, res) {
 /** Load all the items in a user's cart */
 app.get('/cart/all/:uid', function (req, res) {
   var logged_in = is_logged_in(req.session);
+  var id = get_id (req.cookies['email']);
   var wasSent = false;
   if (logged_in || req.body == undefined || 
       (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
@@ -312,6 +289,7 @@ app.get('/cart/all/:uid', function (req, res) {
     wasSent = true;
     return;
   }
+  
   var id = (req.params.uid == undefined? req.body.id : req.params.uid);
   console.log("SELECT "+item_table+".iid, "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity, "+item_table+".price"
     +" FROM "+ cart_table+", "+item_table
@@ -341,6 +319,7 @@ app.get('/cart/all/:uid', function (req, res) {
 
 /* Remove an item from the cart 
   TODO: make sure the request is actually coming from the right user
+  TODO: make the quantities update correctly
 */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
   console.log(req.body);
@@ -350,21 +329,16 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
   
   console.log("User is "+ (logged_in?"":"not ") +"logged in.");
   
-  if (logged_in) {
+  if (logged_in || req.body == undefined || 
+      (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
     res.status(403).send("Please log in to change the contents of the cart.");
     wasSent = true;
     return;
   }
   
-  if (req.body == undefined || req.body.length == 0) {
-    res.status(400).send("Invalid request format.");
-    wasSent = true;
-    return;
-  }
-  
-  var query = client.query("DELETE FROM "+ cart_table+
-    +" WHERE "+cart_table+".uid = "+req.body.uid+" and "+cart_table+".iid = "+req.params.iid
-    +" and "  +cart_table+".size = \'"+req.params.size+"\';");
+  var query = client.query("DELETE FROM "+ cart_table +" only"
+    +" WHERE uid = "+req.body.uid+" and iid = "+req.params.iid
+    +" and size = \'"+req.params.size+"\';");
   query.on('error', function(err) {
     if(err && !wasSent) {
       console.log("Encountered an error while querying the database: "+ err);
@@ -379,6 +353,8 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
     }
   });
 });
+
+
 
 /* Add a new item to the cart. */
 app.post('/shop/:iid/:size$', function (req, res) {
@@ -399,8 +375,7 @@ app.post('/shop/:iid/:size$', function (req, res) {
     wasSent = true;
     return;
   }
-  
-  // TODO: check validity of size, iid and uid
+    // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
       +" SELECT "+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1, price"
       +" FROM items"
@@ -420,7 +395,9 @@ app.post('/shop/:iid/:size$', function (req, res) {
   });
 });
 
-/** Get all the items in quiet-bastion-96093.herokuapp.com/category/ */
+
+
+/** Get all the items in a category/ */
 app.get('/shop/:category$', function (req, res) {
   var category = req.params.category;
   
@@ -428,9 +405,7 @@ app.get('/shop/:category$', function (req, res) {
     console.log("Cannot find an undefined category");
     res.status(400).send("Bad request: cannot search for an undefined category.");
   }
-  
   var wasSent = false;
-  
   var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
@@ -441,7 +416,6 @@ app.get('/shop/:category$', function (req, res) {
       res.status(404).send("The requested category could not be found.");
     }
   });
-  
   console.log("Finding the category "+ category);
   var results = [];
   var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
@@ -462,6 +436,7 @@ app.get('/shop/:category$', function (req, res) {
     }
   });
 });
+
 
 
 /** Get all the items in quiet-bastion-96093.herokuapp.com/category/subcategory */
@@ -510,6 +485,58 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
 
 
 
+/* CHECK OUT ITEMS. */
+app.post('/cart/checkout/:uid$', function (req, res) {
+  console.log(req.body);
+  
+  var logged_in = is_logged_in(req.session);
+  var wasSent   = false;
+  
+  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
+  
+  if (logged_in) {
+    res.status(403).send("Please log in to checkout.");
+    wasSent = true;
+    return;
+  }
+  if (req.body == undefined || req.body.length == 0) {
+    res.status(400).send("Invalid request format.");
+    wasSent = true;
+    return;
+  }
+  var date = new Date();
+  // TODO: check validity of size, iid and uid
+  var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
+      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', iid, quantity, price, oid"
+      +" FROM items, cart"
+      +" WHERE iid="+cart_table+".iid"
+      +" and uid="+cart_table+".uid and uid="+req.params.uid
+      +" and quantity="+cart_table+"+req.params.iid"
+      +" and oid = (select max(oid) from tbl)+1 ;");
+  query.on('error', function(err) {
+    if(err && !wasSent) {
+      console.log("Encountered an error while querying the database: "+ err);
+      res.status(500).send("The database encountered an error while processing your request.");
+      wasSent = true;
+    }
+  });
+  query.on('end',function(result) {
+    // done
+    if (!wasSent) {
+      var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+req.params.uid+";");
+      removeNext.on('error', function(err) {
+        console.log("Something has gone seriously wrong and the database is unsafe! (uid="+req.params.uid+")");
+        res.status(500).send("The database encountered an awful, awful error while processing your request.");
+        wasSent = true;
+      });
+      removeNext.on('end', function() {      
+        res.json({ added:true });
+      });
+    }
+  });
+});
+
+
 // FINAL SETUP
 // =======================================================
 //app.use('/', router);
@@ -518,6 +545,21 @@ app.listen(port, function () {
 	console.log('Your app is listening on port ' + port);
 });
 
+var get_id = function(username) {
+	var query = client.query('select * from users where email = \'' +username +'\';');
+	var id = 0;
+	query.on('row', function(row) {
+	  id = row.id;
+	});
+	query.on('error', function(err) {
+	  console.log("fail to get id");
+	  return -1;
+	});
+	query.on('end', function() {
+	  console.log(id);
+	  return id;
+	});
+}
 
 var is_logged_in = function(session){
   if(session && session.loggedIn) {

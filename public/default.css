@@ -409,6 +409,7 @@ h1
 
 .page_center_button
 {
+  text-align:right;
 	width: 31px;
 }
 
@@ -434,7 +435,7 @@ a.page_center_buy
     background: url("img/info.gif") top left no-repeat;
     height: 99px;
     width: 31px;
-    float: left;
+    float: right;
 }
 
 .page_center_content
@@ -564,7 +565,9 @@ a.page_center_buy
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
     display: none;
+    float: right;
     position: absolute;
+    left: -120px;
     z-index: 9999999;
     background-color: #f9f9f9;
     min-width: 160px;
@@ -590,4 +593,10 @@ a.page_center_buy
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
+}
+
+tr.cart-header {
+  color: grey;
+  font-weight: bold;
+  opacity: 0.7;
 }
