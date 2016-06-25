@@ -313,7 +313,7 @@ app.get('/cart/all/:uid', function (req, res) {
     return;
   }
   var id = (req.params.uid == undefined? req.body.id : req.params.uid);
-  console.log("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
+  console.log("SELECT "+item_table+".iid, "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity, "+item_table+".price"
     +" FROM "+ cart_table+", "+item_table
     +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
     
@@ -363,8 +363,8 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
   }
   
   var query = client.query("DELETE FROM "+ cart_table+
-    +" WHERE "+cart_table+".uid = "+req.body.uid+" and "+cart_table+".iid = "+req.params.iid+" and "
-    +cart_table+".size = \'"+req.params.size+"\';");
+    +" WHERE "+cart_table+".uid = "+req.body.uid+" and "+cart_table+".iid = "+req.params.iid
+    +" and "  +cart_table+".size = \'"+req.params.size+"\';");
   query.on('error', function(err) {
     if(err && !wasSent) {
       console.log("Encountered an error while querying the database: "+ err);
@@ -401,7 +401,10 @@ app.post('/shop/:iid/:size$', function (req, res) {
   }
   
   // TODO: check validity of size, iid and uid
-  var query = client.query("INSERT INTO "+cart_table+" values("+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1);");
+  var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
+      +" SELECT "+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1, price"
+      +" FROM items"
+      +" WHERE iid="+req.params.iid);
   query.on('error', function(err) {
     if(err && !wasSent) {
       console.log("Encountered an error while querying the database: "+ err);
