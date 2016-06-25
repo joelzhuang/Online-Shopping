@@ -317,8 +317,8 @@ app.get('/cart/all$', function (req, res) {
     return;
   }
 
-  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
-    +"FROM "+ cart_table+", "+item_table
+  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity\n"
+    +"FROM "+ cart_table+", "+item_table+"\n"
     +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
   var results = [];
   query.on('row',function(row) {
