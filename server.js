@@ -306,7 +306,7 @@ app.get('/shop/all$', function (req, res) {
 app.get('/cart/all', function (req, res) {
   var logged_in = is_logged_in(req.session);
   var wasSent = false;
-  console.log("body: "+req.body.uid +", params:"+ req.params.uid == undefined) {
+  console.log("body: "+req.body.uid +", params:"+ req.params.uid == undefined);
   if (logged_in || req.body == undefined || 
       (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
     res.status(403).send("Please log in to view the contents of your cart.");
