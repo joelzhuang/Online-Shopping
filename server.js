@@ -303,7 +303,7 @@ app.get('/shop/all$', function (req, res) {
 
 
 /** Load all the items in a user's cart */
-app.get('/cart/all', function (req, res) {
+app.get('/cart/all/:uid', function (req, res) {
   var logged_in = is_logged_in(req.session);
   var wasSent = false;
   if (logged_in || req.body == undefined || 
