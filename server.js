@@ -306,19 +306,17 @@ app.get('/shop/all$', function (req, res) {
 app.get('/cart/all', function (req, res) {
   var logged_in = is_logged_in(req.session);
   var wasSent = false;
-  console.log("body: "+req.body.uid +", params:"+ req.params.uid == undefined);
   if (logged_in || req.body == undefined || 
       (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
     res.status(403).send("Please log in to view the contents of your cart.");
     wasSent = true;
     return;
   }
-  
-  console.log("Cart request from "+ req.body.uid);
-  
+  var id = (req.params.uid == undefined? req.body.id : req.params.uid);
+  console.log("Cart request from "+ id);
   var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
     +" FROM "+ cart_table+", "+item_table
-    +" WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
+    +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
   var results = [];
   query.on('row',function(row) {
     results.push(row);
