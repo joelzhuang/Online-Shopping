@@ -38,7 +38,7 @@ app.use(session({
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
-app.use(express.static(__dirname + '/public/'));
+app.use(express.static(__dirname + '/public'));
 //app.use(express.static(__dirname+'/'));
 
 app.use(function(req,res,next) {
@@ -92,26 +92,26 @@ app.get('/get', function(req,res,next){
 // PAGE ROUTING
 // =======================================================
 
-app.get('/page/$', function(req,res) {
-  res.sendFile(__dirname + '/index.html');
+app.get('/$', function(req,res) {
+  res.sendFile(__dirname +'/index.html');
 });
-app.get('/page/home', function(req,res) {
-  res.sendFile(__dirname + '/index.html');
+app.get('/home', function(req,res) {
+  res.sendFile(__dirname +'/index.html');
 });
-app.get('/page/cart$', function(req,res) {
-  res.sendFile(__dirname + '/cart.html');
+app.get('/cart$', function(req,res) {
+  res.sendFile(__dirname +'/cart.html');
 });
-app.get('/page/contact$', function(req,res) {
+app.get('/contact$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
-app.get('/page/orders$', function(req,res) {
+app.get('/orders$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
-app.get('/page/register$', function(req,res) {
-  res.sendFile(__dirname + '/register.html');
+app.get('/register$', function(req,res) {
+  res.sendFile(__dirname +'/register.html');
 });
-app.get('/page/login$', function(req,res) {
-  res.sendFile(__dirname + '/login.html');
+app.get('/login$', function(req,res) {
+  res.sendFile(__dirname +'/login.html');
 });
 
 // app.get('/',function(req,res,next){
@@ -317,7 +317,7 @@ app.get('/cart/all$', function (req, res) {
     return;
   }
 
-  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table
+  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
     +"FROM "+ cart_table+", "+item_table
     +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+item_table+".iid = "+cart_table+".iid;");
   var results = [];
