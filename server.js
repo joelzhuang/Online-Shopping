@@ -313,7 +313,10 @@ app.get('/cart/all', function (req, res) {
     return;
   }
   var id = (req.params.uid == undefined? req.body.id : req.params.uid);
-  console.log("Cart request from "+ id);
+  console.log("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
+    +" FROM "+ cart_table+", "+item_table
+    +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
+    
   var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
     +" FROM "+ cart_table+", "+item_table
     +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
