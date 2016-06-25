@@ -32,6 +32,7 @@ app.use(session({
   	}
 }));
 
+
 // JSON STUFF
 // =======================================================
 app.use(bodyparser.json());
@@ -85,6 +86,32 @@ app.get('/get', function(req,res,next){
 	console.log(req.pass);
 	
 	client.query('select * from users;');
+});
+
+
+// PAGE ROUTING
+// =======================================================
+
+app.get('/page/$', function(req,res) {
+  res.sendFile(__dirname + '/index.html');
+});
+app.get('/page/home', function(req,res) {
+  res.sendFile(__dirname + '/index.html');
+});
+app.get('/page/cart$', function(req,res) {
+  res.sendFile(__dirname + '/cart.html');
+});
+app.get('/page/contact$', function(req,res) {
+  res.status(404).send('Contacts page not yet implemented!');
+});
+app.get('/page/orders$', function(req,res) {
+  res.status(404).send('Orders page not yet implemented!');
+});
+app.get('/page/register$', function(req,res) {
+  res.sendFile(__dirname + '/register.html');
+});
+app.get('/page/login$', function(req,res) {
+  res.sendFile(__dirname + '/login.html');
 });
 
 // app.get('/',function(req,res,next){
@@ -254,7 +281,7 @@ app.get('/shop/.*', function (req,res,next) {
   // first, handle routing:
   var idx = req.params.subcategory.indexOf('.html');
   if (idx == req.params.subcategory.length - 5) {
-    console.log(" got an HTML request");
+    console.log("got an HTML request");
     next();
     return;
   }
@@ -308,43 +335,6 @@ app.get('/cart/all$', function (req, res) {
   });
 });
 
-/* Add a new item to the cart. */
-app.post('/shop/:iid/:size$', function (req, res) {
-  console.log(req.body);
-  
-  var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
-  
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
-  
-  if (logged_in) {
-    res.status(403).send("Please log in to add this item to your cart.");
-    wasSent = true;
-    return;
-  }
-  if (req.body == undefined || req.body.length == 0) {
-    res.status(400).send("Invalid request format.");
-    wasSent = true;
-    return;
-  }
-  
-  // TODO: check validity of size, iid and uid
-  var query = client.query("INSERT INTO "+cart_table+" values("+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1);");
-  query.on('error', function(err) {
-    if(err && !wasSent) {
-      console.log("Encountered an error while querying the database: "+ err);
-      console.log(Object.getOwnPropertyNames(err));
-      res.status(500).send("Database error: "+err);
-    }
-  });
-  query.on('end',function(result) {
-    // done
-    if (!wasSent) {
-      res.json({ added:true });
-    }
-  });
-});
-
 /* Remove an item from the cart */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
   console.log(req.body);
@@ -369,6 +359,43 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
   // TODO: check validity of size, iid and uid
   var query = client.query("DELETE FROM "+ cart_table+
     +"WHERE "+cart_table+".uid = "+req.body.uid+" and "+cart_table+".iid = "+req.params.iid+" and "+cart_table+".size = \'"+req.params.size+"\';");
+  query.on('error', function(err) {
+    if(err && !wasSent) {
+      console.log("Encountered an error while querying the database: "+ err);
+      console.log(Object.getOwnPropertyNames(err));
+      res.status(500).send("Database error: "+err);
+    }
+  });
+  query.on('end',function(result) {
+    // done
+    if (!wasSent) {
+      res.json({ added:true });
+    }
+  });
+});
+
+/* Add a new item to the cart. */
+app.post('/shop/:iid/:size$', function (req, res) {
+  console.log(req.body);
+  
+  var logged_in = is_logged_in(req.session);
+  var wasSent   = false;
+  
+  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
+  
+  if (logged_in) {
+    res.status(403).send("Please log in to add this item to your cart.");
+    wasSent = true;
+    return;
+  }
+  if (req.body == undefined || req.body.length == 0) {
+    res.status(400).send("Invalid request format.");
+    wasSent = true;
+    return;
+  }
+  
+  // TODO: check validity of size, iid and uid
+  var query = client.query("INSERT INTO "+cart_table+" values("+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1);");
   query.on('error', function(err) {
     if(err && !wasSent) {
       console.log("Encountered an error while querying the database: "+ err);
@@ -431,7 +458,6 @@ app.get('/shop/:category$', function (req, res) {
 /** Get all the items in quiet-bastion-96093.herokuapp.com/category/subcategory */
 app.get('/shop/:category/:subcategory$', function (req, res, next) {
 
-
   var category = req.params.category;
   var subcategory = req.params.subcategory;
   if (category == undefined || subcategory == undefined) {
@@ -442,7 +468,7 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   
   var wasSent = false;
   
-  var hasCategory = client.query("SELECT true FROM "+subcat_table+" WHERE cat='"+req.params.category+"' and subcat='"+req.params.subcategory+"';");
+  var hasCategory = client.query("SELECT true FROM "+subcat_table+" WHERE subcat='"+req.params.subcategory+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
   });
@@ -483,3 +509,12 @@ app.listen(port, function () {
 	console.log('Your app is listening on port ' + port);
 });
 
+
+var is_logged_in = function(session){
+  if(session && session.loggedIn) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}

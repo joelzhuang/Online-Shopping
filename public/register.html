@@ -1,547 +1,547 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cz"><head>
-
-<html>
-<head>
-<!-- <script type="text/javascript" src="jquery-1.2.6.min.js"></script> -->
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery-ui.min.js"></script>
-<script src="register.js"></script>
-
-<!--
-	Google registration
-	handleClientload is the call back function
--->
-<script type="text/javascript">
-	var clientId = '286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com';
-	var apiKey = 'AIzaSyCe_dgWODPBjeFLLyR_8v9AMv1qBdfQK60';
-	//scopes is adding the apis that we are going to use.
-	//userinfo.email because we need the user email.
-	var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email';
-
-	//callback function
-	function handleClientLoad(){
-		gapi.client.setApiKey(apiKey);
-		window.setTimeout(checkAuth,1);	//runs the checkAuth function right after
-	}
-
-	function checkAuth(){
-		gapi.auth.authorize({client_id: clientId, scope: scopes, immediate:true},handleAuthResult);
-	}
-
-	function handleAuthResult(authResult){
-		var authorizeButton = document.getElementById('authorize-button');
-		if(authResult){
-			authorizeButton.style.visibility = 'hidden'; //hide button
-			makeApiCall();
-		} else{
-			//if there isn't an auth result, have not authorized the application
-			//and need to show the button.
-			authorizeButton.style.visibility = '';
-			authorizeButton.onclick = handleAuthClick;
-		}
-	}
-
-	function handleAuthClick(event){
-		//immediate is false as they have not authorized the application yet.
-		gapi.auth.authorize({client_id: clientId, scope:scopes, immediate:false },handleAuthResult);
-		return false;
-	}
-
-	function makeApiCall(){
-		gapi.client.load('oauth2','v2',function(){
-			var req = gapi.client.oauth2.userinfo.get();
-			req.execute(function(logResponse){
-				document.getElementById('t3').value = logResponse.email;
-				console.log("email: " + logResponse.email);
-				//console.log("name: " + logResponse.name);
-			});
-		});
-
-		gapi.client.load('plus','v1',function(){
-			var req = gapi.client.plus.people.get({
-				'userId':'me'
-			});
-
-			req.execute(function(logResponse){
-				document.getElementById('t1').value = logResponse.displayName;
-				console.log("email" + logResponse.email);
-				console.log("displayName" + logResponse.displayName);
-			})
-		})
-	}
-
-</script>
-
-<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
-
-<style type="text/css">
-body {
-margin:;
-font-size:16px;
-color: #000000;
-font-family:Arial, Helvetica, sans-serif;
-}
-#sliderWrap {
-margin: auto;
-width: 300px;
-}
-#slider {
-
-position: absolute;
-background-image:url(usepics/flo6.jpg);
-background-repeat:no-repeat;
-background-position: bottom;
-width: 300px;
-height: 159px;
-margin-top: -141px;
-}
-#slider img {
-border: 0;
-}
-#sliderContent {
-margin: 30px 0 0 30px;
-position: absolute;
-text-align:top_left;
-color:#003399;
-font-weight:simple;
-padding: 10px;
-}
-#header {
-margin: 0 auto;
-width: 600px;
-background-color: #F0F0F0;
-height: 200px;
-padding: 10px;
-}
-#openCloseWrap {
-position:absolute;
-margin: 143px 0 0 120px;
-font-size:12px;
-font-weight:bold;
-}
-</style>
-
-</head>
-<body>
-
-
-	<!--<script type="text/javascript">
-	// $(document).ready(function() {
-	// 	$(".topMenuAction").click( function() {
-	// 		if ($("#openCloseIdentifier").is(":hidden")) {
-	// 			$("#slider").animate({
-	// 				marginTop: "-141px"
-	// 				}, 500 );
-	// 			$("#topMenuImage").html('<img src="open.png" alt="open" />');
-	// 			$("#openCloseIdentifier").show();
-	// 		} else {
-	// 			$("#slider").animate({
-	// 				marginTop: "0px"
-	// 				}, 500 );
-	// 			$("#topMenuImage").html('<img src="close.png" alt="close" />');
-	// 			$("#openCloseIdentifier").hide();
-	// 		}
-	// 	});
-	// });
-	</script>-->
-
-
-
-	<div id="sliderWrap">
-		<div id="openCloseIdentifier"></div>
-		<div id="slider">
-			<div id="sliderContent">
-			<span ><font size="+1.5"><center>Developed By:<br>Priya Gupta <br>
-			    Contact:+91-94143-47699</center><br></font></span>
-
-			</div>
-			<div id="openCloseWrap">
-				<a href="#" class="topMenuAction" id="topMenuImage">
-					<img src="open.png" alt="open" />
-				</a>
-			</div>
-		</div>
-	</div>
-
-
-<meta http-equiv="Content-Language" content="en-us">
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-
-</head>
-<body>
-</body>
-
-</html><title>Online Shopping - Phptpoint.com</title>
-
-<meta http-equiv="Content-language" content="cs">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description" content=" ">
-<meta name="keywords" content=" ">
-<!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<link rel="icon" href="favicon.ico" type="image/x-icon"> //-->
-<meta name="author" content="Kl?ra Frolichov?, Sunlight webdesign">
-<meta name="Copyright" content="Kl?ra Frolichov?, Sunlight webdesign 2007">
-<meta name="design" content="Sunlight webdesign - http://www.sunlight.cz, info@sunlight.cz">
-<link rel="stylesheet" type="text/css" href="default.css" title="default">
-
-</head>
-
-
-<body>
-<center>
-<!--<script type="text/javascript">
-    google_ad_client = "ca-pub-6338063578832547";
-    google_ad_slot = "5073283314";
-    google_ad_width = 728;
-    google_ad_height = 90;
-</script>
- Header Ads
-<script type="text/javascript"
-src="//pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>-->
-</center>
-
-
-
-<div id="WholePage">
-
-
-<div id="Inner">
-<div id="Container" style="border:groove;border-color:#00CCFF">
-<div id="Head">
-<div id="Head_left">
-<div id="Leaf_top"><img src="img/shop3.jpg" width="324" /></div>
-<div id="Leaf_bottom"> <a class="registration" href="register.html">REGISTRATION</a> <a class="log-in" href="login.html">LOG IN</a> </div>
-</div>
-<div id="Head_right">
-<div id="Logo">
-<div id="Name"><span class="blue">F</span><span>ashion</span>&nbsp;<span class="blue">S</span><span>hop</span> </div>
-<div id="Informations">Latest trends in Fashion</div>
-</div>
-<div id="Top_menu"> <a class="kart" href="?page=home"><span>KART</span></a> <a class="orders" href="index.php?con=3"><span>GALLERY</span></a>
-<a class="contact" href="index.php?con=1"><span>CONTACT</span></a>
-<a class="help" href="index.php?con=2"><span>ABOUT US</span></a>
-<a class="home" href="?page=home"><span>HOME</span></a>
-</div>
-</div>
-</div>
-<div id="CentralPart">
-<div id="LeftPart">
-<div id="Menu">
-<div id="Menu_header">
-<div class="menu_header_left"> <span class="menu_text"><font face="Georgia, Times New Roman, Times, serif">Search</font></span>
-</div>
-<div class="menu_header_right"> </div>
-<div id="Menu_content"> <!--<a class="menu_item" href="?page=home"><span>--><!-- Start of Page Search -->
-
-
-		    <h5>&nbsp;</h5>
-			<form method="post">
-		    <input type="text" name="t1" value="search" onfocus=
-"if(this.value=='search')
-{this.value='';}
-"
-onBlur=
-"if(this.value=='')
-{this.value='search';}
-"/>
-            <input name="sear" type="submit" class="button" id="sub" value="Go" />
-</form>
-
-
-		  <h5>&nbsp;</h5>
-		  <!--</form>-->
-
-
-		<!-- End of Page Search --></span></a><br>
-</div>
-<div class="menu_header_left"> <span class="menu_text">MEN</span>
-</div>
-<div class="menu_header_right"> </div>
-</div>
-<div id="Menu_content"> <a class="menu_item" href="index.php?catg=1 & subcatg=Casual Shirts"><span>Casual Shirts</span></a><br>
-<a class="menu_item" href="index.php?catg=1 & subcatg=Jeans"><span>Jeans</span></a><br>
-<a class="menu_item" href="index.php?catg=1 & subcatg=T-Shirts"><span>T-shirts
-</span></a><br>
-<a class="menu_item" href="index.php?catg=1 & subcatg=Footwear"><span>Footwear</span></a><br>
-<a class="menu_item" href="index.php?catg=1 & subcatg=Shorts"><span>Shorts</span></a><br>
-<a class="menu_item" href="index.php?catg=1 & subcatg=watches"><span>Watches
-</span></a><br>
-
-</div>
-
-<div class="menu_header_left"> <span class="menu_text">WOMEN</span>
-</div>
-<div class="menu_header_right"> </div>
-<div id="Menu_content"> <a class="menu_item" href="index.php?catg=2 & subcatg=dresses"><span>Dresses</span></a><br>
-<a class="menu_item" href="index.php?catg=2 & subcatg=Churidar Suits"><span>Churidar Suits</span></a><br>
-<a class="menu_item" href="index.php?catg=2 & subcatg=Kurtas"><span>Kurtas</span></a><br>
-<a class="menu_item" href="index.php?catg=2 & subcatg=Sandals"><span>Sandals</span></a><br>
-<a class="menu_item" href="index.php?catg=2 & subcatg=Office Wear"><span>Office Wear</span></a><br>
-<a class="menu_item" href="index.php?catg=2 & subcatg=Artificial Jewellery"><span>Artificial Jewellery</span></a><br>
-</div>
-
-<div class="menu_header_left"> <span class="menu_text">KIDS</span>
-</div>
-<div class="menu_header_right"> </div>
-<div id="Menu_content"> <a class="menu_item" href="index.php?catg=3 & subcatg=Baby Apparel"><span>Baby Apparel</span></a><br>
-<a class="menu_item" href="index.php?catg=3 & subcatg=Girls Apparel"><span>Girls Apparel</span></a><br>
-<a class="menu_item" href="index.php?catg=3 & subcatg=Boys Apparel"><span>Boys Apparel</span></a><br>
-<a class="menu_item" href="index.php?catg=3 & subcatg=Kids Toys"><span>Kids Toys</span></a><br>
-<!--<a class="menu_item" href="?page=home"><span>Office Wear</span></a><br>
-<a class="menu_item" href="?page=home"><span>Artificial Jewellery</span></a><br>-->
-</div>
-</div>
-<img src="usepics/4.jpg" width="228" height="183" /></div>
-
-<div id="RightPart">
-
-<html>
-<body>
-
-<button id="authorize-button"> Get your data from Google </button>
-
-<div><br/><center><h2><font face="Lucida Handwriting" size="+1" color="#00CCFF">Register Yourself</font></h2></center></div>
-
-<div style="width:25%;float:right">
-<br><br><br><br><br>
-<img src="usepics/7.jpg">
-</div>
-<br><br>
-<center><div style="width:70%;float:right" align="center">
-<fieldset style="background:#CC99CC;width:50%">
-<br><br>
-
-<table width="366" border="0" align="center">
-<form id="gp-register" method="post"></form>
-  <tr>
-    <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Title:</font></strong></div></td>
-    <td><label>
-      <select name="sel1" id="sel1">
-        <option value="Mr.">Mr.</option>
-        <option value="Ms.">Ms.</option>
-        <option value="Mrs.">Mrs.</option>
-      </select>
-    </label></td>
-  </tr>
-  <tr>
-    <td width="164"><div align="center"><font size="+1" face="Comic Sans MS"><b> First&nbsp;Name:</b></font></div></td>
-    <td width="192">
-
-        <input name="t1" type="text" id="t1">    </td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>Last name:</strong></font></div></td>
-    <td><input name="t2" type="text" id="t2" ></td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Gender:</b> </font></div></td>
-    <td><label>
-      <select name="gender" id="gender">
-        <option value="Female">Female</option>
-        <option value="Male">Male</option>
-        <option value="Other">Other</option>
-      </select>
-    </label></td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Enter Email : </b></font></div></td>
-    <td><input name="t3" type="text" id="t3"></td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Choose a  Password:</b> </font></div></td>
-    <td><input name="p1" type="text" id="p1"></td>
-  </tr>
-  <tr> <td><div align="center"><font size="+1" face="Comic Sans MS"><b>Phone no: </b></font></div></td>
-    <td><input name="t5" type="text" id="t5"></td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>Address:</strong></font></div></td>
-    <td><label>
-      <textarea name="t6" id="t6"></textarea>
-    </label></td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>City:</strong></font></div></td>
-    <td><input name="t7" type="text" id="t7"></td>
-  </tr>
-  <tr>
-    <td><div align="center"><font size="+1" face="Comic Sans MS"><strong>Country:</strong></font></div></td>
-    <td><input name="t8" type="text" id="t8"></td>
-  </tr>
-  <!-- <tr>
-    <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Date of Birth: </font></strong></div></td>
-    <td><label>
-      <input name="t9" type="text" id="t9">
-    </label></td>
-  </tr> -->
-  <tr>
-    <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Date of Birth Day:</font></strong></div></td>
-    <td><label>
-      <select name="day" id="day">
-        <option value="01">01</option>
-	    <option value="02">02</option>
-	    <option value="03">03</option>
-	    <option value="04">04</option>
-	    <option value="05">05</option>
-	    <option value="06">06</option>
-	    <option value="07">07</option>
-	    <option value="08">08</option>
-	    <option value="09">09</option>
-	    <option value="10">10</option>
-	    <option value="11">11</option>
-	    <option value="12">12</option>
-	    <option value="13">13</option>
-	    <option value="14">14</option>
-	    <option value="15">15</option>
-	    <option value="16">16</option>
-	    <option value="17">17</option>
-	    <option value="18">18</option>
-	    <option value="19">19</option>
-	    <option value="20">20</option>
-	    <option value="21">21</option>
-	    <option value="22">22</option>
-	    <option value="23">23</option>
-	    <option value="24">24</option>
-	    <option value="25">25</option>
-	    <option value="26">26</option>
-	    <option value="27">27</option>
-	    <option value="28">28</option>
-	    <option value="29">29</option>
-	    <option value="30">30</option>
-	    <option value="31">31</option>
-      </select>
-    </label></td>
-  </tr>
-  <tr>
-    <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Month:</font></strong></div></td>
-    <td><label>
-      <select name="month" id="month">
-        <option value="01">January</option>
-	    <option value="02">February</option>
-	    <option value="03">March</option>
-	    <option value="04">April</option>
-	    <option value="05">May</option>
-	    <option value="06">June</option>
-	    <option value="07">July</option>
-	    <option value="08">August</option>
-	    <option value="09">September</option>
-	    <option value="10">October</option>
-	    <option value="11">November</option>
-	    <option value="12">December</option>
-      </select>
-    </label></td>
-  </tr>
-  <tr>
-
-    <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Year:</font></strong></div></td>
-    <td><label>
-      <select name="year" id="year">
-        <option value="2007">2007</option>
-		<option value="2006">2006</option>
-		<option value="2005">2005</option>
-		<option value="2004">2004</option>
-		<option value="2003">2003</option>
-		<option value="2002">2002</option>
-		<option value="2001">2001</option>
-		<option value="2000">2000</option>
-		<option value="1999">1999</option>
-		<option value="1998">1998</option>
-		<option value="1997">1997</option>
-		<option value="1996">1996</option>
-		<option value="1995">1995</option>
-		<option value="1994">1994</option>
-		<option value="1993">1993</option>
-		<option value="1992">1992</option>
-		<option value="1991">1991</option>
-		<option value="1990">1990</option>
-		<option value="1989">1989</option>
-		<option value="1988">1988</option>
-		<option value="1987">1987</option>
-		<option value="1986">1986</option>
-		<option value="1985">1985</option>
-		<option value="1984">1984</option>
-		<option value="1983">1983</option>
-		<option value="1982">1982</option>
-		<option value="1981">1981</option>
-		<option value="1980">1980</option>
-		<option value="1979">1979</option>
-		<option value="1978">1978</option>
-		<option value="1977">1977</option>
-		<option value="1976">1976</option>
-		<option value="1975">1975</option>
-		<option value="1974">1974</option>
-		<option value="1973">1973</option>
-		<option value="1972">1972</option>
-		<option value="1971">1971</option>
-		<option value="1970">1970</option>
-		<option value="1969">1969</option>
-		<option value="1968">1968</option>
-		<option value="1967">1967</option>
-		<option value="1966">1966</option>
-		<option value="1965">1965</option>
-		<option value="1964">1964</option>
-		<option value="1963">1963</option>
-		<option value="1962">1962</option>
-		<option value="1961">1961</option>
-		<option value="1960">1960</option>
-		<option value="1959">1959</option>
-		<option value="1958">1958</option>
-		<option value="1957">1957</option>
-		<option value="1956">1956</option>
-		<option value="1955">1955</option>
-		<option value="1954">1954</option>
-		<option value="1953">1953</option>
-		<option value="1952">1952</option>
-		<option value="1951">1951</option>
-		<option value="1950">1950</option>
-      </select>
-    </label></td>
-  </tr>
-  <tr>
-    <td colspan="2"><label><br>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cz">
+  <head>
+    <html>
+      <head>
+        <!-- <script type="text/javascript" src="jquery-1.2.6.min.js"></script> -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery-ui.min.js"></script>
+        <script src="register.js"></script>
+        <!--
+          Google registration
+          handleClientload is the call back function
+          -->
+        <script type="text/javascript">
+          var clientId = '286238537541-ntfs3f44m9537hp22fn0q8hnsjgs9lch.apps.googleusercontent.com';
+          var apiKey = 'AIzaSyCe_dgWODPBjeFLLyR_8v9AMv1qBdfQK60';
+          //scopes is adding the apis that we are going to use.
+          //userinfo.email because we need the user email.
+          var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email';
+          
+          //callback function
+          function handleClientLoad(){
+          	gapi.client.setApiKey(apiKey);
+          	window.setTimeout(checkAuth,1);	//runs the checkAuth function right after
+          }
+          
+          function checkAuth(){
+          	gapi.auth.authorize({client_id: clientId, scope: scopes, immediate:true},handleAuthResult);
+          }
+          
+          function handleAuthResult(authResult){
+          	var authorizeButton = document.getElementById('authorize-button');
+          	if(authResult){
+          		authorizeButton.style.visibility = 'hidden'; //hide button
+          		makeApiCall();
+          	} else{
+          		//if there isn't an auth result, have not authorized the application
+          		//and need to show the button.
+          		authorizeButton.style.visibility = '';
+          		authorizeButton.onclick = handleAuthClick;
+          	}
+          }
+          
+          function handleAuthClick(event){
+          	//immediate is false as they have not authorized the application yet.
+          	gapi.auth.authorize({client_id: clientId, scope:scopes, immediate:false },handleAuthResult);
+          	return false;
+          }
+          
+          function makeApiCall(){
+          	gapi.client.load('oauth2','v2',function(){
+          		var req = gapi.client.oauth2.userinfo.get();
+          		req.execute(function(logResponse){
+          			document.getElementById('t3').value = logResponse.email;
+          			console.log("email: " + logResponse.email);
+          			//console.log("name: " + logResponse.name);
+          		});
+          	});
+          
+          	gapi.client.load('plus','v1',function(){
+          		var req = gapi.client.plus.people.get({
+          			'userId':'me'
+          		});
+          
+          		req.execute(function(logResponse){
+          			document.getElementById('t1').value = logResponse.displayName;
+          			console.log("email" + logResponse.email);
+          			console.log("displayName" + logResponse.displayName);
+          		})
+          	})
+          }
+          
+        </script>
+        <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+        <style type="text/css">
+          body {
+          margin:;
+          font-size:16px;
+          color: #000000;
+          font-family:Arial, Helvetica, sans-serif;
+          }
+          #sliderWrap {
+          margin: auto;
+          width: 300px;
+          }
+          #slider {
+          position: absolute;
+          background-image:url(usepics/flo6.jpg);
+          background-repeat:no-repeat;
+          background-position: bottom;
+          width: 300px;
+          height: 159px;
+          margin-top: -141px;
+          }
+          #slider img {
+          border: 0;
+          }
+          #sliderContent {
+          margin: 30px 0 0 30px;
+          position: absolute;
+          text-align:top_left;
+          color:#003399;
+          font-weight:simple;
+          padding: 10px;
+          }
+          #header {
+          margin: 0 auto;
+          width: 600px;
+          background-color: #F0F0F0;
+          height: 200px;
+          padding: 10px;
+          }
+          #openCloseWrap {
+          position:absolute;
+          margin: 143px 0 0 120px;
+          font-size:12px;
+          font-weight:bold;
+          }
+        </style>
+  </head>
+  <body>
+  <!--<script type="text/javascript">
+    // $(document).ready(function() {
+    // 	$(".topMenuAction").click( function() {
+    // 		if ($("#openCloseIdentifier").is(":hidden")) {
+    // 			$("#slider").animate({
+    // 				marginTop: "-141px"
+    // 				}, 500 );
+    // 			$("#topMenuImage").html('<img src="open.png" alt="open" />');
+    // 			$("#openCloseIdentifier").show();
+    // 		} else {
+    // 			$("#slider").animate({
+    // 				marginTop: "0px"
+    // 				}, 500 );
+    // 			$("#topMenuImage").html('<img src="close.png" alt="close" />');
+    // 			$("#openCloseIdentifier").hide();
+    // 		}
+    // 	});
+    // });
+    </script>-->
+  <div id="sliderWrap">
+  <div id="openCloseIdentifier"></div>
+  <div id="slider">
+  <div id="sliderContent">
+  <span ><font size="+1.5"><center>Developed By:<br>Priya Gupta <br>
+  Contact:+91-94143-47699</center><br></font></span>
+  </div>
+  <div id="openCloseWrap">
+  <a href="#" class="topMenuAction" id="topMenuImage">
+  <img src="open.png" alt="open" />
+  </a>
+  </div>
+  </div>
+  </div>
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  </head>
+  <body>
+  </body>
+  </html>
+  <title>Online Shopping - Phptpoint.com</title>
+  <meta http-equiv="Content-language" content="cs">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="description" content=" ">
+  <meta name="keywords" content=" ">
+  <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon"> //-->
+  <meta name="author" content="Kl?ra Frolichov?, Sunlight webdesign">
+  <meta name="Copyright" content="Kl?ra Frolichov?, Sunlight webdesign 2007">
+  <meta name="design" content="Sunlight webdesign - http://www.sunlight.cz, info@sunlight.cz">
+  <link rel="stylesheet" type="text/css" href="default.css" title="default">
+  </head>
+  <body>
     <center>
-      <input name="account" type="submit" id="account" value="Create my Account">
+      <!--<script type="text/javascript">
+        google_ad_client = "ca-pub-6338063578832547";
+        google_ad_slot = "5073283314";
+        google_ad_width = 728;
+        google_ad_height = 90;
+        </script>
+        Header Ads
+        <script type="text/javascript"
+        src="//pagead2.googlesyndication.com/pagead/show_ads.js">
+        </script>-->
     </center>
-    </label></td>
-    </tr>
-
-</table>
- <!-- </form> -->
-</fieldset>
-</div>
-</center>
-
-</div>
-
-</body>
-</html></div>
-
-<div class="cleaner"></div>
-
-
-</div>
-<div id="Bottom">
-<p class="down"><b>Copyright &copy;<a href="http://www.phptpoint.com">Phptpoint.com</a></b></p>
-
-</div>
-</div>
-</div>
-</div>
-</div>
-
-</body>
-<center>
-<!--<script type="text/javascript">
-    google_ad_client = "ca-pub-6338063578832547";
-    google_ad_slot = "5073283314";
-    google_ad_width = 728;
-    google_ad_height = 90;
-</script>-->
-<!-- Header Ads -->
-<!--<script type="text/javascript"
-// src="//pagead2.googlesyndication.com/pagead/show_ads.js">
-// </script>-->
-</center>
+    <div id="WholePage">
+      <div id="Inner">
+        <div id="Container" style="border:groove;border-color:#00CCFF">
+          <div id="Head">
+            <div id="Head_left">
+              <div id="Leaf_top"><img src="img/shop3.jpg" width="324" /></div>
+              <div id="Leaf_bottom"> <a class="registration" href="register.html">REGISTRATION</a> <a class="log-in" href="login.html">LOG IN</a> </div>
+            </div>
+            <div id="Head_right">
+              <div id="Logo">
+                <div id="Name"><span class="blue">F</span><span>ashion</span>&nbsp;<span class="blue">S</span><span>hop</span> </div>
+                <div id="Informations">Latest trends in Fashion</div>
+              </div>
+              <div id="Top_menu"> <a class="kart" href="cart.html"><span>CART</span></a> 
+                <a class="orders" href="/shop/orders"><span>GALLERY</span></a>
+                <a class="home" href="?page=home"><span>HOME</span></a>
+              </div>
+            </div>
+          </div>
+          <div id="CentralPart">
+            <div id="LeftPart">
+              <div id="Menu">
+                <div id="Menu_header">
+                  <div class="menu_header_left"> <span class="menu_text"><font face="Georgia, Times New Roman, Times, serif">Search</font></span></div>
+                  <div class="menu_header_right"> </div>
+                  <div id="Menu_content">
+                    <!--<a class="menu_item" href="?page=home"><span>--><!-- Start of Page Search -->
+                    <h5>&nbsp;</h5>
+                    <form method="post">
+                      <input type="text" name="t1" value="search" onfocus=
+                        "if(this.value=='search')
+                        {this.value='';}
+                        "
+                        onBlur=
+                        "if(this.value=='')
+                        {this.value='search';}
+                        "/>
+                      <input name="sear" type="submit" class="button" id="sub" value="Go" />
+                    </form>
+                    <h5>&nbsp;</h5>
+                    <!--</form>-->
+                    <!-- End of Page Search --></span></a><br>
+                  </div>
+                  <div class="menu_header_left"> <span class="menu_text">MEN</span></div>
+                  <div class="menu_header_right"> </div>
+                </div>
+                <div id="Menu_content"> <a class="menu_item" href="index.php?catg=1 & subcatg=Casual Shirts"><span>Casual Shirts</span></a><br>
+                  <a class="menu_item" href="index.php?catg=1 & subcatg=Jeans"><span>Jeans</span></a><br>
+                  <a class="menu_item" href="index.php?catg=1 & subcatg=T-Shirts"><span>T-shirts
+                  </span></a><br>
+                  <a class="menu_item" href="index.php?catg=1 & subcatg=Footwear"><span>Footwear</span></a><br>
+                  <a class="menu_item" href="index.php?catg=1 & subcatg=Shorts"><span>Shorts</span></a><br>
+                  <a class="menu_item" href="index.php?catg=1 & subcatg=watches"><span>Watches
+                  </span></a><br>
+                </div>
+                <div class="menu_header_left"> <span class="menu_text">WOMEN</span></div>
+                <div class="menu_header_right"> </div>
+                <div id="Menu_content"> <a class="menu_item" href="index.php?catg=2 & subcatg=dresses"><span>Dresses</span></a><br>
+                  <a class="menu_item" href="index.php?catg=2 & subcatg=Churidar Suits"><span>Churidar Suits</span></a><br>
+                  <a class="menu_item" href="index.php?catg=2 & subcatg=Kurtas"><span>Kurtas</span></a><br>
+                  <a class="menu_item" href="index.php?catg=2 & subcatg=Sandals"><span>Sandals</span></a><br>
+                  <a class="menu_item" href="index.php?catg=2 & subcatg=Office Wear"><span>Office Wear</span></a><br>
+                  <a class="menu_item" href="index.php?catg=2 & subcatg=Artificial Jewellery"><span>Artificial Jewellery</span></a><br>
+                </div>
+                <div class="menu_header_left"> <span class="menu_text">KIDS</span></div>
+                <div class="menu_header_right"> </div>
+                <div id="Menu_content">
+                  <a class="menu_item" href="index.php?catg=3 & subcatg=Baby Apparel"><span>Baby Apparel</span></a><br>
+                  <a class="menu_item" href="index.php?catg=3 & subcatg=Girls Apparel"><span>Girls Apparel</span></a><br>
+                  <a class="menu_item" href="index.php?catg=3 & subcatg=Boys Apparel"><span>Boys Apparel</span></a><br>
+                  <a class="menu_item" href="index.php?catg=3 & subcatg=Kids Toys"><span>Kids Toys</span></a><br>
+                  <!--<a class="menu_item" href="?page=home"><span>Office Wear</span></a><br>
+                    <a class="menu_item" href="?page=home"><span>Artificial Jewellery</span></a><br>-->
+                </div>
+              </div>
+              <img src="usepics/4.jpg" width="228" height="183" />
+            </div>
+            <div id="RightPart">
+              <html>
+                <body>
+                  <button id="authorize-button"> Get your data from Google </button>
+                  <div>
+                    <br/>
+                    <center>
+                      <h2><font face="Lucida Handwriting" size="+1" color="#00CCFF">Register Yourself</font></h2>
+                    </center>
+                  </div>
+                  <div style="width:25%;float:right">
+                    <br><br><br><br><br>
+                    <img src="usepics/7.jpg">
+                  </div>
+                  <br><br>
+                  <center>
+                    <div style="width:70%;float:right" align="center">
+                      <fieldset style="background:#CC99CC;width:50%">
+                        <br><br>
+                        <table width="366" border="0" align="center">
+                          <form id="gp-register" method="post"></form>
+                          <tr>
+                            <td>
+                              <div align="center"><strong><font size="+1" face="Comic Sans MS">Title:</font></strong></div>
+                            </td>
+                            <td>
+                              <label>
+                                <select name="sel1" id="sel1">
+                                  <option value="Mr.">Mr.</option>
+                                  <option value="Ms.">Ms.</option>
+                                  <option value="Mrs.">Mrs.</option>
+                                </select>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="164">
+                              <div align="center"><font size="+1" face="Comic Sans MS"><b> First&nbsp;Name:</b></font></div>
+                            </td>
+                            <td width="192">
+                              <input name="t1" type="text" id="t1">    
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><strong>Last name:</strong></font></div>
+                            </td>
+                            <td><input name="t2" type="text" id="t2" ></td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Gender:</b> </font></div>
+                            </td>
+                            <td>
+                              <label>
+                                <select name="gender" id="gender">
+                                  <option value="Female">Female</option>
+                                  <option value="Male">Male</option>
+                                  <option value="Other">Other</option>
+                                </select>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Enter Email : </b></font></div>
+                            </td>
+                            <td><input name="t3" type="text" id="t3"></td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><b>&nbsp;Choose a  Password:</b> </font></div>
+                            </td>
+                            <td><input name="p1" type="text" id="p1"></td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><b>Phone no: </b></font></div>
+                            </td>
+                            <td><input name="t5" type="text" id="t5"></td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><strong>Address:</strong></font></div>
+                            </td>
+                            <td><label>
+                              <textarea name="t6" id="t6"></textarea>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><strong>City:</strong></font></div>
+                            </td>
+                            <td><input name="t7" type="text" id="t7"></td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><font size="+1" face="Comic Sans MS"><strong>Country:</strong></font></div>
+                            </td>
+                            <td><input name="t8" type="text" id="t8"></td>
+                          </tr>
+                          <!-- <tr>
+                            <td><div align="center"><strong><font size="+1" face="Comic Sans MS">Date of Birth: </font></strong></div></td>
+                            <td><label>
+                              <input name="t9" type="text" id="t9">
+                            </label></td>
+                            </tr> -->
+                          <tr>
+                            <td>
+                              <div align="center"><strong><font size="+1" face="Comic Sans MS">Date of Birth Day:</font></strong></div>
+                            </td>
+                            <td>
+                              <label>
+                                <select name="day" id="day">
+                                  <option value="01">01</option>
+                                  <option value="02">02</option>
+                                  <option value="03">03</option>
+                                  <option value="04">04</option>
+                                  <option value="05">05</option>
+                                  <option value="06">06</option>
+                                  <option value="07">07</option>
+                                  <option value="08">08</option>
+                                  <option value="09">09</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                  <option value="12">12</option>
+                                  <option value="13">13</option>
+                                  <option value="14">14</option>
+                                  <option value="15">15</option>
+                                  <option value="16">16</option>
+                                  <option value="17">17</option>
+                                  <option value="18">18</option>
+                                  <option value="19">19</option>
+                                  <option value="20">20</option>
+                                  <option value="21">21</option>
+                                  <option value="22">22</option>
+                                  <option value="23">23</option>
+                                  <option value="24">24</option>
+                                  <option value="25">25</option>
+                                  <option value="26">26</option>
+                                  <option value="27">27</option>
+                                  <option value="28">28</option>
+                                  <option value="29">29</option>
+                                  <option value="30">30</option>
+                                  <option value="31">31</option>
+                                </select>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><strong><font size="+1" face="Comic Sans MS">Month:</font></strong></div>
+                            </td>
+                            <td>
+                              <label>
+                                <select name="month" id="month">
+                                  <option value="01">January</option>
+                                  <option value="02">February</option>
+                                  <option value="03">March</option>
+                                  <option value="04">April</option>
+                                  <option value="05">May</option>
+                                  <option value="06">June</option>
+                                  <option value="07">July</option>
+                                  <option value="08">August</option>
+                                  <option value="09">September</option>
+                                  <option value="10">October</option>
+                                  <option value="11">November</option>
+                                  <option value="12">December</option>
+                                </select>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div align="center"><strong><font size="+1" face="Comic Sans MS">Year:</font></strong></div>
+                            </td>
+                            <td>
+                              <label>
+                                <select name="year" id="year">
+                                  <option value="2007">2007</option>
+                                  <option value="2006">2006</option>
+                                  <option value="2005">2005</option>
+                                  <option value="2004">2004</option>
+                                  <option value="2003">2003</option>
+                                  <option value="2002">2002</option>
+                                  <option value="2001">2001</option>
+                                  <option value="2000">2000</option>
+                                  <option value="1999">1999</option>
+                                  <option value="1998">1998</option>
+                                  <option value="1997">1997</option>
+                                  <option value="1996">1996</option>
+                                  <option value="1995">1995</option>
+                                  <option value="1994">1994</option>
+                                  <option value="1993">1993</option>
+                                  <option value="1992">1992</option>
+                                  <option value="1991">1991</option>
+                                  <option value="1990">1990</option>
+                                  <option value="1989">1989</option>
+                                  <option value="1988">1988</option>
+                                  <option value="1987">1987</option>
+                                  <option value="1986">1986</option>
+                                  <option value="1985">1985</option>
+                                  <option value="1984">1984</option>
+                                  <option value="1983">1983</option>
+                                  <option value="1982">1982</option>
+                                  <option value="1981">1981</option>
+                                  <option value="1980">1980</option>
+                                  <option value="1979">1979</option>
+                                  <option value="1978">1978</option>
+                                  <option value="1977">1977</option>
+                                  <option value="1976">1976</option>
+                                  <option value="1975">1975</option>
+                                  <option value="1974">1974</option>
+                                  <option value="1973">1973</option>
+                                  <option value="1972">1972</option>
+                                  <option value="1971">1971</option>
+                                  <option value="1970">1970</option>
+                                  <option value="1969">1969</option>
+                                  <option value="1968">1968</option>
+                                  <option value="1967">1967</option>
+                                  <option value="1966">1966</option>
+                                  <option value="1965">1965</option>
+                                  <option value="1964">1964</option>
+                                  <option value="1963">1963</option>
+                                  <option value="1962">1962</option>
+                                  <option value="1961">1961</option>
+                                  <option value="1960">1960</option>
+                                  <option value="1959">1959</option>
+                                  <option value="1958">1958</option>
+                                  <option value="1957">1957</option>
+                                  <option value="1956">1956</option>
+                                  <option value="1955">1955</option>
+                                  <option value="1954">1954</option>
+                                  <option value="1953">1953</option>
+                                  <option value="1952">1952</option>
+                                  <option value="1951">1951</option>
+                                  <option value="1950">1950</option>
+                                </select>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2">
+                              <label>
+                                <br>
+                                <center>
+                                  <input name="account" type="submit" id="account" value="Create my Account">
+                                </center>
+                              </label>
+                            </td>
+                          </tr>
+                        </table>
+                        <!-- </form> -->
+                      </fieldset>
+                    </div>
+                  </center>
+            </div>
+            </body>
+            </html>
+          </div>
+          <div class="cleaner"></div>
+        </div>
+        <div id="Bottom">
+          <p class="down"><b>Copyright &copy;<a href="http://www.phptpoint.com">Phptpoint.com</a></b></p>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+  </body>
+  <center>
+    <!--<script type="text/javascript">
+      google_ad_client = "ca-pub-6338063578832547";
+      google_ad_slot = "5073283314";
+      google_ad_width = 728;
+      google_ad_height = 90;
+      </script>-->
+    <!-- Header Ads -->
+    <!--<script type="text/javascript"
+      // src="//pagead2.googlesyndication.com/pagead/show_ads.js">
+      // </script>-->
+  </center>
 </html>
+

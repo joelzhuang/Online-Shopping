@@ -4,20 +4,21 @@ $(document).ready(function(e) {
   var ERROR_LOG = console.error.bind(console);
   //var domain = "https://localhost:6400";
   
-  /** Creates a buy request with the server */
-  $("#Page_center").on('click',".page_center_buy",function() {
-    console.log("buy item "+$(this).attr("id"));
+  /** Creates a buy request with the server */   
+  $("#Page_center").on('click',".dropdown-content a",function() {
+    event.preventDefault();
+    var my_id = $(this).parent().siblings(".page_center_buy").attr("id");
+    console.log("buy item "+ my_id);
     $.ajax({
       method: 'POST',
-      url: domain +'/shop/'+ $(this).attr("id") +'/Medium',
+      url: domain +'/shop/'+ my_id +'/'+ $(this).html(),
       dataType: 'json',
       //                               v gotta get this from cookies
-      data: { iid: $(this).attr("id"), uid: 10, size: "Medium" } // TODO actually get an id for user 
+      data: { iid: my_id, uid: 10, size: "Medium" } // TODO actually get an id for user 
      }).then(function(data) { 
-        console.log("then "+ Object.getOwnPropertyNames(data));
      }).done(function (msg){
-      console.log($(this).attr("id") +" leads to "+ msg);
-      alert("purchase made");
+      console.log(id +" leads to "+ msg);
+      alert("Purchase added to your cart!");
     }).fail(function( xhr, status, errorThrown ) {
       errorLog(xhr,status,errorThrown);
       onServerError("Could not purchase this item! "+xhr.responseText);
@@ -27,9 +28,8 @@ $(document).ready(function(e) {
   
   /** Changes the category based on clicks in the sidebar */
   $("a").click(function(event) {
-  // if this isn't a menu item continue with whatever you were doing
     if (!($(this).hasClass("menu_item"))) {
-      return;
+      return; // if this isn't a menu item, continue with whatever you were doing
     }
     // otherwise, stop link propagation
     event.preventDefault();
@@ -166,6 +166,43 @@ item cell format:
     }
   }
   
+  
+  /** Returns an array of <td> objects. */
+  var html_data = function (data) {
+    var arr = new Array();
+    for (var i = 0; i < data.length; i++) {
+      var html = "<td width=\"29\" class=\"page_center_button\">";
+          html+= "<div class=\"dropdown\">"
+            html+= "<a class=\"page_center_buy\" id=\""+ data[i].iid +"\" title=\"Buy "+data[i].name +"\"></a>";
+          if (!(data[i].category == "Jewellery" || data[i].category == "Watches")) {
+            html+= "<div class=\"dropdown-content\">"
+                        +"<a href=\"\">Small</a>"
+                        +"<a href=\"\">Medium</a>"
+                        +"<a href=\"\">Large</a>"
+                        +"<a href=\"\">X Large</a>"
+                      +"</div>";
+          }
+          html+= "</div>";
+          html+= "<a class=\"page_center_info\" href=\"?page=home\" title=\"more info\"><span>more-info</span></a>";
+          html+= "</td>";
+          html+= "<td width=\"180\" class=\"page_center_content\" valign=\"top\">";
+            html += "<img width=\"180\" src=\"images/"+ (data[i].image) +".jpg\" />";
+            html += "<div class=\"page_center_text\">";
+              html += "<p><span class=\"item_name blue2\" id=\""+ data[i].iid +"\">";
+                html += data[i].name;
+              html += "</p>";
+              if (typeof(data[i].description) !== 'object') {
+                html += "<p><span class=\"item_description gray\">"+ data[i].description +"</span></p>";
+              }
+              // rounding technique from: http://jsfiddle.net/FQTqk/7/
+              html += "<span class=\"item_price green\">Price: $"+ parseFloat(Math.round(data[i].price * 100) / 100).toFixed(2) +"</span><br>";
+            html += "</div>";
+          html += "</td>";
+      arr.push(html);
+    }
+    return arr;
+  }
+  
   /** Returns an array of <td> objects. */
   var html_cart_data = function (data) {
     var arr = new Array();
@@ -181,7 +218,7 @@ item cell format:
           html += "</td>";
           html += "<td>";
           html += "<span class=\"item_description gray\">"+
-                    "<a href=\"cart.html/remove/"+data[i].iid+"\"> X </a></span>";
+                    "<a href=\"/cart/remove/"+data[i].iid+"\"> X </a></span>";
           html += "</td>";
       arr.push(html);
     }
