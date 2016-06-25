@@ -311,15 +311,13 @@ app.get('/cart/all/:uid', function (req, res) {
     results.push(row);
   });
   query.on('error', function(err) {
-    if(err && !wasSent) {
+    if(err) {
       console.log("ERROR: error running query", err);
       res.status(500).send("Bad request: the database does not contain entries for the given values.");
     }
   });
   query.on('end',function() {
-    if (!wasSent) {
       res.json(results);
-    }
   });
 });
 
@@ -477,13 +475,12 @@ app.post('/cart/checkout/:uid$', function (req, res) {
   var id = get_id (req.session.email);
   console.log(req.session.email +": "+id);
   
-  // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
-      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', iid, quantity, price, oid"
+      //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
+      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
       +" FROM items, cart"
-      +" WHERE iid="+cart_table+".iid"
-      +" and uid="+cart_table+".uid and uid="+id
-      +" and quantity="+cart_table+"+req.params.iid"
+      +" WHERE uid = "+cart_table+".uid and uid = "+id
+      +" and iid = "+cart_table+".iid"
       +" and oid = (select max(oid) from tbl)+1 ;");
   query.on('error', function(err) {
     if(err && !wasSent) {
