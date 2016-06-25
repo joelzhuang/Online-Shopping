@@ -297,7 +297,7 @@ app.get('/shop/all$', function (req, res) {
 app.get('/cart/all/:uid', function (req, res) {
   
   var id = get_id (req.session.email);
-  console.log(req.session.email +": "+id);
+  console.log(req.session.email +": "+id+", "+req.session.user_id);
   
   console.log("SELECT "+item_table+".iid, "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity, "+item_table+".price"
     +" FROM "+ cart_table+", "+item_table
@@ -342,6 +342,7 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
       res.status(500).send("Database error: "+err);
+      wasSent = true;
     }
   });
   query.on('end',function(result) {
@@ -362,7 +363,7 @@ app.post('/cart/:iid/:size$', function (req, res) {
   
     // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
-      +" SELECT "+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1, price"
+      +" SELECT "+id+", "+req.params.iid+", '"+req.params.size+"', 1, price"
       +" FROM items"
       +" WHERE iid="+req.params.iid);
   query.on('error', function(err) {
@@ -517,7 +518,7 @@ app.listen(port, function () {
 });
 
 var get_id = function(username) {
-	var query = client.query('select * from users where email = \'' +username +'\';');
+	var query = client.query('select id from users where email = \'' +username +'\';');
 	var id = 0;
 	query.on('row', function(row) {
 	  id = row.id;
