@@ -34,6 +34,14 @@ app.use(session({
   	}
 }));
 
+var options = {
+    maxAge: 1111,
+    headers: {
+        'x-timestamp': Date.now(),
+        'x-sent': true
+    }
+  };
+
 
 // JSON STUFF
 // =======================================================
@@ -47,6 +55,8 @@ app.use(function(req,res,next) {
   res.setHeader('Access-Control-Allow-Origin','*') // this seems unsafe somehow
   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Cache-Control', 'public');
+  res.header('Expires', 11111);
   next();
 });
 
@@ -62,7 +72,15 @@ app.all(function (req,res,next) {
     } else {
       console.log("user is NOT logged in");
     }
+
+    res.header('Expires', 11111)
 });
+
+app.get('/get1/', function(req,res){
+    res.header('Cache-Control', 'public');
+    res.header('Expires', 11111);
+    res.send(200);
+})
 
 
 // PAGE ROUTING
@@ -70,15 +88,15 @@ app.all(function (req,res,next) {
 
 app.get('/$', function(req,res) {
   res.header('Expires', 11111);
-  res.sendFile(__dirname +'/index.html');
+  res.sendFile(__dirname +'/index.html', options);
 });
 app.get('/home', function(req,res) {
   res.header('Expires', 11111);
-  res.sendFile(__dirname +'/index.html');
+  res.sendFile(__dirname +'/index.html', options);
 });
 app.get('/cart$', function(req,res) {
   res.header('Expires', 11111);
-  res.sendFile(__dirname +'/cart.html');
+  res.sendFile(__dirname +'/cart.html', options);
 });
 app.get('/contact$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
@@ -88,11 +106,11 @@ app.get('/orders$', function(req,res) {
 });
 app.get('/register$', function(req,res) {
   res.header('Expires', 11111);
-  res.sendFile(__dirname +'/register.html');
+  res.sendFile(__dirname +'/register.html', options);
 });
 app.get('/login$', function(req,res) {
   res.header('Expires', 11111);
-  res.sendFile(__dirname +'/login.html');
+  res.sendFile(__dirname +'/login.html', options);
 });
 
 
@@ -240,7 +258,7 @@ app.get('/shop/all$', function (req, res) {
   });
   query.on('end',function() {
     res.header('Expires', 11111);
-    res.json(results);
+    res.json(results, options);
   });
 });
 
@@ -267,7 +285,7 @@ app.get('/cart/all/$', function (req, res) {
   });
   query.on('end',function() {
       res.header('Expires', 11111);
-      res.json(results);
+      res.json(results, options);
   });
 });
 
