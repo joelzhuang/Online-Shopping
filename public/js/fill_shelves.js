@@ -53,9 +53,9 @@ $(document).ready(function(e) {
     event.preventDefault();
     $.ajax({
       method: 'POST',
-      url: domain+href;
+      url: domain+href,
 	  success: function(data) {
-		location.reload(true);
+		location.reload(true)
 	  }
     }).then(function(data) { 
     }).done(function (data) {
