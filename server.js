@@ -93,10 +93,6 @@ app.get('/home', function(req,res) {
 
 });
 app.get('/cart', function(req,res) {
-<<<<<<< HEAD
-=======
-	console.log("are you getting these cart requests?");
->>>>>>> 4c780ee8ff719530bf9bb950f48ad96cebd0798f
   res.header('Expires', 3600000);
   res.sendFile('/public/cart.html');
 });
