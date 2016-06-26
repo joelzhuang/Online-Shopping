@@ -69,12 +69,15 @@ app.all(function (req,res,next) {
 // =======================================================
 
 app.get('/$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/home', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/cart$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/cart.html');
 });
 app.get('/contact$', function(req,res) {
@@ -84,9 +87,11 @@ app.get('/orders$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
 app.get('/register$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/register.html');
 });
 app.get('/login$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/login.html');
 });
 
@@ -133,6 +138,7 @@ app.post('/googleLogin/', function(req, res, next){
 			if(data.email == username &&!found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
+        eq.session.loginid = data.id;
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -149,7 +155,7 @@ app.post('/googleLogin/', function(req, res, next){
 });
 
 app.post('/login/', function(req,res,next){
-
+  console.log("LOGGING IN");
 	var username = req.body.name;
 	var password = req.body.pass;
 	var query = client.query('select * from users where email = \'' +username +'\';');
@@ -166,7 +172,8 @@ app.post('/login/', function(req,res,next){
 			if(data.email == username && data.password == password && !found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-        req.session.id = data.id;
+        req.session.loginid = data.id;
+        console.log("ID:   " +  data.id)
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -183,11 +190,6 @@ app.post('/login/', function(req,res,next){
 	  console.log(req.session)
 	
 	});
-});
-
-app.get('/user/', function(req,res,next){
-	console.log(req);
-	res.sendStatus(200);
 });
 
 app.post('/register/', function(req,res,next) {
@@ -237,6 +239,7 @@ app.get('/shop/all$', function (req, res) {
     }
   });
   query.on('end',function() {
+    res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
     res.json(results);
   });
 });
@@ -246,7 +249,7 @@ app.get('/shop/all$', function (req, res) {
 /** Load all the items in a user's cart */
 app.get('/cart/all/$', function (req, res) {
   
-  var id = get_id (req.session.email);
+  var id = req.session.loginid
   console.log("Sending the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
     
   var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
@@ -263,6 +266,7 @@ app.get('/cart/all/$', function (req, res) {
     }
   });
   query.on('end',function() {
+      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
   });
 });
@@ -275,7 +279,7 @@ app.get('/cart/all/$', function (req, res) {
 */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
 	
-  var id = get_id (req.session.email);
+  var id = req.session.loginid
   console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
   
   var query = client.query("DELETE FROM "+ cart_table +" only"
@@ -304,7 +308,7 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 /* CHECK OUT ITEMS. */
 app.post('/cart/checkout/', function (req, res) {
   
-  var id = get_id (req.session.email);
+  var id = req.session.loginid
   console.log(req.session.email +": "+id);
   
       //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
@@ -344,7 +348,7 @@ app.post('/cart/checkout/', function (req, res) {
 /* Add a new item to the cart. */
 app.post('/cart/:iid/:size$', function (req, res) {
 
-  var id = get_id (req.session.email);
+  var id = req.session.loginid
   console.log(req.session.email +": "+id);
   
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
@@ -402,6 +406,7 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
+      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
       console.log(results);
     }
@@ -446,6 +451,7 @@ app.get('/shop/:category$', function (req, res) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
+      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
     }
   });
