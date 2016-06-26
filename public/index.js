@@ -45,7 +45,7 @@ $(document).ready(function(e) {
     var query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="nome, ak")';
     $.ajax({
       method: 'GET',
-      url: 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json&diagnostics=true&callback='
+      url: 'https://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json&diagnostics=true&callback='
 
       }).then(function(data){
         console.log(data)
