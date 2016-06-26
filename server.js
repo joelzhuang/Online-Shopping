@@ -91,7 +91,7 @@ app.get('/home(/?)$', function(req,res) {
   res.sendFile(__dirname +'/index.html', options);
 
 });
-app.get('/cart$', function(req,res) {
+app.get('/cart', function(req,res) {
 	console.log("are you getting these?");
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/cart.html');
