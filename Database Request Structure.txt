@@ -26,3 +26,5 @@ URL								HTTP Verb					Action
 													SUCCESS: 200 + JSON
 													FAIL: 	 if not logged in, 403 + HTML
 															 if database error: 500 + HTML
+															 
+/register/						POST			create a new account

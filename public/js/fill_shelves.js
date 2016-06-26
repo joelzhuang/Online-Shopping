@@ -32,12 +32,7 @@ $(document).ready(function(e) {
     $.ajax({
       method: 'POST',
       url: domain +'/cart/checkout/'+ my_id,
-      dataType: 'json',
-      statusCode: {
-        404: alert("404 while making checkout request"),
-        200: alert("successful checkout"),
-        500: alert("server error")
-      }
+      dataType: 'json'
      }).then(function(data) { 
      }).done(function (msg){
       console.log(my_id +" leads to "+ msg);
