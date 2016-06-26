@@ -1,22 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cz">
   <head>
-    <title>Company name - title</title>
+    <title>Bastion Shop - Where We Sell Stuff</title>
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <meta http-equiv="Content-language" content="cs">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" content=" ">
     <meta name="keywords" content=" ">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="author" content="Klára Frolichová, Sunlight webdesign">
     <meta name="Copyright" content="Klára Frolichová, Sunlight webdesign 2007">
     <meta name="design" content="Sunlight webdesign - http://www.sunlight.cz, info@sunlight.cz">
     <link rel="stylesheet" type="text/css" href="default.css" title="default">
-    <!--<script src="js/fill_shelves.js"></script>-->
+    <script src="js/fill_shelves.js"></script>
     <script src="index.js"></script>
-    <script>
+    <script type="text/javascript">
       function abc() {
       var arr=new Array("usepics/neck.jpg","usepics/ban7.jpg","usepics/ban5.jpg","usepics/ban1.jpg","usepics/akkriti-banner.jpg");
       var ind=eval(document.f1.h1.value);
@@ -27,6 +25,10 @@
           }
       }
       setInterval("abc()",3000);
+      
+      // --------------------------------
+      // fill the homepage with items
+      load_all();
     </script>
   </head>
   <body>
@@ -50,11 +52,10 @@
                 <div id="Informations">Latest trends in Fashion</div>
               </div>
               <div id="Top_menu"> 
-                <a class="kart" href="" id = "kart"><span>KART</span></a> 
-                <a class="orders" href="?page=home"><span>ORDERS</span></a>
-                <a class="contact" href="?page=home"><span>CONTACT</span></a>
-                <a class="help" href="help.html"><span>HELP</span></a>
-                <a class="home" href="?page=home"><span>HOME</span></a>
+                <a class="kart" href="/cart" id = "kart"><span>CART</span></a> 
+                <a class="orders" href="/orders"><span>ORDERS</span></a>
+                <a class="contact" href="/contact"><span>CONTACT</span></a>
+                <a class="home" href="/"><span>HOME</span></a>
               </div>
             </div>
           </div>
@@ -75,45 +76,41 @@
                       onBlur=
                       "if(this.value=='')
                       {this.value='search';}
-                      "/>
+                      ">
                     <input name="sub" type="submit" class="button" id="sub" value="Go" />
                     <h5>&nbsp;</h5>
                     <!--</form>-->
                     <!-- End of Page Search --></span></a><br>
                   </div>
-                  <div class="menu_header_left"> <span class="menu_text"><a href="men.html">MEN</a></span>
+                  <div class="menu_header_left"> <span class="menu_text"><a href="Men" class="menu_item">MEN</a></span>
                   </div>
                   <div class="menu_header_right"> </div>
                 </div>
-                <div id="Menu_content"> <a class="menu_item" href="mcasual.html"><span>Casual Shirts</span></a><br>
-                  <a class="menu_item" href="mjeans.html"><span>Jeans</span></a><br>
-                  <a class="menu_item" href="mtshirts.html"><span>T-shirts
+                <div id="Menu_content"> <a class="menu_item" href="Men/Casual Shirts"><span>Casual Shirts</span></a><br>
+                  <a class="menu_item" href="Men/Jeans"><span>Jeans</span></a><br>
+                  <a class="menu_item" href="Men/T-shirts"><span>T-shirts
                   </span></a><br>
-                  <a class="menu_item" href="mshoe.html"><span>Footwear</span></a><br>
-                  <a class="menu_item" href="mshorts.html"><span>Shorts</span></a><br>
-                  <a class="menu_item" href="mwatches.html"><span>Watches
-                  </span></a><br>
+                  <a class="menu_item" href="Men/Footwear"><span>Footwear</span></a><br>
+                  <a class="menu_item" href="Men/Shorts"><span>Shorts</span></a><br>
+                  <a class="menu_item" href="Men/Watches"><span>Watches</span></a><br>
                 </div>
-                <div class="menu_header_left"> <span class="menu_text"><a href="women1.html">WOMEN</a></span>
+                <div class="menu_header_left"> <span class="menu_text"><a href="Women" class="menu_item">WOMEN</a></span>
                 </div>
                 <div class="menu_header_right"> </div>
-                <div id="Menu_content"> <a class="menu_item" href="dress.php?catg=2 & subcatg=dresses"><span>Dresses</span></a><br>
-                  <a class="menu_item" href="msuits.html"><span>Churidar Suits</span></a><br>
-                  <a class="menu_item" href="mkurtas.html"><span>Kurtas</span></a><br>
-                  <a class="menu_item" href="msandals.html"><span>Sandals</span></a><br>
-                  <a class="menu_item" href="moffice.html"><span>Office Wear</span></a><br>
-                  <a class="menu_item" href="mjewel.html"><span>Artificial Jewellery</span></a><br>
+                <div id="Menu_content"> <a class="menu_item" href="Women/Dresses"><span>Dresses</span></a><br>
+                  <a class="menu_item" href="Women/Churidar Suits"><span>Churidar Suits</span></a><br>
+                  <a class="menu_item" href="Women/Kurtas"><span>Kurtas</span></a><br>
+                  <a class="menu_item" href="Women/Footwear"><span>Sandals</span></a><br>
+                  <a class="menu_item" href="Women/Office Wear"><span>Office Wear</span></a><br>
+                  <a class="menu_item" href="Women/Jewellery"><span>Artificial Jewellery</span></a><br>
                 </div>
-                <div class="menu_header_left"> <span class="menu_text"><a href="kids1.html">KIDS</a></span>
+                <div class="menu_header_left"> <span class="menu_text"><a href="Kids" class="menu_item">KIDS</a></span>
                 </div>
                 <div class="menu_header_right"> </div>
                 <div id="Menu_content">
-                  <a class="menu_item" href="mbaby.html"><span>Baby Apparel</span></a><br>
-                  <a class="menu_item" href="mgirl.html"><span>Girls Apparel</span></a><br>
-                  <a class="menu_item" href="mboy.html"><span>Boys Apparel</span></a><br>
-                  <a class="menu_item" href="mbabytoy.html"><span>Kids Toys</span></a><br>
-                  <!--<a class="menu_item" href="?page=home"><span>Office Wear</span></a><br>
-                    <a class="menu_item" href="?page=home"><span>Artificial Jewellery</span></a><br>-->
+                  <a class="menu_item" href="Kids/Baby Apparel"><span>Baby Apparel</span></a><br>
+                  <a class="menu_item" href="Kids/Girls Apparel"><span>Girls Apparel</span></a><br>
+                  <a class="menu_item" href="Kids/Boys Apparel"><span>Boys Apparel</span></a><br>
                 </div>
               </div>
               <img src="usepics/4.jpg" width="228" height="183" />
@@ -138,15 +135,17 @@
               </div>-->
             <div id="RightPart">
               <div id="Page">
-                <img src="usepics/akkriti-banner.jpg" alt="" width="669" height="210" name="img"/>
+                <img src="usepics/akkriti-banner.jpg" alt="" width="669" height="210" name="img">
                 <form name="f1">
                   <input type="hidden" name="h1" value="0" />
                 </form>
                 <div id="Page_top">
-                  <p>
+                  <p id = "page_top_client"></p>
+                  <p id = "page_top_server"></p>
+                  <p id = "page_top_content">
                     <marquee behavior="scroll" direction="left" onmouseover="stop()" onmouseout="start()">
                       <font color="#FFFF99">
-                  <h3>30%off on all summer wear...Hurry!!!</h3></font><font color="#00CC99"><h4>Enjoy the pleasure of shopping with Fashion Shop...</h4></font></marquee><br>
+                  <h3>30% off on all summer wear</h3></font><font color="#00CC99"><h4>Enjoy the pleasure of shopping with Bastion.</h4></font></marquee><br>
                   </p>
                 </div>
                 <div id="Page_center">
@@ -160,7 +159,7 @@
             <div class="cleaner"></div>
           </div>
           <div id="Bottom">
-            <p class="down">Copyright © Fashion Shop, Design by:Priya Gupta</p>
+            <p class="down">Copyright © Fashion Shop, Design by: Priya Gupta</p>
             <!--<p class="down"><a href="http://www.sunlight.cz">Supported by </a><a href="http://www.hosting24.com/" target="_blank">Hosting24.com</a>
               </p>
               <div class="down2">

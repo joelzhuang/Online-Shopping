@@ -381,6 +381,27 @@ h1
     color: #074d64;
 }
 
+.error {
+  height: 10px;
+  width: auto;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#page_top_server {
+  background-color: Coral;
+  display:hidden;
+  opacity: 0;
+}
+
+#page_top_client {
+  background-color: Khaki;
+  display:hidden;
+  opacity: 0;
+}
+
 #Page_center
 {
     width: 669px;
@@ -388,6 +409,7 @@ h1
 
 .page_center_button
 {
+  text-align:right;
 	width: 31px;
 }
 
@@ -396,12 +418,16 @@ h1
 	display: none;
 }
 
-.page_center_buy
+a.page_center_buy
 {
     background: url("img/buy.gif") top left no-repeat;
     height: 53px;
     width: 31px;
+    margin-top: 0px;
+    margin-bottom: auto;
     float: left;
+    overflow: visible;
+    cursor: cell;
 }
 
 .page_center_info
@@ -409,7 +435,7 @@ h1
     background: url("img/info.gif") top left no-repeat;
     height: 99px;
     width: 31px;
-    float: left;
+    float: right;
 }
 
 .page_center_content
@@ -518,4 +544,59 @@ h1
 .down2 img
 {
     border: 0px;
+}
+
+
+/* Code for dropdown menus */
+/* Dropdown Button */
+.dropbtn {
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    float: right;
+    position: absolute;
+    left: -120px;
+    z-index: 9999999;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+tr.cart-header {
+  color: grey;
+  font-weight: bold;
+  opacity: 0.7;
 }
