@@ -33,6 +33,25 @@ $(document).ready(function(e) {
 
   	});
 
+    var lat ="";
+    var long = "";
 
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude
+      var long = position.coords.longitude;
+   
 
+    //var query = 'SELECT * FROM geo.places WHERE text="{'+lat+'}, {'+long+'}" AND placeTypeName.code = 7';
+    var query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="nome, ak")';
+    $.ajax({
+      method: 'GET',
+      url: 'https://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json&diagnostics=true&callback='
+
+      }).then(function(data){
+        console.log(data)
+        $('#weather').prepend(data.query.results.channel.item.condition.temp);
+        $('#weather').prepend(data.query.results.channel.item.condition.text+ " ");
+      })
+
+      });
 });
