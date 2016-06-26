@@ -86,9 +86,11 @@ app.get('/$', function(req,res) {
 });
 
 app.get('/home/?$', function(req,res) {
+  res.header('Expires', 3600000);
   res.sendFile(__dirname +'/index.html', options);
 });
 app.get('/cart$', function(req,res) {
+  res.header('Expires', 3600000);
   res.sendFile(__dirname +'/cart.html');
 });
 app.get('/contact/?$', function(req,res) {
@@ -99,9 +101,11 @@ app.get('/orders/?$', function(req,res) {
 });
 
 app.get('/register/?$', function(req,res) {
+  res.header('Expires', 3600000);
   res.sendFile(__dirname +'/register.html', options);
 });
 app.get('/login/?$', function(req,res) {
+  res.header('Expires', 3600000);
   res.sendFile(__dirname +'/login.html',options);
 });
 
