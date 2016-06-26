@@ -133,7 +133,7 @@ app.post('/googleLogin/', function(req, res, next){
 			if(data.email == username &&!found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-        eq.session.id = data.id;
+        eq.session.loginid = data.id;
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -167,7 +167,7 @@ app.post('/login/', function(req,res,next){
 			if(data.email == username && data.password == password && !found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-        req.session.id = data.id;
+        req.session.loginid = data.id;
         console.log("ID:   " +  data.id)
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
@@ -243,7 +243,7 @@ app.get('/shop/all$', function (req, res) {
 /** Load all the items in a user's cart */
 app.get('/cart/all/$', function (req, res) {
   
-  var id = req.session.id
+  var id = req.session.loginid
   console.log("Sending the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
     
   var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
@@ -272,7 +272,7 @@ app.get('/cart/all/$', function (req, res) {
 */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
 	
-  var id = req.session.id
+  var id = req.session.loginid
   console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
   
   var query = client.query("DELETE FROM "+ cart_table +" only"
@@ -301,7 +301,7 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 /* CHECK OUT ITEMS. */
 app.post('/cart/checkout/', function (req, res) {
   
-  var id = req.session.id
+  var id = req.session.loginid
   console.log(req.session.email +": "+id);
   
       //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
@@ -341,7 +341,7 @@ app.post('/cart/checkout/', function (req, res) {
 /* Add a new item to the cart. */
 app.post('/cart/:iid/:size$', function (req, res) {
 
-  var id = req.session.id
+  var id = req.session.loginid
   console.log(req.session.email +": "+id);
   
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
