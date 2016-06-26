@@ -41,8 +41,8 @@ $(document).ready(function(e) {
       var long = position.coords.longitude;
    
 
-    var query = 'SELECT * FROM geo.places WHERE text="{'+lat+'}, {'+long+'}" AND placeTypeName.code = 7';
-
+    //var query = 'SELECT * FROM geo.places WHERE text="{'+lat+'}, {'+long+'}" AND placeTypeName.code = 7';
+    var query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="nome, ak")';
     $.ajax({
       method: 'GET',
       url: 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json&diagnostics=true&callback='
