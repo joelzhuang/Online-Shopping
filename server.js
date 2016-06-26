@@ -149,7 +149,7 @@ app.post('/googleLogin/', function(req, res, next){
 });
 
 app.post('/login/', function(req,res,next){
-
+  console.log("LOGGING IN");
 	var username = req.body.name;
 	var password = req.body.pass;
 	var query = client.query('select * from users where email = \'' +username +'\';');
@@ -184,11 +184,6 @@ app.post('/login/', function(req,res,next){
 	  console.log(req.session)
 	
 	});
-});
-
-app.get('/user/', function(req,res,next){
-	console.log(req);
-	res.sendStatus(200);
 });
 
 app.post('/register/', function(req,res,next) {
