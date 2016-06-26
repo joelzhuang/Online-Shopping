@@ -69,15 +69,15 @@ app.all(function (req,res,next) {
 // =======================================================
 
 app.get('/$', function(req,res) {
-  res.header('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Expires', 11111);
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/home', function(req,res) {
-  res.header('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Expires', 11111);
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/cart$', function(req,res) {
-  res.header('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Expires', 11111);
   res.sendFile(__dirname +'/cart.html');
 });
 app.get('/contact$', function(req,res) {
@@ -87,11 +87,11 @@ app.get('/orders$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
 app.get('/register$', function(req,res) {
-  res.header('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Expires', 11111);
   res.sendFile(__dirname +'/register.html');
 });
 app.get('/login$', function(req,res) {
-  res.header('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Expires', 11111);
   res.sendFile(__dirname +'/login.html');
 });
 
@@ -239,7 +239,7 @@ app.get('/shop/all$', function (req, res) {
     }
   });
   query.on('end',function() {
-    res.header('Cache-Control', 'public, max-age=31557600'); // one year
+    res.header('Expires', 11111);
     res.json(results);
   });
 });
@@ -266,7 +266,7 @@ app.get('/cart/all/$', function (req, res) {
     }
   });
   query.on('end',function() {
-      res.header('Cache-Control', 'public, max-age=31557600'); // one year
+      res.header('Expires', 11111);
       res.json(results);
   });
 });
@@ -406,7 +406,7 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
-      res.header('Cache-Control', 'public, max-age=31557600'); // one year
+      res.header('Expires', 11111);
       res.json(results);
       console.log(results);
     }
@@ -451,7 +451,7 @@ app.get('/shop/:category$', function (req, res) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
-      res.header('Cache-Control', 'public, max-age=31557600'); // one year
+      res.header('Expires', 11111);
       res.json(results);
     }
   });
