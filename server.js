@@ -239,6 +239,16 @@ app.post('/register/', function(req,res,next) {
   });
 });
 
+app.get('/userinfo', function(req,res){
+  var id = req.session.loginid;
+  var email = req.session.email;
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+  res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+  res.setHeader("Expires", "0"); // Proxies.
+  res.send(JSON.stringify({email : email, id : id}));
+
+})
+
 // SHOPPING
 // =======================================================
 var item_table = "items";
