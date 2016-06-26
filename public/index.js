@@ -33,6 +33,15 @@ $(document).ready(function(e) {
 
   	});
 
+    $.ajax({
+      method: 'GET',
+      url: 'http://openweathermap.org/data/2.1/find/city?lat=8.2924495&lon=-62.7373258',
+      }).then(function(data){
+        console.log(data)
+        $('#weather').prepend('hi');
+      })
+
+
 
 
 });
