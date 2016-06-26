@@ -51,7 +51,7 @@ app.use(function(req,res,next) {
 });
 
 /** Refresh the cookie's expiration time, if the user is logged in.*/
-app.all(function (req,res,next) {
+app.all('*', function (req,res) {
 	if (is_logged_in(req.session)) {
 		console.log("user "+ req.session.email +" is logged in, resetting cookie");
 		/* var query = url.parse(req.url, true, true).query;*/
@@ -62,7 +62,6 @@ app.all(function (req,res,next) {
     } else {
       console.log("user is NOT logged in");
     }
-  next();
 });
 
 
@@ -75,7 +74,7 @@ app.get('/$', function(req,res) {
 app.get('/home/?$', function(req,res) {
   res.sendFile(__dirname +'/index.html');
 });
-app.get('/cart/?$', function(req,res) {
+app.get('/cart$', function(req,res) {
   res.sendFile(__dirname +'/cart.html');
 });
 app.get('/contact/?$', function(req,res) {
