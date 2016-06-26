@@ -412,7 +412,7 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 /* Add a new item to the cart. */
 app.post('/cart/:iid/:size$', function (req, res) {
   var logged_in = is_logged_in(req.session);
-  var id = get_id (req.session.email);
+  var id = req.session.loginid;
 
   console.log(req.session.email +": "+id);
   
