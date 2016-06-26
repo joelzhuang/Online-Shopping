@@ -92,21 +92,8 @@ app.get('/$', function(req,res) {
 app.get('/home/?$', function(req,res) {
   res.sendFile(__dirname +'/index.html', options);
 });
-<<<<<<< HEAD
-app.get('/cart/?', function(req,res,next) {
-  console.log("WELCOME TO THE CART");
-  var logged_in = is_logged_in(req.session);
-  if (!logged_in || req.body == undefined) {
-    res.status(403).send("Please log in to view the contents of your cart.");
-  }
-  next();
-});
-app.get('/cart/?$', function(req,res) {
-  res.sendFile(__dirname +'/cart.html', options);
-=======
 app.get('/cart$', function(req,res) {
   res.sendFile(__dirname +'/cart.html');
->>>>>>> fe724c7ca5a94e44d349a21588633b7ea4bae87d
 });
 app.get('/contact/?$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
