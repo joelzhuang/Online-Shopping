@@ -12,28 +12,27 @@ $(document).ready(function(e) {
       method: 'POST',
       url: domain +'/cart/'+ my_id +'/'+ $(this).html(),
       dataType: 'html',
-      data: { iid: my_id, size: "Medium" }
+      data: { iid: my_id, size: $(this).html() }
      }).then(function(data) { 
-     }).done(function (msg){
+     }).done(function (msg) {
       console.log(my_id +" leads to "+ msg);
       alert("Purchase added to your cart!");
-      $(this).background-color: green;
     }).fail(function( xhr, status, errorThrown ) {
       errorLog(xhr,status,errorThrown);
       onServerError("Could not purchase this item! "+xhr.responseText);
     });
     return false;
-  });
-  
-  
-  $("#Page_center").on('click',"#checkout",function() {
+});
+
+   $("#Page_center").on('click',"#checkout",function() {
+	 var my_id = $(this).parent().siblings(".page_center_buy").attr("id");
     event.preventDefault();
     console.log("checkout");
     $.ajax({
       method: 'POST',
-      url: domain +'/cart/checkout/'+ my_id,
+      url: domain +'/cart/checkout/',
       dataType: 'json'
-     }).then(function(data) { 
+     }).then(function(data) {
      }).done(function (msg){
       console.log(my_id +" leads to "+ msg);
       alert("Thank-you for your purchase!");
@@ -43,7 +42,7 @@ $(document).ready(function(e) {
     });
     return false;
   });
-  
+
   /** Changes the category based on clicks in the sidebar */
   $("a").click(function(event) {
     if (!($(this).hasClass("menu_item"))) {
@@ -58,6 +57,27 @@ $(document).ready(function(e) {
     }).then(function(data) { 
       make_table(data);
     }).done(function (data) {
+    }).fail(function( xhr, status, errorThrown ) {
+      errorLog(xhr,status,errorThrown);
+    });
+    return false;
+  });
+  
+    /** Changes the category based on clicks in the sidebar */
+  $("#remove-item").click(function(event) {
+    // otherwise, stop link propagation
+	var href = $(this).attr("href");
+	console.log(href);
+    event.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: domain+href,
+	  success: function(data) {
+		location.reload(true)
+	  }
+    }).then(function(data) { 
+    }).done(function (data) {
+		alert("item removed successfully")
     }).fail(function( xhr, status, errorThrown ) {
       errorLog(xhr,status,errorThrown);
     });
@@ -85,7 +105,7 @@ var load_all  = function() {
     alert("Sorry, there was a problem accessing the database!");
     console.log( "Error: " + errorThrown );
     console.log( "Status: " + status );
-    onServerError(xhr);
+    onServerError(xhr.responseText);
   });
 }
 
@@ -94,16 +114,17 @@ var load_cart  = function() {
   console.log("Get cart ");
   $.ajax({
     method: 'GET',
-    url: domain+'/cart/all/' // TODO get logged in info from cookies
+    url: domain+'/cart/all/'
   }).then(function(data) {
     show_cart(data)
   }).done( function(data) {
   }).fail(function( xhr, status, errorThrown ) {
     // Code to run if the request fails; the raw request and
     // status codes are passed to the function
+    alert("Sorry, there was a problem accessing the database!");
     console.log( "Error: " + errorThrown );
     console.log( "Status: " + status );
-    onServerError(xhr);
+    onServerError(xhr.responseText);
   });
 }
 
@@ -113,12 +134,12 @@ var errorLog = function(xhr, status, errorThrown) {
   if (status < 500) {
     onClientError(xhr.responseText);
   } else {
-    onServerError(xhr);
+    onServerError(xhr.responseText);
   }
 }
 
 /** Just a prettiness thing--shows a client error*/
-var onClientError = function(xhr) {
+var onClientError = function(text) {
   $("#page_top_server").animate({ 
     opacity: 0
   }, 200 );
@@ -132,17 +153,10 @@ var onClientError = function(xhr) {
   }, 200, function() {
     // on complete
   });
-  switch (xhr.status) {
-    case 404: alert("The requested page could not be found, sorry!");
-                break;
-    case 403: alert("Please log in to access this page!");
-                break;
-    default: alert("Status error "+ xhr.status);    
-  }
 }
 
 /** Just a prettiness thing--shows a server error*/
-var onServerError = function(xhr) {
+var onServerError = function(text) {
   $("#page_top_content").animate({ 
     opacity: 0
   }, 200 );
@@ -156,11 +170,6 @@ var onServerError = function(xhr) {
   }, 200, function() {
     // on complete
   });
-  switch (xhr.status) {
-    case 500: alert("The server has encountered an unexpected issue with your request, please try again.");
-                break;
-    default: alert("The server is experiencing difficulties, please try again.");    
-  }
 }
 
 /* uses html_data's <td> objects to create a table, with rows and stuff. */
@@ -189,12 +198,12 @@ var html_data = function (data) {
     var html = "<td width=\"35\" class=\"page_center_button\" style=\"border-left: 1px lightgrey dotted;\">";
         html+= "<div class=\"dropdown\">"
           html+= "<a class=\"page_center_buy\" id=\""+ data[i].iid +"\" title=\"Buy "+data[i].name +"\"></a>";
-        if (!(data[i].subcategory === "Jewellery" || data[i].subcategory === "Watches")) {
+        if (!(data[i].category == "Jewellery" || data[i].category == "Watches")) {
           html+= "<div class=\"dropdown-content\">"
-                      +"<a href=\"javascript.void(0);\">Small</a>"
-                      +"<a href=\"javascript.void(0);\">Medium</a>"
-                      +"<a href=\"javascript.void(0);\">Large</a>"
-                      +"<a href=\"javascript.void(0);\">X Large</a>"
+                      +"<a href=\"\">Small</a>"
+                      +"<a href=\"\">Medium</a>"
+                      +"<a href=\"\">Large</a>"
+                      +"<a href=\"\">X Large</a>"
                     +"</div>";
         }
         html+= "</div>";
@@ -222,7 +231,7 @@ var html_cart_data = function (data) {
   var arr = new Array();
   var total = 0;
   for (var i = 0; i < data.length; i++) {
-    total += (Number(data[i].quantity) * Number(data[i].price));
+    total += Number(data[i].price);
     var html = "<td>";
         html+= data[i].name;
         html+= "</td>";
@@ -236,12 +245,11 @@ var html_cart_data = function (data) {
           html += data[i].price;
         html += "</td>";
         html += "<td>";
-        html += "<span class=\"item_description gray\"><a href=\"/cart/delete/"+
-                      data[i].iid+"/"+data[i].size+"\"> X </a></span>";
+        html += "<span class=\"item_description gray\"><a href=\"/cart/delete/"+data[i].iid+"/"+data[i].size+"\" id=\"remove-item\"> X </a></span>";
         html += "</td>";
     arr.push(html);
   }
-  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"><a href=\"javascript.void(0);\" id=\"checkout\">Checkout</a></td> <td id=\"total_\">$"+ money(total) +"</td> <td id=\"removeall_\"><a class=\"remove-all\" href=\"javascript.void(0);\">Remove all</td>");
+  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"></td> <td id=\"total_\">$"+ money(total) +"</td> <td></td>");
   return arr;
 }
 

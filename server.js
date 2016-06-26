@@ -86,12 +86,13 @@ app.get('/$', function(req,res) {
 });
 
 
-app.get('/home/?$', function(req,res) {
+app.get('/home(/?)$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/index.html', options);
 
 });
-app.get('/cart$', function(req,res) {
+app.get('/cart', function(req,res) {
+	console.log("are you getting these?");
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/cart.html');
 });
@@ -103,11 +104,11 @@ app.get('/orders$', function(req,res) {
 });
 
 
-app.get('/register/?$', function(req,res) {
+app.get('/register(/?)$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/register.html', options);
 });
-app.get('/login/?$', function(req,res) {
+app.get('/login(/?)$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/login.html',options);
 
@@ -296,7 +297,6 @@ app.get('/cart/all/$', function (req, res) {
     res.status(403).send("Please log in to view the contents of your cart.");
     return;
   }
-  
 
   var id = req.session.user_id;
   console.log("Sending the cart of "+req.session.email +":id="+id);

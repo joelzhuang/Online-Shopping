@@ -66,7 +66,7 @@ $(document).ready(function(e) {
 
 		$.ajax({
 			method: 'POST',
-			url: 'http://localhost:8080/register/',
+			url: 'https://quiet-bastion-96093.herokuapp.com/register/',
 			data: JSON.stringify({
 				register_data : r_data,
 			}),
@@ -83,5 +83,5 @@ $(document).ready(function(e) {
 		}
 
 	});
-	
+
 }); // end ready
