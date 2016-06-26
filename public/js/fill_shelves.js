@@ -10,10 +10,9 @@ $(document).ready(function(e) {
     console.log("buy item "+ my_id);
     $.ajax({
       method: 'POST',
-      url: domain +'/shop/'+ my_id +'/'+ $(this).html(),
-      dataType: 'json',
-      //                               v gotta get this from cookies
-      data: { iid: my_id, uid: 10, size: "Medium" } // TODO actually get an id for user 
+      url: domain +'/cart/'+ my_id +'/'+ $(this).html(),
+      dataType: 'html',
+      data: { iid: my_id, size: $(this).html() }
      }).then(function(data) { 
      }).done(function (msg){
       console.log(my_id +" leads to "+ msg);
@@ -23,7 +22,7 @@ $(document).ready(function(e) {
       onServerError("Could not purchase this item! "+xhr.responseText);
     });
     return false;
-  });
+});
   
   /** Changes the category based on clicks in the sidebar */
   $("a").click(function(event) {
@@ -96,7 +95,7 @@ var load_cart  = function() {
   console.log("Get cart ");
   $.ajax({
     method: 'GET',
-    url: domain+'/cart/all/'+10 // TODO get logged in info from cookies
+    url: domain+'/cart/all/'
   }).then(function(data) {
     show_cart(data)
   }).done( function(data) {
