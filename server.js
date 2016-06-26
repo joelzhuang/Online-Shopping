@@ -88,15 +88,15 @@ app.get('/get1/', function(req,res){
 
 app.get('/$', function(req,res) {
   res.header('Expires', 3600000);
-  res.sendFile(__dirname +'/index.html', options);
+  res.sendFile('/public/index.html', options);
 });
 app.get('/home', function(req,res) {
   res.header('Expires', 3600000);
-  res.sendFile(__dirname +'/index.html', options);
+  res.sendFile('public/index.html', options);
 });
 app.get('/cart$', function(req,res) {
   res.header('Expires', 3600000);
-  res.sendFile(__dirname +'/cart.html', options);
+  res.sendFile('public/cart.html', options);
 });
 app.get('/contact$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
@@ -106,11 +106,11 @@ app.get('/orders$', function(req,res) {
 });
 app.get('/register$', function(req,res) {
   res.header('Expires', 3600000);
-  res.sendFile(__dirname +'/register.html', options);
+  res.sendFile('public/register.html', options);
 });
 app.get('/login$', function(req,res) {
   res.header('Expires', 3600000);
-  res.sendFile(__dirname +'/login.html', options);
+  res.sendFile('public/login.html', options);
 });
 
 
