@@ -422,7 +422,7 @@ app.post('/cart/:iid/:size$', function (req, res) {
     }
   });
   query.on('end',function(result) {
-    if (!sent) {}
+    if (!sent) {
       res.status(200).send("Item successfully added to cart.");
     }
   });
