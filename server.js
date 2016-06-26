@@ -239,6 +239,7 @@ app.get('/shop/all$', function (req, res) {
     }
   });
   query.on('end',function() {
+    res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
     res.json(results);
   });
 });
@@ -265,6 +266,7 @@ app.get('/cart/all/$', function (req, res) {
     }
   });
   query.on('end',function() {
+      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
   });
 });
