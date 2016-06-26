@@ -258,7 +258,7 @@ app.get('/shop/all$', function (req, res) {
   });
   query.on('end',function() {
     res.header('Expires', 11111);
-    res.json(results, options);
+    res.json(results);
   });
 });
 
@@ -285,7 +285,7 @@ app.get('/cart/all/$', function (req, res) {
   });
   query.on('end',function() {
       res.header('Expires', 11111);
-      res.json(results, options);
+      res.json(results);
   });
 });
 
