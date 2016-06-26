@@ -27,7 +27,7 @@ $(document).ready(function(e) {
     		data: 'loggingout',
 			cache: true,
  		}).then(function(){
- 			console.log('yoza')
+ 			signOut();
  		})
 
   	});
