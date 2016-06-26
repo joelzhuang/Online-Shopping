@@ -74,22 +74,30 @@ app.all(function (req,res,next) {
 app.get('/$', function(req,res) {
   res.sendFile(__dirname +'/index.html');
 });
-app.get('/home', function(req,res) {
+app.get('/home/?$', function(req,res) {
   res.sendFile(__dirname +'/index.html');
 });
-app.get('/cart$', function(req,res) {
+app.get('/cart/?', function(req,res,next) {
+  console.log("WELCOME TO THE CART");
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in || req.body == undefined) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  next();
+});
+app.get('/cart/?$', function(req,res) {
   res.sendFile(__dirname +'/cart.html');
 });
-app.get('/contact$', function(req,res) {
+app.get('/contact/?$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
-app.get('/orders$', function(req,res) {
+app.get('/orders/?$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
-app.get('/register$', function(req,res) {
+app.get('/register/?$', function(req,res) {
   res.sendFile(__dirname +'/register.html');
 });
-app.get('/login$', function(req,res) {
+app.get('/login/?$', function(req,res) {
   res.sendFile(__dirname +'/login.html');
 });
 
@@ -100,13 +108,14 @@ app.get('/shop/*', function (req,res,next) {
 });
 
 // makes sure the user is logged in before making changes to the cart
-app.get('/cart/*', function (req, res, next) {
+/*app.get('/cart/', function (req, res, next) {
+  console.log("WELCOME TO THE CART WITH WILDCARD");
   var logged_in = is_logged_in(req.session);
   if (!logged_in || req.body == undefined) {
     res.status(403).send("Please log in to view the contents of your cart.");
   }
   next();
-});
+}); */
 
 // app.get('/',function(req,res,next){
 // 	res.send(__dirname);
@@ -214,7 +223,10 @@ app.get('/user/', function(req,res,next){
 
 app.post('/register/', function(req,res,next) {
 	var r_data = req.body.register_data;
-	var query = client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
+	var query = client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year)"
+                          +"VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  
+                          + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  
+                          + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
 	query.on('error', function(err) {
     res.status(500).send("Account could not be created, please try again.");
   });
