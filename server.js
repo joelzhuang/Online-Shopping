@@ -55,7 +55,7 @@ app.all(function (req,res,next) {
 	if (is_logged_in(req.session)) {
 		console.log("user "+ req.session.email +" is logged in, resetting cookie");
 		/* var query = url.parse(req.url, true, true).query;*/
-		res.setHeader('Set-Cookie', cookie.serialize('email', String(query.email), {
+		res.header('Set-Cookie', cookie.serialize('email', String(query.email), {
 			httpOnly: true,
 			maxAge: 3600000 // 1 week 
 		})); 
@@ -69,15 +69,15 @@ app.all(function (req,res,next) {
 // =======================================================
 
 app.get('/$', function(req,res) {
-  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/home', function(req,res) {
-  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/cart$', function(req,res) {
-  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/cart.html');
 });
 app.get('/contact$', function(req,res) {
@@ -87,11 +87,11 @@ app.get('/orders$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
 app.get('/register$', function(req,res) {
-  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/register.html');
 });
 app.get('/login$', function(req,res) {
-  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+  res.header('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/login.html');
 });
 
@@ -239,7 +239,7 @@ app.get('/shop/all$', function (req, res) {
     }
   });
   query.on('end',function() {
-    res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+    res.header('Cache-Control', 'public, max-age=31557600'); // one year
     res.json(results);
   });
 });
@@ -266,7 +266,7 @@ app.get('/cart/all/$', function (req, res) {
     }
   });
   query.on('end',function() {
-      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+      res.header('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
   });
 });
@@ -406,7 +406,7 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
-      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+      res.header('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
       console.log(results);
     }
@@ -451,7 +451,7 @@ app.get('/shop/:category$', function (req, res) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
-      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
+      res.header('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
     }
   });
