@@ -7,3 +7,42 @@ curl -X GET -H "Cache-Control: no-cache" -H "Postman-Token: 052265f2-4135-37b5-a
 
 // Get log-in page
 curl -X GET -H "Host: quiet-bastion-96093.herokuapp.com" -H "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "Accept-Language: en-US,en;q=0.5" -H "Accept-Encoding: gzip, deflate, br" -H "DNT: 1" -H "Cookie: G_ENABLED_IDPS=google; G_AUTHUSER_H=0" -H "Connection: keep-alive" -H "Cache-Control: no-cache" -H "Postman-Token: 90372bad-5ed9-2b27-8d31-cde22f4e40f5" "https://quiet-bastion-96093.herokuapp.com/login.html"
+
+
+Test getting all the items from the database, with header:
+
+curl -X HEAD -i https://quiet-bastion-96093.herokuapp.com/shop/all
+
+HTTP/1.1 200 OK
+Server: Cowboy
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,OPTIONS,PUT,PATCH,DELETE
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept
+Expires: 3600000
+Content-Type: application/json; charset=utf-8
+Content-Length: 13099
+Etag: W/"332b-bM1nRuFL5ENcXzZpCKZvOg"
+Date: Sun, 26 Jun 2016 07:20:09 GMT
+Via: 1.1 vegur
+
+Test getting user information, with header:
+
+curl -X HEAD -i https://quiet-bastion-96093.herokuapp.com/userinfo
+
+HTTP/1.1 200 OK
+Server: Cowboy
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,OPTIONS,PUT,PATCH,DELETE
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept
+Cache-Control: no-cache, no-store, must-revalidate
+Expires: 0
+Pragma: no-cache
+Content-Type: text/html; charset=utf-8
+Content-Length: 2
+Etag: W/"2-mZFLkyvTelC5g8XnyQrpOw"
+Date: Sun, 26 Jun 2016 07:24:50 GMT
+Via: 1.1 vegur
