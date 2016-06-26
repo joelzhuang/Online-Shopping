@@ -61,7 +61,7 @@ app.use(function(req,res,next) {
 });
 
 /** Refresh the cookie's expiration time, if the user is logged in.*/
-app.all(function (req,res,next) {
+app.all('*', function (req,res) {
 	if (is_logged_in(req.session)) {
 		console.log("user "+ req.session.email +" is logged in, resetting cookie");
 		/* var query = url.parse(req.url, true, true).query;*/
@@ -72,9 +72,6 @@ app.all(function (req,res,next) {
     } else {
       console.log("user is NOT logged in");
     }
-
-  res.header('Expires', 3600000)
-  next();
 });
 
 app.get('/get1/', function(req,res){
@@ -87,8 +84,6 @@ app.get('/get1/', function(req,res){
 // PAGE ROUTING
 // =======================================================
 
-
-
 app.get('/$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('/public/index.html', options);
@@ -97,6 +92,7 @@ app.get('/$', function(req,res) {
 app.get('/home/?$', function(req,res) {
   res.sendFile(__dirname +'/index.html', options);
 });
+<<<<<<< HEAD
 app.get('/cart/?', function(req,res,next) {
   console.log("WELCOME TO THE CART");
   var logged_in = is_logged_in(req.session);
@@ -107,6 +103,10 @@ app.get('/cart/?', function(req,res,next) {
 });
 app.get('/cart/?$', function(req,res) {
   res.sendFile(__dirname +'/cart.html', options);
+=======
+app.get('/cart$', function(req,res) {
+  res.sendFile(__dirname +'/cart.html');
+>>>>>>> fe724c7ca5a94e44d349a21588633b7ea4bae87d
 });
 app.get('/contact/?$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
@@ -287,27 +287,37 @@ app.get('/shop/all$', function (req, res) {
 
 /** Load all the items in a user's cart */
 app.get('/cart/all/$', function (req, res) {
+  var sent = false;
+  
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in) {
+    sent=true;
+    res.status(403).send("Please log in to view the contents of your cart.");
+    return;
+  }
   
   var id = req.session.loginid
   console.log("Sending the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
-    
-  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
-    +" FROM "+ cart_table+", "+item_table
-    +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
-  var results = [];
-  query.on('row',function(row) {
-    results.push(row);
-  });
-  query.on('error', function(err) {
-    if(err) {
-      console.log("ERROR: error running query", err);
-      res.status(500).send("Bad request: you do not have access to this cart.");
-    }
-  });
-  query.on('end',function() {
-      res.header('Cache-Control', 'no-cache');
-      res.json(results);
-  });
+  
+  if (!sent) {
+    var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
+      +" FROM "+ cart_table+", "+item_table
+      +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
+    var results = [];
+    query.on('row',function(row) {
+      results.push(row);
+    });
+    query.on('error', function(err) {
+      if(err) {
+        console.log("ERROR: error running query", err);
+        res.status(500).send("Bad request: you do not have access to this cart.");
+      }
+    });
+    query.on('end',function() {
+        res.header('Cache-Control', 'no-cache');
+        res.json(results);
+    });
+  }
 });
 
 
@@ -317,30 +327,38 @@ app.get('/cart/all/$', function (req, res) {
   TODO: make the quantities update correctly
 */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
+  var sent = false;
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in) {
+    sent=true;
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
 	
   var id = req.session.loginid
   console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
   
-  var query = client.query("DELETE FROM "+ cart_table +" only"
-    +" WHERE uid = "+id+" and iid = "+req.params.iid
-    +" and size = \'"+req.params.size+"\';");
-  var deleted = false;
-  query.on('rows', function(err) {
-    deleted = true;
-  });
-  query.on('error', function(err) {
-    if(err) {
-      console.log("Encountered an error while querying the database: "+ err);
-      res.status(500).send("Sorry, you cannot delete items from this cart.");
-    }
-  });
-  query.on('end',function(result) {
-      if (deleted) {
-        res.status(200).send("Item successfully removed from cart.");
-      } else {
-        res.status(404).send("Item could not be removed from the cart.");
+  if (!sent) {
+    var query = client.query("DELETE FROM "+ cart_table +" only"
+      +" WHERE uid = "+id+" and iid = "+req.params.iid
+      +" and size = \'"+req.params.size+"\';");
+    var deleted = false;
+    query.on('rows', function(err) {
+      deleted = true;
+    });
+    query.on('error', function(err) {
+      if(err) {
+        console.log("Encountered an error while querying the database: "+ err);
+        res.status(500).send("Sorry, you cannot delete items from this cart.");
       }
-  });
+    });
+    query.on('end',function(result) {
+        if (deleted) {
+          res.status(200).send("Item successfully removed from cart.");
+        } else {
+          res.status(404).send("Item could not be removed from the cart.");
+        }
+    });
+  }
 });
 
 
@@ -348,8 +366,13 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 app.post('/cart/checkout/', function (req, res) {
   
   var id = req.session.loginid
-  console.log(req.session.email +": "+id);
   var wasSent = false;
+  
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  console.log(req.session.email +": "+id);
       //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
   var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
       +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
@@ -509,11 +532,15 @@ app.get('/shop/:category$', function (req, res) {
 // =======================================================
 //app.use('/', router);
 
+
 app.listen(port, function () {
 	console.log('Your app is listening on port ' + port);
 });
 
 function get_id(username) {
+  if (username === undefined || username === null) {
+    return -1;
+  }
 	var query = client.query('select id from users where email = \'' +username +'\';');
 	var id = 0;
 	query.on('row', function(row) {

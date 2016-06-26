@@ -3,11 +3,12 @@ $(document).ready(function(e) {
   	$.ajax({
     	method: 'GET',
     	url: "https://quiet-bastion-96093.herokuapp.com/checkLogin"
- 	}).then(function(data){
+    }).then(function(data){
       console.log(data);
 
       // Logged in (Logout)
       if(data=='found'){
+        $('#Leaf_bottom').prepend()
       	$('#Leaf_bottom').prepend('<a class="log-out" href id = "log-out" >LOG OUT</a> ')
 
       }
@@ -17,7 +18,7 @@ $(document).ready(function(e) {
       	$('#Leaf_bottom').prepend('<a class="registration" href="register.html">REGISTRATION</a> <a class="log-in" href="login.html">LOG IN</a> ')
 
       }
-  	})
+  	});
 
   	$('#Leaf_bottom').on('click', 'a', function(){
 
@@ -25,10 +26,10 @@ $(document).ready(function(e) {
     		method: 'GET',
     		url: "https://quiet-bastion-96093.herokuapp.com/logout",
     		data: 'loggingout',
-			cache: true,
- 		}).then(function(){
- 			signOut();
- 		})
+        cache: true,
+      }).then(function(){
+        console.log('yoza')
+      });
 
   	});
 
