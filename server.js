@@ -76,6 +76,20 @@ app.get('/get', function(req,res,next){
 // PAGE ROUTING
 // =======================================================
 
+app.get('/shop/*', function (req,res,next) {
+  console.log("got a shop request");
+  next();
+});
+
+// makes sure the user is logged in before making changes to the cart
+app.get('/cart/*', function (req, res, next) {
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in || req.body == undefined) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  next();
+});
+
 app.get('/$', function(req,res) {
   res.sendFile(__dirname +'/index.html');
 });
@@ -257,22 +271,6 @@ var subcat_table = "subcategories";
 var orders_table = "orders";
 
 
-
-app.get('/shop/*', function (req,res,next) {
-  console.log("got a shop request");
-  next();
-});
-
-// makes sure the user is logged in before making changes to the cart
-app.get('/cart/*', function (req, res, next) {
-  var logged_in = is_logged_in(req.session);
-  if (!logged_in || req.body == undefined) {
-    res.status(403).send("Please log in to view the contents of your cart.");
-  }
-  next();
-});
-
-
 /** Get all the items in the database */
 app.get('/shop/all$', function (req, res) {
   var query = client.query("SELECT * FROM "+item_table+";");
@@ -356,7 +354,7 @@ app.post('/cart/checkout/', function (req, res) {
   
   var id = get_id (req.session.email);
   console.log(req.session.email +": "+id);
-  
+  var wasSent = false;
       //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
   var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
       +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
@@ -397,19 +395,27 @@ app.post('/cart/:iid/:size$', function (req, res) {
   var id = get_id (req.session.email);
   console.log(req.session.email +": "+id);
   
+  var sent = false;
+  if (id === undefined) {
+    sent = true;
+    res.status(404).send('Please log in to access this page.');
+  }
+  
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
       +" SELECT "+id+", "+req.params.iid+", '"+req.params.size+"', 1, price"
       +" FROM items"
       +" WHERE iid="+req.params.iid);
   query.on('error', function(err) {
-    if(err) {
+    if(err && !sent) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
       res.status(500).send("Database error: "+err);
     }
   });
   query.on('end',function(result) {
-    res.status(200).send("Item successfully added to cart.");
+    if (!sent) {}
+      res.status(200).send("Item successfully added to cart.");
+    }
   });
 });
 

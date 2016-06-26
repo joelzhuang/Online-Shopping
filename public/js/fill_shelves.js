@@ -12,16 +12,12 @@ $(document).ready(function(e) {
       method: 'POST',
       url: domain +'/cart/'+ my_id +'/'+ $(this).html(),
       dataType: 'html',
-      data: { iid: my_id, size: "Medium" },
-      statusCode: {
-        404: alert("404 while making buy request"),
-        200: alert("successful purchase"),
-        500: alert("server error")
-      }
+      data: { iid: my_id, size: "Medium" }
      }).then(function(data) { 
      }).done(function (msg){
       console.log(my_id +" leads to "+ msg);
       alert("Purchase added to your cart!");
+      $(this).background-color: green;
     }).fail(function( xhr, status, errorThrown ) {
       errorLog(xhr,status,errorThrown);
       onServerError("Could not purchase this item! "+xhr.responseText);
@@ -200,10 +196,10 @@ var html_data = function (data) {
           html+= "<a class=\"page_center_buy\" id=\""+ data[i].iid +"\" title=\"Buy "+data[i].name +"\"></a>";
         if (!(data[i].subcategory === "Jewellery" || data[i].subcategory === "Watches")) {
           html+= "<div class=\"dropdown-content\">"
-                      +"<a href=\"\">Small</a>"
-                      +"<a href=\"\">Medium</a>"
-                      +"<a href=\"\">Large</a>"
-                      +"<a href=\"\">X Large</a>"
+                      +"<a href=\"javascript.void(0);\">Small</a>"
+                      +"<a href=\"javascript.void(0);\">Medium</a>"
+                      +"<a href=\"javascript.void(0);\">Large</a>"
+                      +"<a href=\"javascript.void(0);\">X Large</a>"
                     +"</div>";
         }
         html+= "</div>";
@@ -250,7 +246,7 @@ var html_cart_data = function (data) {
         html += "</td>";
     arr.push(html);
   }
-  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"><a href=\"\" id=\"checkout\">Checkout</a></td> <td id=\"total_\">$"+ money(total) +"</td> <td id=\"removeall_\"><a class=\"remove-all\" href=\"\">Remove all</td>");
+  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"><a href=\"javascript.void(0);\" id=\"checkout\">Checkout</a></td> <td id=\"total_\">$"+ money(total) +"</td> <td id=\"removeall_\"><a class=\"remove-all\" href=\"javascript.void(0);\">Remove all</td>");
   return arr;
 }
 
