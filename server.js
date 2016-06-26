@@ -35,7 +35,7 @@ app.use(session({
 }));
 
 var options = {
-    maxAge: 1111,
+    maxAge: 55555,
     headers: {
         'x-timestamp': Date.now(),
         'x-sent': true
@@ -56,7 +56,7 @@ app.use(function(req,res,next) {
   res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PUT,PATCH,DELETE');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Cache-Control', 'public');
-  res.header('Expires', 11111);
+  res.header('Expires', 22222);
   next();
 });
 
@@ -106,7 +106,7 @@ app.get('/orders$', function(req,res) {
 });
 app.get('/register$', function(req,res) {
   res.header('Expires', 11111);
-  res.sendFile(__dirname +'/register.html', options);
+  //res.sendFile(__dirname +'/register.html', options);
 });
 app.get('/login$', function(req,res) {
   res.header('Expires', 11111);
@@ -424,7 +424,7 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
-      res.header('Expires', 11111);
+      res.header('Expires', 66666);
       res.json(results);
       console.log(results);
     }
@@ -469,7 +469,7 @@ app.get('/shop/:category$', function (req, res) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
-      res.header('Expires', 11111);
+      res.header('Expires', 77777);
       res.json(results);
     }
   });
