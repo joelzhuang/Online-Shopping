@@ -72,29 +72,23 @@ app.use(function(req,res,next) {
 app.get('/$', function(req,res) {
   res.sendFile(__dirname +'/index.html');
 });
-app.get('/home/?$', function(req,res) {
+app.get('/home$', function(req,res) {
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/cart$', function(req,res) {
   res.sendFile(__dirname +'/cart.html');
 });
-app.get('/contact/?$', function(req,res) {
+app.get('/contact$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
-app.get('/orders/?$', function(req,res) {
+app.get('/orders$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
-app.get('/register/?$', function(req,res) {
+app.get('/register$', function(req,res) {
   res.sendFile(__dirname +'/register.html');
 });
-app.get('/login/?$', function(req,res) {
+app.get('/login$', function(req,res) {
   res.sendFile(__dirname +'/login.html');
-});
-
-
-app.get('/shop/*', function (req,res, next) {
-  console.log("got a shop request");
-  next('route');
 });
 
 // makes sure the user is logged in before making changes to the cart
@@ -236,6 +230,13 @@ var subcat_table = "subcategories";
 var orders_table = "orders";
 
 
+
+app.get('/shop/.*', function (req,res, next) {
+  console.log("got a shop request");
+  next('route');
+});
+
+
 /** Get all the items in the database */
 app.get('/shop/all$', function (req, res) {
   var query = client.query("SELECT * FROM "+item_table+";");
@@ -261,14 +262,14 @@ app.get('/cart/all/$', function (req, res) {
   var sent = false;
   
   var logged_in = is_logged_in(req.session);
-  if (!logged_in) {
+  if (!logged_in || req.session.user_id === undefined) {
     sent=true;
     res.status(403).send("Please log in to view the contents of your cart.");
     return;
   }
   
-  var id = get_id (req.session.email);
-  console.log("Sending the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
+  var id = req.session.user_id;
+  console.log("Sending the cart of "+req.session.email +":id="+id);
   
   if (!sent) {
     var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
@@ -298,14 +299,14 @@ app.get('/cart/all/$', function (req, res) {
 */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
   var sent = false;
+  var id = req.session.user_id;
   var logged_in = is_logged_in(req.session);
-  if (!logged_in) {
+  if (!logged_in || req.session.user_id === undefined) {
     sent=true;
     res.status(403).send("Please log in to view the contents of your cart.");
   }
 	
-  var id = get_id (req.session.email);
-  console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
+  console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id);
   
   if (!sent) {
     var query = client.query("DELETE FROM "+ cart_table +" only"
@@ -316,13 +317,13 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
       deleted = true;
     });
     query.on('error', function(err) {
-      if(err) {
+      if(err && !sent) {
         console.log("Encountered an error while querying the database: "+ err);
         res.status(500).send("Sorry, you cannot delete items from this cart.");
       }
     });
     query.on('end',function(result) {
-        if (deleted) {
+        if (deleted && !sent) {
           res.status(200).send("Item successfully removed from cart.");
         } else {
           res.status(404).send("Item could not be removed from the cart.");
@@ -332,58 +333,15 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 });
 
 
-/* CHECK OUT ITEMS. */
-app.post('/cart/checkout/', function (req, res) {
-  var wasSent = false;
-  var id = get_id (req.session.email);
-  
-  var logged_in = is_logged_in(req.session);
-  if (!logged_in) {
-    res.status(403).send("Please log in to view the contents of your cart.");
-  }
-  console.log(req.session.email +": "+id);
-      //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
-  var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
-      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
-      +" FROM items, cart"
-      +" WHERE uid = "+cart_table+".uid and uid = "+id
-      +" and iid = "+cart_table+".iid"
-      +" and oid = (select max(oid) from tbl)+1 ;");
-  query.on('error', function(err) {
-    if(err) {
-      console.log("Encountered an error while querying the database: "+ err);
-      res.status(500).send("The database encountered an error while processing your request.");
-      wasSent = true;
-    }
-  });
-  query.on('end',function(result) {
-    var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+id+";");
-    removeNext.on('error', function(err) {
-      console.log("Something has gone seriously wrong and the cart contains items it should not for (uid="+id+")");
-      res.status(500).send("The database encountered an awful, awful error while processing your request."); // this is not an error you would ever really use in production
-    });
-    var success = false;
-    removeNext.on('row', function(row) {
-      success=true;
-    });
-    removeNext.on('end', function() {   
-      if (true) {
-        res.status(200).send("Thank-you for your purchase! (If this were a real site, you'd get a tracking number or an email or something.)");
-      } else {
-        res.status(200).send("There are no items in your cart to check out.");
-      }
-    });
-  });
-});
 
 /* Add a new item to the cart. */
 app.post('/cart/:iid/:size$', function (req, res) {
-
+  var logged_in = is_logged_in(req.session);
   var id = get_id (req.session.email);
   console.log(req.session.email +": "+id);
   
   var sent = false;
-  if (id === undefined) {
+  if (id === undefined || !logged_in) {
     sent = true;
     res.status(404).send('Please log in to access this page.');
   }
@@ -418,15 +376,15 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   }
   console.log("Finding the subcategory "+ subcategory);
   
-  var wasSent = false;
+  var sent = false;
   
   var hasCategory = client.query("SELECT true FROM "+subcat_table+" WHERE subcat='"+req.params.subcategory+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
   });
   hasCategory.on('end',function(result) {
-    if (result.rows.length == 0 && !wasSent) {
-      wasSent = true;
+    if (result.rows.length == 0 && !sent) {
+      sent = true;
       res.status(404).send("The requested subcategory could not be found.");
     }
   });
@@ -436,15 +394,15 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
     results.push(row);
   });
   query.on('error',function(err) {
-    if (err && !wasSent) {
-      wasSent = true;
+    if (err && !sent) {
+      sent = true;
       console.log("ERROR: ps encountered an error while parsing this request!" +err);
       res.status(500).send("Could not load the requested subcategory. Please try again.");
     }
   });
   query.on('end',function() {
-    if (!wasSent) {
-      wasSent = true;
+    if (!sent) {
+      sent = true;
       res.json(results);
       console.log(results);
     }
@@ -462,14 +420,14 @@ app.get('/shop/:category$', function (req, res) {
     console.log("Cannot find an undefined category");
     res.status(400).send("Bad request: cannot search for an undefined category.");
   }
-  var wasSent = false;
+  var sent = false;
   var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
   });
   hasCategory.on('end',function(result) {
-    if (result.rows.length == 0 && !wasSent) {
-      wasSent = true;
+    if (result.rows.length == 0 && !sent) {
+      sent = true;
       res.status(404).send("The requested category could not be found.");
     }
   });
@@ -480,21 +438,64 @@ app.get('/shop/:category$', function (req, res) {
     results.push(row);
   });
   query.on('error',function(err) {
-    if (err && !wasSent) {
-      wasSent = true;
+    if (err && !sent) {
+      sent = true;
       console.log("ERROR: pg encountered an error while parsing this request!");
       res.status(500).send("Could not load the requested category. Please try again.");
     }
   });
   query.on('end',function() {
-    if (!wasSent) {
-      wasSent = true;
+    if (!sent) {
+      sent = true;
       res.json(results);
     }
   });
 });
 
 
+
+/* CHECK OUT ITEMS. */
+app.post('/cart/checkout/', function (req, res) {
+  var sent = false;
+  var id = req.session.user_id;
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  console.log(req.session.email +": "+id);
+      //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
+  var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
+      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
+      +" FROM items, cart"
+      +" WHERE uid = "+cart_table+".uid and uid = "+id
+      +" and iid = "+cart_table+".iid"
+      +" and oid = (select max(oid) from tbl)+1 ;");
+  query.on('error', function(err) {
+    if(err) {
+      console.log("Encountered an error while querying the database: "+ err);
+      res.status(500).send("The database encountered an error while processing your request.");
+      sent = true;
+    }
+  });
+  query.on('end',function(result) {
+    var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+id+";");
+    removeNext.on('error', function(err) {
+      console.log("Something has gone seriously wrong and the cart contains items it should not for (uid="+id+")");
+      res.status(500).send("The database encountered an awful, awful error while processing your request."); // this is not an error you would ever really use in production
+    });
+    var success = false;
+    removeNext.on('row', function(row) {
+      success=true;
+    });
+    removeNext.on('end', function() {   
+      if (true) {
+        res.status(200).send("Thank-you for your purchase! (If this were a real site, you'd get a tracking number or an email or something.)");
+      } else {
+        res.status(200).send("There are no items in your cart to check out.");
+      }
+    });
+  });
+});
 
 // ROUTING
 // =======================================================
