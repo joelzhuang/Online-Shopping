@@ -1,0 +1,28 @@
+ENDPOINTS
+
+URL								HTTP Verb					Action
+/shop/all						GET				return a JSON object containing all items in the database
+													SUCCESS: 200 + JSON	
+													FAIL:	 500 + HTML
+/cart/all						GET				returns a JSON object containing the items in the user's cart
+													SUCCESS: 200 + JSON
+													FAIL: 	 if not logged in, 403 + HTML
+															 if database error: 500 + HTML
+/shop/:category					GET				return a JSON object containing all the items belonging to that category
+													SUCCESS: 200 + JSON
+													FAIL:	 500 + HTML
+/shop/:category/:subcategory	GET				return a JSON object containing all items belonging to that combination of category and subcategory
+													SUCCESS: 200 + JSON
+													FAIL:	 500 + HTML
+/cart/:iid/:size/				POST			add the item id in the given size to the cart (user id and credentials are sent in the body of the request)
+													SUCCESS: 200 + HTML
+													FAIL: 	 if not logged in, 403 + HTML
+															 if database error: 500 + HTML
+/cart/:iid/:size/				DELETE			remove this item from the user's cart
+													SUCCESS: 200 + JSON
+													FAIL: 	 if not logged in, 403 + HTML
+															 if database error: 500 + HTML
+/cart/checkout/					POST			remove all items from the user's cart and add them to the order list
+													SUCCESS: 200 + JSON
+													FAIL: 	 if not logged in, 403 + HTML
+															 if database error: 500 + HTML

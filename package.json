@@ -3,23 +3,24 @@
   "version": "1.0.0",
   "description": "A shopping database",
   "main": "server.js",
-
   "author": "Joely Huang, Reuben Puketapu, Vicki McKay",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "ISC",
   "dependencies": {
+    "app-root-dir": "^1.0.2",
     "body-parser": "^1.15.1",
+    "connect-pg-simple": "3.1",
+    "cookie-parser": "^1.4.3",
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "express-session": "1.x",
-    "connect-pg-simple": "3.1",
     "mongoskin": "1.4.1",
     "pg": "^4.5.5",
-    "pg-native": "1.x"
+    "pg-native": "1.x",
+    "rootpath": "^0.1.2"
   },
-
   "repository": {
     "url": "git://github.com/joelzhuang/Online-Shopping.git"
   },
@@ -27,5 +28,4 @@
     "url": "https://github.com/qilyn/shopping-database/issues"
   },
   "homepage": "https://github.com/qilyn/shopping-database#readme"
-
 }
