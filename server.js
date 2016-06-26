@@ -459,7 +459,7 @@ app.listen(port, function () {
 	console.log('Your app is listening on port ' + port);
 });
 
-var get_id = function(username) {
+function get_id(username) {
 	var query = client.query('select id from users where email = \'' +username +'\';');
 	var id = 0;
 	query.on('row', function(row) {
