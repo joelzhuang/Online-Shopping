@@ -166,6 +166,7 @@ app.post('/login/', function(req,res,next){
 			if(data.email == username && data.password == password && !found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
+        req.session.id = data.id;
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
