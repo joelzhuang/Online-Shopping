@@ -51,20 +51,20 @@ app.use(function(req,res,next) {
 });
 
 /** Refresh the cookie's expiration time, if the user is logged in.*/
-app.all('*', function (req,res,next) {
+/*app.all('*', function (req,res,next) {
 	if (is_logged_in(req.session)) {
 		console.log("user "+ req.session.email +" is logged in, resetting cookie");
-		/* var query = url.parse(req.url, true, true).query;*/
+		// var query = url.parse(req.url, true, true).query;
 		res.setHeader('Set-Cookie', cookie.serialize('email', String(query.email), {
 			httpOnly: true,
 			maxAge: 3600000 // 1 week 
 		})); 
-    } else {
-      console.log("user is NOT logged in");
-    }
-    next('route');
+  } else {
+    console.log("user is NOT logged in");
+  }
+  next('route');
 });
-
+*/
 
 // PAGE ROUTING
 // =======================================================
