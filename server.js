@@ -170,7 +170,7 @@ app.post('/googleLogin/', function(req, res, next){
 			if(data.email == username &&!found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-        eq.session.loginid = data.id;
+        req.session.loginid = data.id;
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
