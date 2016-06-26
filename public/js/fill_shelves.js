@@ -227,8 +227,7 @@ var html_cart_data = function (data) {
           html += data[i].price;
         html += "</td>";
         html += "<td>";
-        html += "<span class=\"item_description gray\"><a href=\"/cart/delete/"+
-                      data[i].iid+"/"+data[i].size+"\" id="remove-item"> X </a></span>";
+        html += "<span class=\"item_description gray\"><a href=\"/cart/delete/"+data[i].iid+"/"+data[i].size+"\" id=\"remove-item\"> X </a></span>";
         html += "</td>";
     arr.push(html);
   }
