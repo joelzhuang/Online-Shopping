@@ -86,7 +86,7 @@ app.get('/$', function(req,res) {
 });
 
 
-app.get('/home/?$', function(req,res) {
+app.get('/home', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/index.html', options);
 
@@ -103,11 +103,11 @@ app.get('/orders$', function(req,res) {
 });
 
 
-app.get('/register/?$', function(req,res) {
+app.get('/register(/?)$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/register.html', options);
 });
-app.get('/login/?$', function(req,res) {
+app.get('/login(/?)$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/login.html',options);
 
@@ -287,7 +287,7 @@ app.get('/shop/all$', function (req, res) {
 
 
 /** Load all the items in a user's cart */
-app.get('/cart/all/$', function (req, res) {
+app.get('/cart/all(/?)$', function (req, res) {
   var sent = false;
   
   var logged_in = is_logged_in(req.session);
