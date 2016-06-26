@@ -69,12 +69,15 @@ app.all(function (req,res,next) {
 // =======================================================
 
 app.get('/$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/home', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/index.html');
 });
 app.get('/cart$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/cart.html');
 });
 app.get('/contact$', function(req,res) {
@@ -84,9 +87,11 @@ app.get('/orders$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
 app.get('/register$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/register.html');
 });
 app.get('/login$', function(req,res) {
+  res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
   res.sendFile(__dirname +'/login.html');
 });
 
