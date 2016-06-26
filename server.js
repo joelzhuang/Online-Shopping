@@ -28,7 +28,7 @@ app.use(session({
 	resave: false,
 	saveUninitialized: false,
   	cookie: {
-  		maxAge: 360000,
+  		maxAge: 10000,
   		httpOnly: false,
   		secure: false
   	}
@@ -95,7 +95,7 @@ app.get('/$', function(req,res) {
 });
 
 app.get('/home/?$', function(req,res) {
-  res.sendFile(__dirname +'/index.html');
+  res.sendFile(__dirname +'/index.html', options);
 });
 app.get('/cart/?', function(req,res,next) {
   console.log("WELCOME TO THE CART");
@@ -106,7 +106,7 @@ app.get('/cart/?', function(req,res,next) {
   next();
 });
 app.get('/cart/?$', function(req,res) {
-  res.sendFile(__dirname +'/cart.html');
+  res.sendFile(__dirname +'/cart.html', options);
 });
 app.get('/contact/?$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
@@ -116,10 +116,10 @@ app.get('/orders/?$', function(req,res) {
 });
 
 app.get('/register/?$', function(req,res) {
-  res.sendFile(__dirname +'/register.html');
+  res.sendFile(__dirname +'/register.html', options);
 });
 app.get('/login/?$', function(req,res) {
-  res.sendFile(__dirname +'/login.html');
+  res.sendFile(__dirname +'/login.html',options);
 });
 
 
@@ -305,7 +305,7 @@ app.get('/cart/all/$', function (req, res) {
     }
   });
   query.on('end',function() {
-      res.header('Expires', 3600000);
+      res.header('Cache-Control', 'no-cache');
       res.json(results);
   });
 });
