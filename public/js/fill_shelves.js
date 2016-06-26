@@ -44,6 +44,27 @@ $(document).ready(function(e) {
     });
     return false;
   });
+  
+    /** Changes the category based on clicks in the sidebar */
+  $("#remove-item").click(function(event) {
+    // otherwise, stop link propagation
+	var href = $(this).attr("href");
+	console.log(href);
+    event.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: domain+href;
+	  success: function(data) {
+		location.reload(true);
+	  }
+    }).then(function(data) { 
+    }).done(function (data) {
+		alert("item removed successfully")
+    }).fail(function( xhr, status, errorThrown ) {
+      errorLog(xhr,status,errorThrown);
+    });
+    return false;
+  });
  
 });
   
@@ -192,7 +213,7 @@ var html_cart_data = function (data) {
   var arr = new Array();
   var total = 0;
   for (var i = 0; i < data.length; i++) {
-    total += (Number(data[i].quantity) * Number(data[i].price));
+    total += Number(data[i].price);
     var html = "<td>";
         html+= data[i].name;
         html+= "</td>";
@@ -207,11 +228,11 @@ var html_cart_data = function (data) {
         html += "</td>";
         html += "<td>";
         html += "<span class=\"item_description gray\"><a href=\"/cart/delete/"+
-                      data[i].iid+"/"+data[i].size+"\"> X </a></span>";
+                      data[i].iid+"/"+data[i].size+"\" id="remove-item"> X </a></span>";
         html += "</td>";
     arr.push(html);
   }
-  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"></td> <td id=\"total_\">$"+ money(total) +"</td> <td id=\"removeall_\"><a class=\"remove-all\" href=\"\">Remove all</td>");
+  arr.push("<td id=\"name_\"></td> <td id=\"size_\"></td> <td id=\"quantity_\"></td> <td id=\"total_\">$"+ money(total) +"</td> <td></td>");
   return arr;
 }
 

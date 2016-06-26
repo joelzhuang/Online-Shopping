@@ -120,12 +120,9 @@ app.get('/logout', function(req, res, next){
 })
 
 app.post('/googleLogin/', function(req, res, next){
-  cookieParser ('secretest of secret strings', { maxAge: 360000, path:"/"});
 
 	var username = req.body.name;
-
 	var query = client.query('select * from users where email = \'' +username +'\';');
-
 	var results = [];
 
 	query.on('row', function(row){
@@ -145,20 +142,13 @@ app.post('/googleLogin/', function(req, res, next){
 
 		});
 
-	if(!found){
-		res.send(JSON.stringify({outcome : 'incorrect'}));
-	}
+		if(!found){
+			res.send(JSON.stringify({outcome : 'incorrect'}));
+		}
 
-	console.log(req.session)
+		console.log(req.session)
 	
-	})
-
-	//query.on('end', function(){
-	//	console.log(res.json(results))
-	//})
-
-
-
+	});
 });
 
 
@@ -167,9 +157,7 @@ app.post('/login/', function(req,res,next){
 
 	var username = req.body.name;
 	var password = req.body.pass;
-
 	var query = client.query('select * from users where email = \'' +username +'\';');
-
 	var results = [];
 
 	query.on('row', function(row){
@@ -183,6 +171,7 @@ app.post('/login/', function(req,res,next){
 			if(data.email == username && data.password == password && !found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
+        req.session.id = data.id;
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -193,17 +182,12 @@ app.post('/login/', function(req,res,next){
 		});
 
 	  if(!found){
-		  res.send(JSON.stringify({outcome : 'incorrect'}));
+		res.send(JSON.stringify({outcome : 'incorrect'}));
 	  }
 
 	  console.log(req.session)
 	
 	});
-
-	//query.on('end', function(){
-	//	console.log(res.json(results))
-	//})
-
 });
 
 app.get('/user/', function(req,res,next){
@@ -213,8 +197,16 @@ app.get('/user/', function(req,res,next){
 
 app.post('/register/', function(req,res,next) {
 	var r_data = req.body.register_data;
-	// client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
-	res.send("done");
+	var query = client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year)"
+                          +"VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  
+                          + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  
+                          + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
+	query.on('error', function(err) {
+    res.status(500).send("Account could not be created, please try again.");
+  });
+  query.on('end', function() {
+    res.send("done");
+  });
 });
 
 function checkAuth(req, res, next) {
@@ -247,14 +239,7 @@ var cart_table = "cart";
 var size_table = "sizes";
 var cat_table = "categories";
 var subcat_table = "subcategories";
-var subcat_table = "orders";
-
-
-
-app.get('/shop/.*', function (req,res,next) {
-  console.log("got a shop request");
-  next();
-});
+var orders_table = "orders";
 
 
 
@@ -279,118 +264,105 @@ app.get('/shop/all$', function (req, res) {
 
 
 /** Load all the items in a user's cart */
-app.get('/cart/all/:uid', function (req, res) {
+app.get('/cart/all', function (req, res) {
+  var sent = false;
+  
   var logged_in = is_logged_in(req.session);
-  var id = get_id (req.cookies['email']);
-  var wasSent = false;
-  if (logged_in || req.body == undefined || 
-      (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
+  if (!logged_in || req.session.user_id === undefined) {
+    sent=true;
     res.status(403).send("Please log in to view the contents of your cart.");
-    wasSent = true;
     return;
   }
   
-  var id = (req.params.uid == undefined? req.body.id : req.params.uid);
-  console.log("SELECT "+item_table+".iid, "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity, "+item_table+".price"
-    +" FROM "+ cart_table+", "+item_table
-    +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
-    
-  var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
-    +" FROM "+ cart_table+", "+item_table
-    +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
-  var results = [];
-  query.on('row',function(row) {
-    results.push(row);
-  });
-  query.on('error', function(err) {
-    if(err && !wasSent) {
-      console.log("ERROR: error running query", err);
-      res.status(500).send("Bad request: the database does not contain entries for the given values.");
-    }
-  });
-  query.on('end',function() {
-    if (!wasSent) {
-      res.json(results);
-    }
-  });
+  var id = req.session.user_id;
+  console.log("Sending the cart of "+req.session.email +":id="+id);
+  
+  if (!sent) {
+    var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
+      +" FROM "+ cart_table+", "+item_table
+      +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
+    var results = [];
+    query.on('row',function(row) {
+      results.push(row);
+    });
+    query.on('error', function(err) {
+      if(err) {
+        console.log("ERROR: error running query", err);
+        res.status(500).send("Bad request: you do not have access to this cart.");
+      }
+    });
+    query.on('end',function() {
+        res.json(results);
+    });
+  }
 });
 
 
 
-/* Remove an item from the cart 
-  TODO: make sure the request is actually coming from the right user
-  TODO: make the quantities update correctly
-*/
+/* Remove an item from the cart */
 app.post('/cart/delete/:iid/:size$', function (req, res) {
-  console.log(req.body);
-  
+  var sent = false;
+  var id = req.session.user_id;
   var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
-  
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
-  
-  if (logged_in || req.body == undefined || 
-      (req.body.uid == undefined && req.body.uid < 0 && req.params.uid == undefined)) {
-    res.status(403).send("Please log in to change the contents of the cart.");
-    wasSent = true;
-    return;
+  if (!logged_in || req.session.user_id === undefined) {
+    sent=true;
+    res.status(403).send("Please log in to view the contents of your cart.");
   }
+	
+  console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id);
   
-  var query = client.query("DELETE FROM "+ cart_table +" only"
-    +" WHERE uid = "+req.body.uid+" and iid = "+req.params.iid
-    +" and size = \'"+req.params.size+"\';");
-  query.on('error', function(err) {
-    if(err && !wasSent) {
-      console.log("Encountered an error while querying the database: "+ err);
-      console.log(Object.getOwnPropertyNames(err));
-      res.status(500).send("Database error: "+err);
-    }
-  });
-  query.on('end',function(result) {
-    // done
-    if (!wasSent) {
-      res.json({ added:true });
-    }
-  });
+  if (!sent) {
+    var query = client.query("DELETE FROM "+ cart_table +" only"
+      +" WHERE uid = "+id+" and iid = "+req.params.iid
+      +" and size = \'"+req.params.size+"\';");
+    var deleted = false;
+    query.on('rows', function(err) {
+      deleted = true;
+    });
+    query.on('error', function(err) {
+      if(err && !sent) {
+        console.log("Encountered an error while querying the database: "+ err);
+        res.status(500).send("Sorry, you cannot delete items from this cart.");
+      }
+    });
+    query.on('end',function(result) {
+        if (deleted && !sent) {
+          res.status(200).send("Item successfully removed from cart.");
+        } else {
+          res.status(404).send("Item could not be removed from the cart.");
+        }
+    });
+  }
 });
 
 
 
 /* Add a new item to the cart. */
-app.post('/shop/:iid/:size$', function (req, res) {
-  console.log(req.body);
-  
+app.post('/cart/:iid/:size$', function (req, res) {
   var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
+  var id = get_id (req.session.email);
+  console.log(req.session.email +": "+id);
   
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
+  var sent = false;
+  if (id === undefined || !logged_in) {
+    sent = true;
+    res.status(404).send('Please log in to access this page.');
+  }
   
-  if (logged_in) {
-    res.status(403).send("Please log in to add this item to your cart.");
-    wasSent = true;
-    return;
-  }
-  if (req.body == undefined || req.body.length == 0) {
-    res.status(400).send("Invalid request format.");
-    wasSent = true;
-    return;
-  }
-    // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
-      +" SELECT "+req.body.uid+", "+req.params.iid+", '"+req.params.size+"', 1, price"
+      +" SELECT "+id+", "+req.params.iid+", '"+req.params.size+"', 1, price"
       +" FROM items"
       +" WHERE iid="+req.params.iid);
   query.on('error', function(err) {
-    if(err && !wasSent) {
+    if(err && !sent) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
       res.status(500).send("Database error: "+err);
     }
   });
   query.on('end',function(result) {
-    // done
-    if (!wasSent) {
-      res.json({ added:true });
+    if (!sent) {
+      res.status(200).send("Item successfully added to cart.");
     }
   });
 });
@@ -400,39 +372,43 @@ app.post('/shop/:iid/:size$', function (req, res) {
 /** Get all the items in a category/ */
 app.get('/shop/:category$', function (req, res) {
   var category = req.params.category;
+  var subcategory = req.params.subcategory;
   
-  if (category == undefined) {
-    console.log("Cannot find an undefined category");
-    res.status(400).send("Bad request: cannot search for an undefined category.");
+  if (category == undefined || subcategory == undefined) {
+    console.log("Cannot find an undefined category or subcategory!");
+    res.status(400).send("Bad request: cannot search for an undefined "+ (subcategory == undefinied ? "subcategory" : "category") +".");
   }
-  var wasSent = false;
-  var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
+  console.log("Finding the subcategory "+ subcategory);
+  
+  var sent = false;
+  
+  var hasCategory = client.query("SELECT true FROM "+subcat_table+" WHERE subcat='"+req.params.subcategory+"';");
   hasCategory.on('row',function(row,result) {
     result.addRow(row);
   });
   hasCategory.on('end',function(result) {
-    if (result.rows.length == 0 && !wasSent) {
-      wasSent = true;
-      res.status(404).send("The requested category could not be found.");
+    if (result.rows.length == 0 && !sent) {
+      sent = true;
+      res.status(404).send("The requested subcategory could not be found.");
     }
   });
-  console.log("Finding the category "+ category);
   var results = [];
-  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
+  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"' and subcategory='"+subcategory+"';");
   query.on('row',function(row) {
     results.push(row);
   });
   query.on('error',function(err) {
-    if (err && !wasSent) {
-      wasSent = true;
-      console.log("ERROR: pg encountered an error while parsing this request!");
-      res.status(500).send("Could not load the requested category. Please try again.");
+    if (err && !sent) {
+      sent = true;
+      console.log("ERROR: ps encountered an error while parsing this request!" +err);
+      res.status(500).send("Could not load the requested subcategory. Please try again.");
     }
   });
   query.on('end',function() {
-    if (!wasSent) {
-      wasSent = true;
+    if (!sent) {
+      sent = true;
       res.json(results);
+      console.log(results);
     }
   });
 });
@@ -486,53 +462,45 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
 
 
 /* CHECK OUT ITEMS. */
-app.post('/cart/checkout/:uid$', function (req, res) {
-  console.log(req.body);
-  
+app.post('/cart/checkout/', function (req, res) {  
+  var sent = false;
+  var id = req.session.user_id;
   var logged_in = is_logged_in(req.session);
-  var wasSent   = false;
-  
-  console.log("User is "+ (logged_in?"":"not ") +"logged in.");
-  
-  if (logged_in) {
-    res.status(403).send("Please log in to checkout.");
-    wasSent = true;
-    return;
+  if (!logged_in) {
+    res.status(403).send("Please log in to view the contents of your cart.");
   }
-  if (req.body == undefined || req.body.length == 0) {
-    res.status(400).send("Invalid request format.");
-    wasSent = true;
-    return;
-  }
-  var date = new Date();
-  // TODO: check validity of size, iid and uid
+  console.log(req.session.email +": "+id);
+      //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
   var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
-      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', iid, quantity, price, oid"
+      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
       +" FROM items, cart"
-      +" WHERE iid="+cart_table+".iid"
-      +" and uid="+cart_table+".uid and uid="+req.params.uid
-      +" and quantity="+cart_table+"+req.params.iid"
+      +" WHERE uid = "+cart_table+".uid and uid = "+id
+      +" and iid = "+cart_table+".iid"
       +" and oid = (select max(oid) from tbl)+1 ;");
   query.on('error', function(err) {
-    if(err && !wasSent) {
+    if(err) {
       console.log("Encountered an error while querying the database: "+ err);
       res.status(500).send("The database encountered an error while processing your request.");
-      wasSent = true;
+      sent = true;
     }
   });
   query.on('end',function(result) {
-    // done
-    if (!wasSent) {
-      var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+req.params.uid+";");
-      removeNext.on('error', function(err) {
-        console.log("Something has gone seriously wrong and the database is unsafe! (uid="+req.params.uid+")");
-        res.status(500).send("The database encountered an awful, awful error while processing your request.");
-        wasSent = true;
-      });
-      removeNext.on('end', function() {      
-        res.json({ added:true });
-      });
-    }
+    var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+id+";");
+    removeNext.on('error', function(err) {
+      console.log("Something has gone seriously wrong and the cart contains items it should not for (uid="+id+")");
+      res.status(500).send("The database encountered an awful, awful error while processing your request."); // this is not an error you would ever really use in production
+    });
+    var success = false;
+    removeNext.on('row', function(row) {
+      success=true;
+    });
+    removeNext.on('end', function() {   
+      if (true) {
+        res.status(200).send("Thank-you for your purchase! (If this were a real site, you'd get a tracking number or an email or something.)");
+      } else {
+        res.status(200).send("There are no items in your cart to check out.");
+      }
+    });
   });
 });
 
@@ -546,6 +514,9 @@ app.listen(port, function () {
 });
 
 var get_id = function(username) {
+	if (username === undefined || username === null) {
+	return -1;
+	}
 	var query = client.query('select * from users where email = \'' +username +'\';');
 	var id = 0;
 	query.on('row', function(row) {
