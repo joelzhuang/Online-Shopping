@@ -73,7 +73,8 @@ app.all(function (req,res,next) {
       console.log("user is NOT logged in");
     }
 
-    res.header('Expires', 3600000)
+  res.header('Expires', 3600000)
+  next();
 });
 
 app.get('/get1/', function(req,res){
@@ -86,10 +87,13 @@ app.get('/get1/', function(req,res){
 // PAGE ROUTING
 // =======================================================
 
+
+
 app.get('/$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('/public/index.html', options);
 });
+<<<<<<< HEAD
 app.get('/home', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('public/index.html', options);
@@ -97,13 +101,29 @@ app.get('/home', function(req,res) {
 app.get('/cart$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('public/cart.html', options);
+=======
+app.get('/home/?$', function(req,res) {
+  res.sendFile(__dirname +'/index.html');
 });
-app.get('/contact$', function(req,res) {
+app.get('/cart/?', function(req,res,next) {
+  console.log("WELCOME TO THE CART");
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in || req.body == undefined) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  next();
+});
+app.get('/cart/?$', function(req,res) {
+  res.sendFile(__dirname +'/cart.html');
+>>>>>>> 9fd49297813d08f9e2b9e1fcd224e9b710443bb7
+});
+app.get('/contact/?$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
-app.get('/orders$', function(req,res) {
+app.get('/orders/?$', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
+<<<<<<< HEAD
 app.get('/register$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('public/register.html', options);
@@ -111,8 +131,34 @@ app.get('/register$', function(req,res) {
 app.get('/login$', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('public/login.html', options);
+=======
+app.get('/register/?$', function(req,res) {
+  res.sendFile(__dirname +'/register.html');
+});
+app.get('/login/?$', function(req,res) {
+  res.sendFile(__dirname +'/login.html');
+>>>>>>> 9fd49297813d08f9e2b9e1fcd224e9b710443bb7
 });
 
+
+app.get('/shop/*', function (req,res,next) {
+  console.log("got a shop request");
+  next();
+});
+
+// makes sure the user is logged in before making changes to the cart
+/*app.get('/cart/', function (req, res, next) {
+  console.log("WELCOME TO THE CART WITH WILDCARD");
+  var logged_in = is_logged_in(req.session);
+  if (!logged_in || req.body == undefined) {
+    res.status(403).send("Please log in to view the contents of your cart.");
+  }
+  next();
+}); */
+
+// app.get('/',function(req,res,next){
+// 	res.send(__dirname);
+// });
 
 // LOGIN / LOGOUT
 // =======================================================
@@ -127,6 +173,7 @@ app.get('/checkLogin/', function(req,res,next){
 		console.log('not found')
 		res.send('not found')
 	}
+  next();
 });
 
 app.get('/logout', function(req, res, next){
@@ -212,8 +259,16 @@ app.post('/login/', function(req,res,next){
 
 app.post('/register/', function(req,res,next) {
 	var r_data = req.body.register_data;
-	// client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
-	res.send("done");
+	var query = client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year)"
+                          +"VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  
+                          + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  
+                          + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
+	query.on('error', function(err) {
+    res.status(500).send("Account could not be created, please try again.");
+  });
+  query.on('end', function() {
+    res.send("done");
+  });
 });
 
 // SHOPPING
@@ -225,22 +280,6 @@ var size_table = "sizes";
 var cat_table = "categories";
 var subcat_table = "subcategories";
 var orders_table = "orders";
-
-
-
-app.get('/shop/*', function (req,res,next) {
-  console.log("got a shop request");
-  next();
-});
-
-// makes sure the user is logged in before making changes to the cart
-app.get('/cart/*', function (req, res, next) {
-  var logged_in = is_logged_in(req.session);
-  if (!logged_in || req.body == undefined) {
-    res.status(403).send("Please log in to view the contents of your cart.");
-  }
-  next();
-});
 
 
 /** Get all the items in the database */
@@ -328,7 +367,7 @@ app.post('/cart/checkout/', function (req, res) {
   
   var id = req.session.loginid
   console.log(req.session.email +": "+id);
-  
+  var wasSent = false;
       //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
   var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
       +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
@@ -369,19 +408,27 @@ app.post('/cart/:iid/:size$', function (req, res) {
   var id = req.session.loginid
   console.log(req.session.email +": "+id);
   
+  var sent = false;
+  if (id === undefined) {
+    sent = true;
+    res.status(404).send('Please log in to access this page.');
+  }
+  
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
       +" SELECT "+id+", "+req.params.iid+", '"+req.params.size+"', 1, price"
       +" FROM items"
       +" WHERE iid="+req.params.iid);
   query.on('error', function(err) {
-    if(err) {
+    if(err && !sent) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
       res.status(500).send("Database error: "+err);
     }
   });
   query.on('end',function(result) {
-    res.status(200).send("Item successfully added to cart.");
+    if (!sent) {
+      res.status(200).send("Item successfully added to cart.");
+    }
   });
 });
 
