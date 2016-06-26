@@ -399,6 +399,7 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
+      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
       console.log(results);
     }
@@ -443,6 +444,7 @@ app.get('/shop/:category$', function (req, res) {
   query.on('end',function() {
     if (!wasSent) {
       wasSent = true;
+      res.setHeader('Cache-Control', 'public, max-age=31557600'); // one year
       res.json(results);
     }
   });
