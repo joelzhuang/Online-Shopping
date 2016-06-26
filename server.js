@@ -254,7 +254,7 @@ var cart_table = "cart";
 var size_table = "sizes";
 var cat_table = "categories";
 var subcat_table = "subcategories";
-var subcat_table = "orders";
+var orders_table = "orders";
 
 
 
@@ -283,7 +283,7 @@ app.get('/shop/all$', function (req, res) {
   query.on('error', function(err) {
     if(err) {
       console.log("ERROR: error running query", err);
-      res.status(500).send("Bad request: the database does not contain entries for the given values.");
+      res.status(500).send("Please try again in a moment.");
     }
   });
   query.on('end',function() {
@@ -294,14 +294,10 @@ app.get('/shop/all$', function (req, res) {
 
 
 /** Load all the items in a user's cart */
-app.get('/cart/all/:uid', function (req, res) {
+app.get('/cart/all/$', function (req, res) {
   
   var id = get_id (req.session.email);
-  console.log(req.session.email +": "+id+", "+req.session.user_id);
-  
-  console.log("SELECT "+item_table+".iid, "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity, "+item_table+".price"
-    +" FROM "+ cart_table+", "+item_table
-    +" WHERE "+cart_table+".uid = "+id+" and "+item_table+".iid = "+cart_table+".iid;");
+  console.log("Sending the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
     
   var query = client.query("SELECT "+item_table+".name, "+cart_table+".size, "+cart_table+".quantity"
     +" FROM "+ cart_table+", "+item_table
@@ -313,7 +309,7 @@ app.get('/cart/all/:uid', function (req, res) {
   query.on('error', function(err) {
     if(err) {
       console.log("ERROR: error running query", err);
-      res.status(500).send("Bad request: the database does not contain entries for the given values.");
+      res.status(500).send("Bad request: you do not have access to this cart.");
     }
   });
   query.on('end',function() {
@@ -330,28 +326,70 @@ app.get('/cart/all/:uid', function (req, res) {
 app.post('/cart/delete/:iid/:size$', function (req, res) {
 	
   var id = get_id (req.session.email);
-  console.log(req.session.email +": "+id);
+  console.log("Deleting "+req.params.iid+" from the cart of "+req.session.email +":id="+id+"="+req.session.user_id);
   
   var query = client.query("DELETE FROM "+ cart_table +" only"
     +" WHERE uid = "+id+" and iid = "+req.params.iid
     +" and size = \'"+req.params.size+"\';");
+  var deleted = false;
+  query.on('rows', function(err) {
+    deleted = true;
+  });
   query.on('error', function(err) {
-    if(err && !wasSent) {
+    if(err) {
       console.log("Encountered an error while querying the database: "+ err);
-      console.log(Object.getOwnPropertyNames(err));
-      res.status(500).send("Database error: "+err);
-      wasSent = true;
+      res.status(500).send("Sorry, you cannot delete items from this cart.");
     }
   });
   query.on('end',function(result) {
-    // done
-    if (!wasSent) {
-      res.json({ added:true });
-    }
+      if (deleted) {
+        res.status(200).send("Item successfully removed from cart.");
+      } else {
+        res.status(404).send("Item could not be removed from the cart.");
+      }
   });
 });
 
 
+/* CHECK OUT ITEMS. */
+app.post('/cart/checkout/', function (req, res) {
+  
+  var id = get_id (req.session.email);
+  console.log(req.session.email +": "+id);
+  
+      //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
+  var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
+      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
+      +" FROM items, cart"
+      +" WHERE uid = "+cart_table+".uid and uid = "+id
+      +" and iid = "+cart_table+".iid"
+      +" and oid = (select max(oid) from tbl)+1 ;");
+  query.on('error', function(err) {
+    if(err) {
+      console.log("Encountered an error while querying the database: "+ err);
+      res.status(500).send("The database encountered an error while processing your request.");
+      wasSent = true;
+    }
+  });
+  query.on('end',function(result) {
+    var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+id+";");
+    removeNext.on('error', function(err) {
+      console.log("Something has gone seriously wrong and the cart contains items it should not for (uid="+id+")");
+      res.status(500).send("The database encountered an awful, awful error while processing your request."); // this is not an error you would ever really use in production
+    });
+    var success = false;
+    removeNext.on('row', function(row) {
+      success=true;
+    });
+    removeNext.on('end', function() {   
+      if (true) {
+        res.status(200).send("Thank-you for your purchase! (If this were a real site, you'd get a tracking number or an email or something.)");
+      } else {
+        res.status(200).send("There are no items in your cart to check out.");
+      }
+    });
+  });
+});
 
 /* Add a new item to the cart. */
 app.post('/cart/:iid/:size$', function (req, res) {
@@ -359,75 +397,28 @@ app.post('/cart/:iid/:size$', function (req, res) {
   var id = get_id (req.session.email);
   console.log(req.session.email +": "+id);
   
-    // TODO: check validity of size, iid and uid
   var query = client.query("INSERT INTO "+cart_table+" (uid,iid,size,quantity,price)"
       +" SELECT "+id+", "+req.params.iid+", '"+req.params.size+"', 1, price"
       +" FROM items"
       +" WHERE iid="+req.params.iid);
   query.on('error', function(err) {
-    if(err && !wasSent) {
+    if(err) {
       console.log("Encountered an error while querying the database: "+ err);
       console.log(Object.getOwnPropertyNames(err));
       res.status(500).send("Database error: "+err);
     }
   });
   query.on('end',function(result) {
-    // done
-    if (!wasSent) {
-      res.json({ added:true });
-    }
+    res.status(200).send("Item successfully added to cart.");
   });
 });
-
-
-
-/** Get all the items in a category/ */
-app.get('/shop/:category$', function (req, res) {
-  var category = req.params.category;
-  
-  if (category == undefined) {
-    console.log("Cannot find an undefined category");
-    res.status(400).send("Bad request: cannot search for an undefined category.");
-  }
-  var wasSent = false;
-  var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
-  hasCategory.on('row',function(row,result) {
-    result.addRow(row);
-  });
-  hasCategory.on('end',function(result) {
-    if (result.rows.length == 0 && !wasSent) {
-      wasSent = true;
-      res.status(404).send("The requested category could not be found.");
-    }
-  });
-  console.log("Finding the category "+ category);
-  var results = [];
-  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
-  query.on('row',function(row) {
-    results.push(row);
-  });
-  query.on('error',function(err) {
-    if (err && !wasSent) {
-      wasSent = true;
-      console.log("ERROR: pg encountered an error while parsing this request!");
-      res.status(500).send("Could not load the requested category. Please try again.");
-    }
-  });
-  query.on('end',function() {
-    if (!wasSent) {
-      wasSent = true;
-      res.json(results);
-    }
-  });
-});
-
 
 
 /** Get all the items in quiet-bastion-96093.herokuapp.com/category/subcategory */
 app.get('/shop/:category/:subcategory$', function (req, res, next) {
-
   var category = req.params.category;
   var subcategory = req.params.subcategory;
+  
   if (category == undefined || subcategory == undefined) {
     console.log("Cannot find an undefined category or subcategory!");
     res.status(400).send("Bad request: cannot search for an undefined "+ (subcategory == undefinied ? "subcategory" : "category") +".");
@@ -469,38 +460,43 @@ app.get('/shop/:category/:subcategory$', function (req, res, next) {
 
 
 
-/* CHECK OUT ITEMS. */
-app.post('/cart/checkout/:uid$', function (req, res) {
+
+/** Get all the items in a category/ */
+app.get('/shop/:category$', function (req, res) {
+  var category = req.params.category;
   
-  var id = get_id (req.session.email);
-  console.log(req.session.email +": "+id);
-  
-  var query = client.query("INSERT INTO "+order_table+" (placed,uid,iid,quantity,oid)"
-      //         [                       date                               ]  [uid][ itemid ] [quantity]                 [orderid]
-      +" SELECT '"+date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"', uid,    iid,    "+cart_table+".quantity ,   oid"
-      +" FROM items, cart"
-      +" WHERE uid = "+cart_table+".uid and uid = "+id
-      +" and iid = "+cart_table+".iid"
-      +" and oid = (select max(oid) from tbl)+1 ;");
-  query.on('error', function(err) {
-    if(err && !wasSent) {
-      console.log("Encountered an error while querying the database: "+ err);
-      res.status(500).send("The database encountered an error while processing your request.");
+  if (category == undefined) {
+    console.log("Cannot find an undefined category");
+    res.status(400).send("Bad request: cannot search for an undefined category.");
+  }
+  var wasSent = false;
+  var hasCategory = client.query("SELECT true FROM "+cat_table+" WHERE cat='"+req.params.category+"';");
+  hasCategory.on('row',function(row,result) {
+    result.addRow(row);
+  });
+  hasCategory.on('end',function(result) {
+    if (result.rows.length == 0 && !wasSent) {
       wasSent = true;
+      res.status(404).send("The requested category could not be found.");
     }
   });
-  query.on('end',function(result) {
-    // done
+  console.log("Finding the category "+ category);
+  var results = [];
+  var query = client.query("SELECT * FROM "+item_table+" WHERE category='"+category+"';");
+  query.on('row',function(row) {
+    results.push(row);
+  });
+  query.on('error',function(err) {
+    if (err && !wasSent) {
+      wasSent = true;
+      console.log("ERROR: pg encountered an error while parsing this request!");
+      res.status(500).send("Could not load the requested category. Please try again.");
+    }
+  });
+  query.on('end',function() {
     if (!wasSent) {
-      var removeNext = client.query("DELETE FROM "+cart_table+" where uid="+id+";");
-      removeNext.on('error', function(err) {
-        console.log("Something has gone seriously wrong and the database is unsafe! (uid="+id+")");
-        res.status(500).send("The database encountered an awful, awful error while processing your request.");
-        wasSent = true;
-      });
-      removeNext.on('end', function() {      
-        res.json({ added:true });
-      });
+      wasSent = true;
+      res.json(results);
     }
   });
 });

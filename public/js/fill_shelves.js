@@ -11,9 +11,13 @@ $(document).ready(function(e) {
     $.ajax({
       method: 'POST',
       url: domain +'/cart/'+ my_id +'/'+ $(this).html(),
-      dataType: 'json',
-      //                               v gotta get this from cookies
-      data: { iid: my_id, uid: 10, size: "Medium" } // TODO actually get an id for user 
+      dataType: 'html',
+      data: { iid: my_id, size: "Medium" },
+      statusCode: {
+        404: alert("404 while making buy request");
+        200: alert("successful purchase");
+        500: alert("server error");
+      }
      }).then(function(data) { 
      }).done(function (msg){
       console.log(my_id +" leads to "+ msg);
@@ -32,7 +36,12 @@ $(document).ready(function(e) {
     $.ajax({
       method: 'POST',
       url: domain +'/cart/checkout/'+ my_id,
-      dataType: 'json'
+      dataType: 'json',
+      statusCode: {
+        404: alert("404 while making checkout request");
+        200: alert("successful checkout");
+        500: alert("server error");
+      }
      }).then(function(data) { 
      }).done(function (msg){
       console.log(my_id +" leads to "+ msg);
@@ -85,7 +94,7 @@ var load_all  = function() {
     alert("Sorry, there was a problem accessing the database!");
     console.log( "Error: " + errorThrown );
     console.log( "Status: " + status );
-    onServerError(xhr.responseText);
+    onServerError(xhr);
   });
 }
 
@@ -94,17 +103,16 @@ var load_cart  = function() {
   console.log("Get cart ");
   $.ajax({
     method: 'GET',
-    url: domain+'/cart/all/'+10 // TODO get logged in info from cookies
+    url: domain+'/cart/all/' // TODO get logged in info from cookies
   }).then(function(data) {
     show_cart(data)
   }).done( function(data) {
   }).fail(function( xhr, status, errorThrown ) {
     // Code to run if the request fails; the raw request and
     // status codes are passed to the function
-    alert("Sorry, there was a problem accessing the database!");
     console.log( "Error: " + errorThrown );
     console.log( "Status: " + status );
-    onServerError(xhr.responseText);
+    onServerError(xhr);
   });
 }
 
@@ -114,12 +122,12 @@ var errorLog = function(xhr, status, errorThrown) {
   if (status < 500) {
     onClientError(xhr.responseText);
   } else {
-    onServerError(xhr.responseText);
+    onServerError(xhr);
   }
 }
 
 /** Just a prettiness thing--shows a client error*/
-var onClientError = function(text) {
+var onClientError = function(xhr) {
   $("#page_top_server").animate({ 
     opacity: 0
   }, 200 );
@@ -133,10 +141,17 @@ var onClientError = function(text) {
   }, 200, function() {
     // on complete
   });
+  switch (xhr.status) {
+    case 404: alert("The requested page could not be found, sorry!");
+                break;
+    case 403: alert("Please log in to access this page!");
+                break;
+    default: alert("Status error "+ xhr.status);    
+  }
 }
 
 /** Just a prettiness thing--shows a server error*/
-var onServerError = function(text) {
+var onServerError = function(xhr) {
   $("#page_top_content").animate({ 
     opacity: 0
   }, 200 );
@@ -150,6 +165,11 @@ var onServerError = function(text) {
   }, 200, function() {
     // on complete
   });
+  switch (xhr.status) {
+    case 500: alert("The server has encountered an unexpected issue with your request, please try again.");
+                break;
+    default: alert("The server is experiencing difficulties, please try again.");    
+  }
 }
 
 /* uses html_data's <td> objects to create a table, with rows and stuff. */
