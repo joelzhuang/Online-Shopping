@@ -61,18 +61,21 @@ app.use(function(req,res,next) {
 });
 
 /** Refresh the cookie's expiration time, if the user is logged in.*/
-app.all('*', function (req,res) {
+/*app.all('*', function (req,res,next) {
 	if (is_logged_in(req.session)) {
 		console.log("user "+ req.session.email +" is logged in, resetting cookie");
-		/* var query = url.parse(req.url, true, true).query;*/
-		res.header('Set-Cookie', cookie.serialize('email', String(query.email), {
+
+		// var query = url.parse(req.url, true, true).query;
+		res.setHeader('Set-Cookie', cookie.serialize('email', String(query.email), {
 			httpOnly: true,
 			maxAge: 3600000 // 1 week 
 		})); 
-    } else {
-      console.log("user is NOT logged in");
-    }
+  } else {
+    console.log("user is NOT logged in");
+  }
+  next('route');
 });
+*/
 
 // PAGE ROUTING
 // =======================================================
@@ -103,9 +106,9 @@ app.get('/login/?$', function(req,res) {
 });
 
 
-app.get('/shop/*', function (req,res,next) {
+app.get('/shop/*', function (req,res, next) {
   console.log("got a shop request");
-  next();
+  next('route');
 });
 
 // makes sure the user is logged in before making changes to the cart
@@ -505,6 +508,12 @@ app.get('/shop/:category$', function (req, res) {
     }
   });
 });
+
+
+
+// ROUTING
+// =======================================================
+
 
 
 // FINAL SETUP
