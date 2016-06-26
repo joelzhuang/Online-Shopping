@@ -42,7 +42,6 @@ app.use(bodyparser.urlencoded({extended: true}));
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
-//app.use(express.static(__dirname+'/'));
 
 app.use(function(req,res,next) {
   res.setHeader('Access-Control-Allow-Origin','*') // this seems unsafe somehow
@@ -51,25 +50,18 @@ app.use(function(req,res,next) {
   next();
 });
 
-/** Refresh the cookie's expiration time, if the user is logged in. */
+/** Refresh the cookie's expiration time, if the user is logged in.*/
 app.all(function (req,res,next) {
 	if (is_logged_in(req.session)) {
 		console.log("user "+ req.session.email +" is logged in, resetting cookie");
-		/* var query = url.parse(req.url, true, true).query;
+		/* var query = url.parse(req.url, true, true).query;*/
 		res.setHeader('Set-Cookie', cookie.serialize('email', String(query.email), {
 			httpOnly: true,
 			maxAge: 3600000 // 1 week 
-		})); */
+		})); 
     } else {
       console.log("user is NOT logged in");
     }
-});
-
-app.get('/get', function(req,res,next){
-	console.log(req);
-	console.log(req.pass);
-	
-	client.query('select * from users;');
 });
 
 
@@ -98,9 +90,6 @@ app.get('/login$', function(req,res) {
   res.sendFile(__dirname +'/login.html');
 });
 
-// app.get('/',function(req,res,next){
-// 	res.send(__dirname);
-// });
 
 // LOGIN / LOGOUT
 // =======================================================
@@ -130,9 +119,7 @@ app.get('/logout', function(req, res, next){
 app.post('/googleLogin/', function(req, res, next){
 
 	var username = req.body.name;
-
 	var query = client.query('select * from users where email = \'' +username +'\';');
-
 	var results = [];
 
 	query.on('row', function(row){
@@ -159,24 +146,13 @@ app.post('/googleLogin/', function(req, res, next){
 		console.log(req.session)
 	
 	});
-
-	//query.on('end', function(){
-	//	console.log(res.json(results))
-	//})
-
-
-
 });
-
-
 
 app.post('/login/', function(req,res,next){
 
 	var username = req.body.name;
 	var password = req.body.pass;
-
 	var query = client.query('select * from users where email = \'' +username +'\';');
-
 	var results = [];
 
 	query.on('row', function(row){
@@ -206,11 +182,6 @@ app.post('/login/', function(req,res,next){
 	  console.log(req.session)
 	
 	});
-
-	//query.on('end', function(){
-	//	console.log(res.json(results))
-	//})
-
 });
 
 app.get('/user/', function(req,res,next){
@@ -223,28 +194,6 @@ app.post('/register/', function(req,res,next) {
 	// client.query("INSERT into users (title,gender,first_name,last_name,email,password,phone,address,city,country,birth_day,birth_month,birth_year) VALUES ('" + r_data.title  + "','" + r_data.gender  + "','" + r_data.fname  + "','" + r_data.lname  + "','" + r_data.email  + "','" + r_data.password  + "','" + r_data.phone  + "','" + r_data.address  + "','" + r_data.city  + "','" + r_data.country  + "'," + r_data.day  + "," + r_data.month  + "," + r_data.year + ");");
 	res.send("done");
 });
-
-function checkAuth(req, res, next) {
-  if (!req.session.user_id) {
-    res.send('You are not authorized to view this page');
-  } else {
-    next();
-  }
-}
-
-
-/*app.post('/post/', function(req,res,next){
-	console.log(req.body.name);
-	console.log(req.body.pass);
-	
-	client.query('select * from users;');
-
-	console.log(client.query('insert into users (name, pass) values (\'reuben\', \'pass\')').text);
-
-	res.sendStatus(200);
-});*/
-
-
 
 // SHOPPING
 // =======================================================
@@ -521,7 +470,7 @@ var get_id = function(username) {
 	  return -1;
 	});
 	query.on('end', function() {
-	  console.log(id);
+	  console.log(id+'here');
 	  return id;
 	});
 }
