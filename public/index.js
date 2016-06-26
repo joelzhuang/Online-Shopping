@@ -33,15 +33,25 @@ $(document).ready(function(e) {
 
   	});
 
+    var lat ="";
+    var long = "";
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude
+      var long = position.coords.longitude;
+   
+
+    var query = 'SELECT * FROM geo.places WHERE text="{'+lat+'}, {'+long+'}" AND placeTypeName.code = 7';
+
     $.ajax({
       method: 'GET',
-      url: 'http://openweathermap.org/data/2.1/find/city?lat=8.2924495&lon=-62.7373258',
+      url: 'http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json&diagnostics=true&callback='
+
       }).then(function(data){
         console.log(data)
-        $('#weather').prepend('hi');
+        $('#weather').prepend(data.query.results.channel.item.condition.temp);
+        $('#weather').prepend(data.query.results.channel.item.condition.text+ " ");
       })
 
-
-
-
+      });
 });
