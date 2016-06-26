@@ -74,13 +74,6 @@ app.all('*', function (req,res) {
     }
 });
 
-app.get('/get1/', function(req,res){
-    res.header('Cache-Control', 'public');
-    res.header('Expires', 3600000);
-    res.send(200);
-})
-
-
 // PAGE ROUTING
 // =======================================================
 
@@ -142,7 +135,6 @@ app.get('/checkLogin/', function(req,res,next){
 		console.log('not found')
 		res.send('not found')
 	}
-  next();
 });
 
 app.get('/logout', function(req, res, next){
