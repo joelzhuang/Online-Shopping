@@ -14,9 +14,9 @@ $(document).ready(function(e) {
       dataType: 'html',
       data: { iid: my_id, size: "Medium" },
       statusCode: {
-        404: alert("404 while making buy request");
-        200: alert("successful purchase");
-        500: alert("server error");
+        404: alert("404 while making buy request"),
+        200: alert("successful purchase"),
+        500: alert("server error")
       }
      }).then(function(data) { 
      }).done(function (msg){
@@ -38,9 +38,9 @@ $(document).ready(function(e) {
       url: domain +'/cart/checkout/'+ my_id,
       dataType: 'json',
       statusCode: {
-        404: alert("404 while making checkout request");
-        200: alert("successful checkout");
-        500: alert("server error");
+        404: alert("404 while making checkout request"),
+        200: alert("successful checkout"),
+        500: alert("server error")
       }
      }).then(function(data) { 
      }).done(function (msg){
