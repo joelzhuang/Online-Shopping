@@ -92,11 +92,11 @@ app.get('/home', function(req,res) {
   res.sendFile(__dirname +'/index.html', options);
 
 });
-/* app.get('/cart', function(req,res) {
-  console.log("are you getting these?");
+app.get('/cart$', function(req,res) {
+  console.log("are you getting these? "+__dirname +'/cart.html');
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/cart.html', options);
-}); */
+});
 app.get('/contact$', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
