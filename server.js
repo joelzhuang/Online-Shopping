@@ -292,7 +292,7 @@ app.get('/shop/all$', function (req, res) {
 
 
 /** Load all the items in a user's cart */
-app.get('/cart/all(/?)$', function (req, res) {
+app.get('/cart/all', function (req, res) {
   var sent = false;
   
   var logged_in = is_logged_in(req.session);
@@ -374,7 +374,7 @@ app.post('/cart/checkout/', function (req, res) {
   TODO: make sure the request is actually coming from the right user
   TODO: make the quantities update correctly
 */
-app.post('/cart/delete/:iid/:size$', function (req, res) {
+app.post('/cart/delete/:iid/:size', function (req, res) {
   var sent = false;
   var id = req.session.user_id;
   var logged_in = is_logged_in(req.session);
@@ -414,7 +414,7 @@ app.post('/cart/delete/:iid/:size$', function (req, res) {
 
 
 /* Add a new item to the cart. */
-app.post('/cart/:iid/:size$', function (req, res) {
+app.post('/cart/:iid/:size', function (req, res) {
   var logged_in = is_logged_in(req.session);
   var id = req.session.loginid;
 
