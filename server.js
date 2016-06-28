@@ -97,6 +97,11 @@ app.get('/cart', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/cart.html', options);
 });
+app.get('/cart.html', function(req,res) {
+  console.log("are you ever getting these? "+__dirname +'/cart.html');
+  res.header('Expires', 3600000);
+  res.sendFile(__dirname +'/cart.html', options);
+});
 app.get('/contact', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
@@ -540,11 +545,14 @@ app.get('/shop/:category$', function (req, res) {
 // FINAL SETUP
 // =======================================================
 //app.use('/', router);
-
+app.use(function(req, res, next) {
+  res.status(404).send("This page cannot be found.");
+});
 
 app.listen(port, function () {
 	console.log('Your app is listening on port ' + port);
 });
+
 
 function get_id(username) {
   if (username === undefined || username === null) {
