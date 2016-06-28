@@ -80,7 +80,7 @@ app.use(function(req,res,next) {
 // PAGE ROUTING
 // =======================================================
 
-app.get('/$', function(req,res) {
+app.get('/', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile('/public/index.html', options);
 });
@@ -92,24 +92,22 @@ app.get('/home', function(req,res) {
   res.sendFile(__dirname +'/index.html', options);
 
 });
-app.get('/cart$', function(req,res) {
+app.get('/cart', function(req,res) {
   console.log("are you getting these? "+__dirname +'/cart.html');
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/cart.html', options);
 });
-app.get('/contact$', function(req,res) {
+app.get('/contact', function(req,res) {
   res.status(404).send('Contacts page not yet implemented!');
 });
-app.get('/orders$', function(req,res) {
+app.get('/orders', function(req,res) {
   res.status(404).send('Orders page not yet implemented!');
 });
-
-
-app.get('/register(/?)$', function(req,res) {
+app.get('/register', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/register.html', options);
 });
-app.get('/login(/?)$', function(req,res) {
+app.get('/login', function(req,res) {
   res.header('Expires', 3600000);
   res.sendFile(__dirname +'/login.html',options);
 
