@@ -174,7 +174,7 @@ app.post('/googleLogin/', function(req, res, next){
 			if(data.email == username &&!found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-        req.session.loginid = data.id;
+				req.session.loginid = data.id;
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -208,8 +208,8 @@ app.post('/login/', function(req,res,next){
 			if(data.email == username && data.password == password && !found){
 				req.session.loggedIn = true;
 				req.session.email = data.email;
-        req.session.loginid = data.id;
-        console.log("ID:   " +  data.id)
+				req.session.loginid = data.id;
+				console.log("ID:   " +  data.id)
 				res.send(JSON.stringify({outcome : 'correct'}));
 				found = true;
 			}
@@ -302,7 +302,7 @@ app.get('/cart/all', function (req, res) {
     return;
   }
 
-  var id = req.session.user_id;
+  var id = req.session.loginid;
   console.log("Sending the cart of "+req.session.email +":id="+id);
   
   if (!sent) {
@@ -330,7 +330,7 @@ app.get('/cart/all', function (req, res) {
 /* CHECK OUT ITEMS. */
 app.post('/cart/checkout/', function (req, res) {
   var sent = false;
-  var id = req.session.user_id;
+  var id = req.session.loginid;
   var logged_in = is_logged_in(req.session);
   if (!logged_in) {
     res.status(403).send("Please log in to view the contents of your cart.");
@@ -376,7 +376,7 @@ app.post('/cart/checkout/', function (req, res) {
 */
 app.post('/cart/delete/:iid/:size', function (req, res) {
   var sent = false;
-  var id = req.session.user_id;
+  var id = req.session.loginid;
   var logged_in = is_logged_in(req.session);
   if (!logged_in) {
     sent=true;
