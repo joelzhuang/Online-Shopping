@@ -42,6 +42,24 @@ $(document).ready(function(e) {
     });
     return false;
   });
+  
+  $("#Page_center").on('click',"#remove-item",function() {
+    event.preventDefault();
+    console.log("checkout");
+    $.ajax({
+      method: 'POST',
+      url: domain + $(this).attr("href"),
+      dataType: 'json'
+     }).then(function(data) {
+     }).done(function (msg){
+      alert("Item successfully removed!");
+    }).fail(function( xhr, status, errorThrown ) {
+      errorLog(xhr,status,errorThrown);
+	  alert("Item not successfully removed, please try again.");
+      onServerError("Could not check out! "+xhr.responseText);
+    });
+    return false;
+  });
 
   /** Changes the category based on clicks in the sidebar */
   $("a").click(function(event) {
