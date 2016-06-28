@@ -296,7 +296,7 @@ app.get('/cart/all', function (req, res) {
   var sent = false;
   
   var logged_in = is_logged_in(req.session);
-  if (!logged_in || req.session.user_id === undefined) {
+  if (!logged_in) {
     sent=true;
     res.status(403).send("Please log in to view the contents of your cart.");
     return;
@@ -378,7 +378,7 @@ app.post('/cart/delete/:iid/:size', function (req, res) {
   var sent = false;
   var id = req.session.user_id;
   var logged_in = is_logged_in(req.session);
-  if (!logged_in || req.session.user_id === undefined) {
+  if (!logged_in) {
     sent=true;
     res.status(403).send("Please log in to view the contents of your cart.");
   }
